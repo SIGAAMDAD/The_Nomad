@@ -14,28 +14,59 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Hazards
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct HazardDefinitionId : IEquatable<HazardDefinitionId>
-	{
-		public static readonly HazardDefinitionId Invalid = new HazardDefinitionId( InternString.Empty );
-		public bool IsValid => Value != InternString.Empty;
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct HazardDefinitionId : IEquatable<HazardDefinitionId>
+    {
+        public static readonly HazardDefinitionId Invalid = new HazardDefinitionId(InternString.Empty);
+        public bool IsValid => Value != InternString.Empty;
 
-		public readonly InternString Value;
+        public readonly InternString Value;
 
-		public HazardDefinitionId( InternString value )
-		{
-			Value = value;
-		}
+        public HazardDefinitionId(InternString value)
+        {
+            Value = value;
+        }
 
-		public bool Equals( HazardDefinitionId other )
-		{
-			return Value == other.Value;
-		}
-	}
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is HazardDefinitionId other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public bool Equals(HazardDefinitionId other)
+        {
+            return other.Value == Value;
+        }
+
+        public static implicit operator InternString(HazardDefinitionId value)
+        {
+            return value.Value;
+        }
+
+        public static bool operator ==(HazardDefinitionId left, HazardDefinitionId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(HazardDefinitionId left, HazardDefinitionId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

@@ -20,23 +20,23 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IStorageUnit : IDisposable
-	{
-		InternString StorageId { get; }
-		InternString DisplayName { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IStorageUnit : IDisposable
+    {
+        InternString StorageId { get; }
+        InternString DisplayName { get; }
 
-		InventoryContainerType ContainerType { get; }
-		InventoryRules Rules { get; }
-		float CurrentWeight { get; }
+        InventoryContainerType ContainerType { get; }
+        InventoryRules Rules { get; }
+        float CurrentWeight { get; }
 
-		bool TryAdd( ItemDefinitionId itemType, int amount );
-		bool TryRemove( ItemDefinitionId itemType, int amount );
+        bool TryAdd(ItemDefinitionId itemType, int amount);
+        bool TryRemove(ItemDefinitionId itemType, int amount);
 
-		bool TryAddInstance( ItemInstanceId instance );
-		bool TryRemoveInstance( ItemInstanceId instance );
-		bool ContainsInstance( ItemInstanceId instance );
-	}
+        bool TryAddInstance(ItemInstanceId instance);
+        bool TryRemoveInstance(ItemInstanceId instance);
+        bool ContainsInstance(ItemInstanceId instance);
+    }
 }

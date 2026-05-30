@@ -21,28 +21,28 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IPlayerDerivedStatService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDerivedStatChangedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "NewValue", typeof( float ), Order = 2 )]
-		[EventPayload( "OldValue", typeof( float ), Order = 3 )]
-		[EventPayload( "StatId", typeof( DerivedStatType ), Order = 4 )]
-		IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IPlayerDerivedStatService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDerivedStatChangedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("NewValue", typeof(float), Order = 2)]
+        [EventPayload("OldValue", typeof(float), Order = 3)]
+        [EventPayload("StatId", typeof(DerivedStatType), Order = 4)]
+        IGameEvent<PlayerDerivedStatChangedEventArgs> DerivedStatChanged { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		float GetValue( DerivedStatType type );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        float GetValue(DerivedStatType type);
 
-		/// <summary>
-		///
-		/// </summary>
-		void FlushDirty();
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        void FlushDirty();
+    }
 }

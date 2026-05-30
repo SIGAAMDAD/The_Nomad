@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	/// <summary>
-	/// Generic lifecycle state for any live runtime entity.
-	/// </summary>
-	public enum EntityLifecycleState : byte
-	{
-		None = 0,
+    /// <summary>
+    /// Generic lifecycle state for any live runtime entity.
+    /// </summary>
+    public enum EntityLifecycleState : byte
+    {
+        None = 0,
 
-		Created,
-		Spawned,
-		Active,
-		Inactive,
-		Hidden,
-		Destroyed,
-		Despawning,
-		Disposed
-	}
+        Created,
+        Spawned,
+        Active,
+        Inactive,
+        Hidden,
+        Destroyed,
+        Despawning,
+        Disposed
+    }
 }

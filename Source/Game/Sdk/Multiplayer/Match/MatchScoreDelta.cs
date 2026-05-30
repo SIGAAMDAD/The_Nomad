@@ -18,17 +18,17 @@ using Nomad.Game.Sdk.Multiplayer.Team;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public readonly struct MatchScoreDelta
-	{
-		public PeerId PlayerId { get; init; }
-		public PeerId? SourcePlayerId { get; init; }
+    public readonly struct MatchScoreDelta
+    {
+        public PeerId PlayerId { get; init; }
+        public PeerId? SourcePlayerId { get; init; }
 
-		public TeamId Team { get; init; }
-		public MatchScoreKind Kind { get; init; }
+        public TeamId Team { get; init; }
+        public MatchScoreKind Kind { get; init; }
 
-		public int Amount { get; init; }
+        public int Amount { get; init; }
 
-		public string? Reason { get; init; }
-		public uint ServerTick { get; init; }
-	}
+        public string? Reason { get; init; }
+        public uint ServerTick { get; init; }
+    }
 }

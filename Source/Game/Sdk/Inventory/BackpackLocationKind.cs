@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public enum BackpackLocationKind : byte
-	{
-		Checkpoint,
-		Wilderness,
-		Lost,
-		Equipped
-	}
+    public enum BackpackLocationKind : byte
+    {
+        Checkpoint,
+        Wilderness,
+        Lost,
+        Equipped
+    }
 }

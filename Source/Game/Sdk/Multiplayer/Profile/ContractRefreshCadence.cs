@@ -15,11 +15,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum ContractRefreshCadence : byte
-	{
-		None,
-		Daily,
-		Weekly,
-		Seasonal
-	}
+    public enum ContractRefreshCadence : byte
+    {
+        None,
+        Daily,
+        Weekly,
+        Seasonal
+    }
 }

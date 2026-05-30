@@ -15,12 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration.Gameplay
 {
-	public enum ContractPayoutScaling : byte
-	{
-		LateCapitalistSociety,
-		JustGiveMeMyMoney,
-		RichBoy,
+    public enum ContractPayoutScaling : byte
+    {
+        LateCapitalistSociety,
+        JustGiveMeMyMoney,
+        RichBoy,
 
-		Count
-	}
+        Count
+    }
 }

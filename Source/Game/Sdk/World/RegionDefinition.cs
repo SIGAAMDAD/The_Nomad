@@ -17,11 +17,11 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
 {
-	public sealed record RegionDefinition
-	{
-		public InternString Name { get; init; }
-		public InternString WikiId { get; init; }
-		public InternString JournalEntryDiscoveredId { get; init; }
-		public InternString JournalEntryUndiscoveredId { get; init; }
-	}
+    public sealed record RegionDefinition
+    {
+        public InternString Name { get; init; }
+        public InternString WikiId { get; init; }
+        public InternString JournalEntryDiscoveredId { get; init; }
+        public InternString JournalEntryUndiscoveredId { get; init; }
+    }
 }

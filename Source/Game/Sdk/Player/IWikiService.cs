@@ -20,38 +20,38 @@ using Nomad.Game.Sdk.Gameplay;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IWikiService
-	{
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		IReadOnlyList<WikiEntry> GetWikiEntries();
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IWikiService
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        IReadOnlyList<WikiEntry> GetWikiEntries();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="pageId"></param>
-		/// <returns></returns>
-		bool IsPageUnlocked( InternString pageId );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        bool IsPageUnlocked(InternString pageId);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="pageId"></param>
-		/// <returns></returns>
-		bool TryUnlockPage( InternString pageId );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        bool TryUnlockPage(InternString pageId);
 
-		/// <summary>
-		/// Attemps a retrieval of a wiki page.
-		/// </summary>
-		/// <param name="pageId"></param>
-		/// <param name="translatedName"></param>
-		/// <param name="translatedDescription"></param>
-		/// <returns></returns>
-		bool TryTranslatePage( InternString pageId, out string translatedName, out string translatedDescription );
-	}
+        /// <summary>
+        /// Attemps a retrieval of a wiki page.
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <param name="translatedName"></param>
+        /// <param name="translatedDescription"></param>
+        /// <returns></returns>
+        bool TryTranslatePage(InternString pageId, out string translatedName, out string translatedDescription);
+    }
 }

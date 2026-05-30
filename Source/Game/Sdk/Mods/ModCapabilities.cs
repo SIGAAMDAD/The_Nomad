@@ -17,19 +17,19 @@ using System;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	[Flags]
-	public enum ModCapabilities
-	{
-		None = 0,
+    [Flags]
+    public enum ModCapabilities
+    {
+        None = 0,
 
-		Items = 1 << 0,
-		Save = 1 << 1,
-		Events = 1 << 2,
-		Input = 1 << 3,
-		Commands = 1 << 4,
-		CVars = 1 << 5,
-		FilesRead = 1 << 6,
-		FilesWrite = 1 << 7,
-		Content = 1 << 8
-	}
+        Items = 1 << 0,
+        Save = 1 << 1,
+        Events = 1 << 2,
+        Input = 1 << 3,
+        Commands = 1 << 4,
+        CVars = 1 << 5,
+        FilesRead = 1 << 6,
+        FilesWrite = 1 << 7,
+        Content = 1 << 8
+    }
 }

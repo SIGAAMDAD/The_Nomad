@@ -20,30 +20,30 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public interface IWorldBootstrapper
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapFailureEventArgs" )]
-		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
-		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
-		[EventPayload( "Reason", typeof( WorldBootstrapFailureReason ), Order = 4 )]
-		[EventPayload( "Detail", typeof( string ), Order = 5 )]
-		IGameEvent<WorldBootstrapFailureEventArgs> BootstrapFailure { get; }
+    public interface IWorldBootstrapper
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapFailureEventArgs")]
+        [EventPayload("RequestId", typeof(Guid), Order = 1)]
+        [EventPayload("Mode", typeof(WorldBootstrapMode), Order = 2)]
+        [EventPayload("WorldId", typeof(string), Order = 3)]
+        [EventPayload("Reason", typeof(WorldBootstrapFailureReason), Order = 4)]
+        [EventPayload("Detail", typeof(string), Order = 5)]
+        IGameEvent<WorldBootstrapFailureEventArgs> BootstrapFailure { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapSucceededEventArgs" )]
-		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
-		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
-		[EventPayload( "WorldInstanceId", typeof( Guid ), Order = 4 )]
-		[EventPayload( "LobbyId", typeof( Guid? ), Order = 5 )]
-		IGameEvent<WorldBootstrapSucceededEventArgs> BootstrapSucceeded { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapSucceededEventArgs")]
+        [EventPayload("RequestId", typeof(Guid), Order = 1)]
+        [EventPayload("Mode", typeof(WorldBootstrapMode), Order = 2)]
+        [EventPayload("WorldId", typeof(string), Order = 3)]
+        [EventPayload("WorldInstanceId", typeof(Guid), Order = 4)]
+        [EventPayload("LobbyId", typeof(Guid?), Order = 5)]
+        IGameEvent<WorldBootstrapSucceededEventArgs> BootstrapSucceeded { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapRequestEventArgs" )]
-		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "Mode", typeof( WorldBootstrapMode ), Order = 2 )]
-		[EventPayload( "WorldId", typeof( string ), Order = 3 )]
-		[EventPayload( "Difficulty", typeof( DifficultyPreset ), Order = 4 )]
-		[EventPayload( "Lobbyid", typeof( Guid? ), Order = 5 )]
-		IGameEvent<WorldBootstrapRequestEventArgs> BootstrapRequest { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapRequestEventArgs")]
+        [EventPayload("RequestId", typeof(Guid), Order = 1)]
+        [EventPayload("Mode", typeof(WorldBootstrapMode), Order = 2)]
+        [EventPayload("WorldId", typeof(string), Order = 3)]
+        [EventPayload("Difficulty", typeof(DifficultyPreset), Order = 4)]
+        [EventPayload("Lobbyid", typeof(Guid?), Order = 5)]
+        IGameEvent<WorldBootstrapRequestEventArgs> BootstrapRequest { get; }
+    }
 }

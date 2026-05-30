@@ -17,18 +17,19 @@ using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public static class PlayerSpawnProfiles
-	{
-		public static readonly PlayerSpawnProfileDefinition NewGame = new() {
-			Id = "NewGame",
-			Health = new SpawnValueRule( SpawnValueMode.Full ),
-			Rage = new SpawnValueRule( SpawnValueMode.Full ),
-			Sanity = new SpawnValueRule( SpawnValueMode.PercentOfMax, 0.90f ),
-			MovementSpeed = new SpawnValueRule( SpawnValueMode.Full ),
-			DashHeat = new SpawnValueRule( SpawnValueMode.Zero ),
-			FirelinkCharges = new SpawnValueRule( SpawnValueMode.Absolute, 4 ),
-			ClearTransientCombatState = true,
-			ClearTemporaryStatusEffects = true
-		};
-	}
+    public static class PlayerSpawnProfiles
+    {
+        public static readonly PlayerSpawnProfileDefinition NewGame = new()
+        {
+            Id = "NewGame",
+            Health = new SpawnValueRule(SpawnValueMode.Full),
+            Rage = new SpawnValueRule(SpawnValueMode.Full),
+            Sanity = new SpawnValueRule(SpawnValueMode.PercentOfMax, 0.90f),
+            MovementSpeed = new SpawnValueRule(SpawnValueMode.Full),
+            DashHeat = new SpawnValueRule(SpawnValueMode.Zero),
+            FirelinkCharges = new SpawnValueRule(SpawnValueMode.Absolute, 4),
+            ClearTransientCombatState = true,
+            ClearTemporaryStatusEffects = true
+        };
+    }
 }

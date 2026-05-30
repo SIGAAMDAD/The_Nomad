@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public readonly struct SpawnValueRule
-	{
-		public SpawnValueMode Mode { get; }
-		public float Value { get; }
+    public readonly struct SpawnValueRule
+    {
+        public SpawnValueMode Mode { get; }
+        public float Value { get; }
 
-		public SpawnValueRule( SpawnValueMode mode, float value = 0.0f )
-		{
-			Mode = mode;
-			Value = value;
-		}
-	}
+        public SpawnValueRule(SpawnValueMode mode, float value = 0.0f)
+        {
+            Mode = mode;
+            Value = value;
+        }
+    }
 }

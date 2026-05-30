@@ -17,9 +17,9 @@ using System;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public interface IWorldHandle
-	{
-		Guid Id { get; }
-		string WorldId { get; }
-	}
+    public interface IWorldHandle
+    {
+        Guid Id { get; }
+        string WorldId { get; }
+    }
 }

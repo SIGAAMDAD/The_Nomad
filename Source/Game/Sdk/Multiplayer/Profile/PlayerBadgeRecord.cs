@@ -17,18 +17,18 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public sealed record PlayerBadgeRecord
-	{
-		public string BadgeId { get; init; }
+    public sealed record PlayerBadgeRecord
+    {
+        public string BadgeId { get; init; }
 
-		public DateTimeOffset UnlockedAtUtc { get; init; }
+        public DateTimeOffset UnlockedAtUtc { get; init; }
 
-		/// <summary>
-		/// Optional value for badges with visible progress or ranking.
-		/// Example: 100/500 bounty claims.
-		/// </summary>
-		public ulong ProgressValue { get; init; }
+        /// <summary>
+        /// Optional value for badges with visible progress or ranking.
+        /// Example: 100/500 bounty claims.
+        /// </summary>
+        public ulong ProgressValue { get; init; }
 
-		public bool IsPinnedToProfile { get; init; }
-	}
+        public bool IsPinnedToProfile { get; init; }
+    }
 }

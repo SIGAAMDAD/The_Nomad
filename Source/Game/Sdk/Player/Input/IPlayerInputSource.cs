@@ -19,44 +19,44 @@ using Nomad.Game.Sdk.Player;
 
 namespace Nomad.Game.Sdk.Player.Input
 {
-	/*
+    /*
 	===================================================================================
 
 	IPlayerInputSource
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Supplies normalized player input to gameplay code.
-	///
-	/// Local input sources read keyboard/controller events.
-	/// Remote input sources are fed by network RPCs.
-	/// Player gameplay code should not care which one is used.
-	/// </summary>
+    /// <summary>
+    /// Supplies normalized player input to gameplay code.
+    ///
+    /// Local input sources read keyboard/controller events.
+    /// Remote input sources are fed by network RPCs.
+    /// Player gameplay code should not care which one is used.
+    /// </summary>
 
-	public interface IPlayerInputSource : IDisposable
-	{
-		/// <summary>
-		///
-		/// </summary>
-		PlayerId PlayerId { get; }
+    public interface IPlayerInputSource : IDisposable
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        PlayerId PlayerId { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		bool IsEnabled { get; }
+        /// <summary>
+        ///
+        /// </summary>
+        bool IsEnabled { get; }
 
-		/// <summary>
-		/// The most recently produced input frame.
-		/// </summary>
-		PlayerInputFrame Current { get; }
+        /// <summary>
+        /// The most recently produced input frame.
+        /// </summary>
+        PlayerInputFrame Current { get; }
 
-		/// <summary>
-		/// Gets the input frame for a game/network tick.
-		/// Repeated calls with the same tick should return the same frame.
-		/// </summary>
-		PlayerInputFrame ReadFrame( uint tick );
+        /// <summary>
+        /// Gets the input frame for a game/network tick.
+        /// Repeated calls with the same tick should return the same frame.
+        /// </summary>
+        PlayerInputFrame ReadFrame(uint tick);
 
-		void Reset();
-	}
+        void Reset();
+    }
 }

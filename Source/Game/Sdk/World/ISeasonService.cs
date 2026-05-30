@@ -19,15 +19,15 @@ using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface ISeasonService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ), Order = 1 )]
-		[EventPayload( "Previous", typeof( SeasonDefinitionId ), Order = 2 )]
-		[EventPayload( "Current", typeof( SeasonDefinitionId ), Order = 3 )]
-		IGameEvent<SeasonChangedEventArgs> SeasonChanged { get; }
-	}
+    /// <summary>
+    ///
+    /// </summary>
+    public interface ISeasonService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Time", typeof(WorldTime), Order = 1)]
+        [EventPayload("Previous", typeof(SeasonDefinitionId), Order = 2)]
+        [EventPayload("Current", typeof(SeasonDefinitionId), Order = 3)]
+        IGameEvent<SeasonChangedEventArgs> SeasonChanged { get; }
+    }
 }

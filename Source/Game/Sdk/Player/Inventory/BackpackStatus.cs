@@ -15,27 +15,27 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	/// <summary>
-	/// The status of the player's backpack.
-	/// </summary>
-	public enum BackpackStatus : byte
-	{
-		/// <summary>
-		/// The backpack is currently equipped by the player.
-		/// </summary>
-		Equipped,
+    /// <summary>
+    /// The status of the player's backpack.
+    /// </summary>
+    public enum BackpackStatus : byte
+    {
+        /// <summary>
+        /// The backpack is currently equipped by the player.
+        /// </summary>
+        Equipped,
 
-		/// <summary>
-		/// The backpack has been unequipped and stored at a meliora guarunteeing its safety.
-		/// </summary>
-		UnequippedMeliora,
+        /// <summary>
+        /// The backpack has been unequipped and stored at a meliora guarunteeing its safety.
+        /// </summary>
+        UnequippedMeliora,
 
-		/// <summary>
-		/// The backpack has been unequipped and placed at a specific point in the world, but its fair game to anyone to steal from.
-		/// </summary>
-		UnequippedFloor,
+        /// <summary>
+        /// The backpack has been unequipped and placed at a specific point in the world, but its fair game to anyone to steal from.
+        /// </summary>
+        UnequippedFloor,
 
-		Min = Equipped,
-		Max = UnequippedFloor
-	}
+        Min = Equipped,
+        Max = UnequippedFloor
+    }
 }

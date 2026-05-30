@@ -15,34 +15,34 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	/*
+    /*
 	===================================================================================
 
 	IOwnedEntity
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Optional capability for entities owned by another entity.
-	///
-	/// Examples:
-	/// - item owned by player
-	/// - weapon owned by NPC
-	/// - projectile owned by shooter
-	/// - container contents owned by container
-	/// </summary>
+    /// <summary>
+    /// Optional capability for entities owned by another entity.
+    ///
+    /// Examples:
+    /// - item owned by player
+    /// - weapon owned by NPC
+    /// - projectile owned by shooter
+    /// - container contents owned by container
+    /// </summary>
 
-	public interface IOwnedEntity : IEntityBase
-	{
-		EntityId OwnerEntityId { get; }
+    public interface IOwnedEntity : IEntityBase
+    {
+        EntityId OwnerEntityId { get; }
 
-		EntityOwnershipKind OwnershipKind { get; }
+        EntityOwnershipKind OwnershipKind { get; }
 
-		uint OwnershipRevision { get; }
+        uint OwnershipRevision { get; }
 
-		bool HasOwner { get; }
+        bool HasOwner { get; }
 
-		void SetOwner( EntityId ownerEntityId, EntityOwnershipKind ownershipKind );
-		void ClearOwner();
-	}
+        void SetOwner(EntityId ownerEntityId, EntityOwnershipKind ownershipKind);
+        void ClearOwner();
+    }
 }

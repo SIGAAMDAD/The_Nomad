@@ -19,14 +19,14 @@ using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IInteractionMenuView : IHudComponentView
-	{
-		event Action<int> OptionPressed;
+    public interface IInteractionMenuView : IHudComponentView
+    {
+        event Action<int> OptionPressed;
 
-		void ShowMenu( IReadOnlyList<InteractionMenuOption> options );
-		void HideMenu();
+        void ShowMenu(IReadOnlyList<InteractionMenuOption> options);
+        void HideMenu();
 
-		void ShowPrompt( string prompt );
-		void HidePrompt();
-	}
+        void ShowPrompt(string prompt);
+        void HidePrompt();
+    }
 }

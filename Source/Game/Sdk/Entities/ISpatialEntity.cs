@@ -17,22 +17,22 @@ using System.Numerics;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public interface ISpatialEntity : IEntityBase
-	{
-		Vector2 Position { get; }
-		float RotationRadians { get; }
-		Vector2 Scale { get; }
-		Vector2 Forward { get; }
+    public interface ISpatialEntity : IEntityBase
+    {
+        Vector2 Position { get; }
+        float RotationRadians { get; }
+        Vector2 Scale { get; }
+        Vector2 Forward { get; }
 
-		uint SpatialRevision { get; }
+        uint SpatialRevision { get; }
 
-		void SetPosition( Vector2 position );
-		void SetRotation( float radians );
-		void SetScale( Vector2 scale );
+        void SetPosition(Vector2 position);
+        void SetRotation(float radians);
+        void SetScale(Vector2 scale);
 
-		void SetTransform( Vector2 position, float rotationRadians, Vector2 scale );
+        void SetTransform(Vector2 position, float rotationRadians, Vector2 scale);
 
-		bool ContainsPoint( Vector2 point );
-		bool IntersectsBounds( in EntityBounds bounds );
-	}
+        bool ContainsPoint(Vector2 point);
+        bool IntersectsBounds(in EntityBounds bounds);
+    }
 }

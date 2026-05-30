@@ -15,25 +15,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public enum StatusEffectModifierTarget : ushort
-	{
-		None = 0,
+    public enum StatusEffectModifierTarget : ushort
+    {
+        None = 0,
 
-		MoveSpeed,
-		DashCooldown,
-		DashHeatGain,
-		DamageTaken,
-		DamageDealt,
-		FireRate,
-		ReloadSpeed,
-		AimSpread,
-		StanceDamageTaken,
-		RageGain,
-		RageDrain,
-		SanityDrain,
-		SanityRecovery,
-		MaxHealth,
-		MaxRage,
-		MaxMana
-	}
+        MoveSpeed,
+        DashCooldown,
+        DashHeatGain,
+        DamageTaken,
+        DamageDealt,
+        FireRate,
+        ReloadSpeed,
+        AimSpread,
+        StanceDamageTaken,
+        RageGain,
+        RageDrain,
+        SanityDrain,
+        SanityRecovery,
+        MaxHealth,
+        MaxRage,
+        MaxMana
+    }
 }

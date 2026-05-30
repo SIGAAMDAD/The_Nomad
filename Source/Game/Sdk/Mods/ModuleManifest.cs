@@ -18,27 +18,27 @@ using System.Text.Json.Serialization;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModuleManifest
-	{
-		[JsonIgnore]
-		public string DirectoryPath { get; set; } = string.Empty;
+    public sealed record ModuleManifest
+    {
+        [JsonIgnore]
+        public string DirectoryPath { get; set; } = string.Empty;
 
-		public ModCapabilities Capabilities { get; init; }
+        public ModCapabilities Capabilities { get; init; }
 
-		public string Id { get; init; }
-		public string Name { get; init; }
-		public string Version { get; init; }
-		public string ApiVersion { get; init; }
-		public string Author { get; init; }
+        public string Id { get; init; }
+        public string Name { get; init; }
+        public string Version { get; init; }
+        public string ApiVersion { get; init; }
+        public string Author { get; init; }
 
-		public string? Pck { get; init; }
-		public int LoadPriority { get; init; } = 0;
-		public bool Official { get; init; } = false;
+        public string? Pck { get; init; }
+        public int LoadPriority { get; init; } = 0;
+        public bool Official { get; init; } = false;
 
-		public string Assembly { get; init; }
-		public string EntryType { get; init; }
+        public string Assembly { get; init; }
+        public string EntryType { get; init; }
 
-		public List<ModuleDependency> Dependencies { get; init; } = new();
-		public List<string> Incompatibilities { get; init; } = new();
-	}
+        public List<ModuleDependency> Dependencies { get; init; } = new();
+        public List<string> Incompatibilities { get; init; } = new();
+    }
 }

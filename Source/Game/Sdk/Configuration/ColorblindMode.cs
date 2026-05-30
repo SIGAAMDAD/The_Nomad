@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	public enum ColorblindMode : uint
-	{
-		None,
-		Protanopia,
-		Deutanopia,
-		Trianopia,
-		Monochromacy,
+    public enum ColorblindMode : uint
+    {
+        None,
+        Protanopia,
+        Deutanopia,
+        Trianopia,
+        Monochromacy,
 
-		Count,
+        Count,
 
-		Default = None
-	}
+        Default = None
+    }
 }

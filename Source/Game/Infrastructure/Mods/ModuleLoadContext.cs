@@ -14,9 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using Nomad.Game.Sdk.Mods;
+using Nomad.Modding;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
@@ -76,13 +78,77 @@ namespace Nomad.Game.Infrastructure.Mods
 			}
 
 			if ( IsSharedAssembly( name ) ) {
-				return null;
+				return LoadSharedAssembly( name );
 			}
 
 			string? path = _resolver.ResolveAssemblyToPath( assemblyName );
 
 			if ( path != null ) {
 				return LoadFromAssemblyPath( path );
+			}
+
+			try {
+				return Assembly.Load( new AssemblyName( name ) );
+			} catch ( FileNotFoundException ) {
+				return null;
+			} catch ( FileLoadException ) {
+				return null;
+			}
+		}
+
+		/*
+		===============
+		LoadSharedAssembly
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		private static Assembly? LoadSharedAssembly( string name )
+		{
+			Assembly? knownAssembly = GetKnownSharedAssembly( name );
+			if ( knownAssembly != null ) {
+				return knownAssembly;
+			}
+
+			foreach ( Assembly assembly in AppDomain.CurrentDomain.GetAssemblies() ) {
+				AssemblyName assemblyName = assembly.GetName();
+				if ( string.Equals( assemblyName.Name, name, StringComparison.Ordinal ) ) {
+					return assembly;
+				}
+			}
+
+			try {
+				return Assembly.Load( new AssemblyName( name ) );
+			} catch ( FileNotFoundException ) {
+				return null;
+			} catch ( FileLoadException ) {
+				return null;
+			}
+		}
+
+		/*
+		===============
+		GetKnownSharedAssembly
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		private static Assembly? GetKnownSharedAssembly( string name )
+		{
+			Assembly gameSdkAssembly = typeof( INomadModule ).Assembly;
+			if ( string.Equals( gameSdkAssembly.GetName().Name, name, StringComparison.Ordinal ) ) {
+				return gameSdkAssembly;
+			}
+
+			Assembly moddingAssembly = typeof( IModLogger ).Assembly;
+			if ( string.Equals( moddingAssembly.GetName().Name, name, StringComparison.Ordinal ) ) {
+				return moddingAssembly;
 			}
 
 			return null;

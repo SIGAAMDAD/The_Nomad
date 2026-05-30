@@ -36,7 +36,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 	/// </summary>
 
 	internal abstract class DataDefinitionRegistry<TKey, TData>
-		where TKey : struct, IEquatable<TKey>
+		where TKey : struct
 		where TData : class
 	{
 		protected abstract Func<string, TKey> KeyFactory { get; }

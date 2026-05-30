@@ -17,15 +17,15 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public sealed record ArmAttachmentDefinition
-	{
-		public ItemDefinition Definition { get; init; }
+    public sealed record ArmAttachmentDefinition
+    {
+        public ItemDefinition Definition { get; init; }
 
-		public string IconPath { get; init; }
+        public string IconPath { get; init; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public float UsageCooldown { get; init; }
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        public float UsageCooldown { get; init; }
+    }
 }

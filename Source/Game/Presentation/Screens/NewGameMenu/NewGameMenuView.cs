@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Godot;
 using Nomad.Game.Presentation.Screens.NewGameMenu;
 
@@ -31,14 +32,41 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 
 	public partial class NewGameMenuView : Control
 	{
+		public event Action OptionsBack;
+		public event Action CustomDifficultyBack;
+
+		public event Action StartHardMode;
+		public event Action StartStandardMode;
+		public event Action StartCustomDifficulty;
+
 		private VBoxContainer _optionsContainer;
 		private Control _customDifficultyContainer;
 
+		private NewGameMenuPresenter _presenter;
+
+		/*
+		===============
+		SetOptionsContainerVisibility
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="visible"></param>
 		public void SetOptionsContainerVisibility( bool visible )
 		{
 			_optionsContainer.Visible = visible;
 		}
 
+		/*
+		===============
+		SetCustomDifficultyContainerVisibility
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="visible"></param>
 		public void SetCustomDifficultyContainerVisibility( bool visible )
 		{
 			_customDifficultyContainer.Visible = visible;
@@ -58,6 +86,29 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 
 			_optionsContainer = GetNode<VBoxContainer>( "OptionsContainer" );
 			_customDifficultyContainer = GetNode<Control>( "CustomDifficultyContainer" );
+
+			_optionsContainer.GetNode<Button>( "StandardModeButton" ).Pressed += () => StartStandardMode?.Invoke();
+			_optionsContainer.GetNode<Button>( "HardModeButton" ).Pressed += () => StartHardMode?.Invoke();
+			_optionsContainer.GetNode<Button>( "BackButton" ).Pressed += () => OptionsBack?.Invoke();
+
+			_customDifficultyContainer.GetNode<Button>( "VBoxContainer/CustomButtonContainer/BackButton" ).Pressed += () => CustomDifficultyBack?.Invoke();
+
+			_presenter = ScreenPresenterFactory.CreateNewGameMenuPresenter( this );
+		}
+
+		/*
+		===============
+		_ExitTree
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_presenter.Dispose();
 		}
 	};
 };

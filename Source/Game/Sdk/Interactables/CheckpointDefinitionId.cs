@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Diagnostics.CodeAnalysis;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Interactables
@@ -33,9 +34,39 @@ namespace Nomad.Game.Sdk.Interactables
             Value = value;
         }
 
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is CheckpointDefinitionId other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
         public bool Equals(CheckpointDefinitionId other)
         {
-            return Value == other.Value;
+            return other.Value == Value;
+        }
+
+        public static implicit operator InternString(CheckpointDefinitionId value)
+        {
+            return value.Value;
+        }
+
+        public static bool operator ==(CheckpointDefinitionId left, CheckpointDefinitionId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CheckpointDefinitionId left, CheckpointDefinitionId right)
+        {
+            return !left.Equals(right);
         }
     }
 }

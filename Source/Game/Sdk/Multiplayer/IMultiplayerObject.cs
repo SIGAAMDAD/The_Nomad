@@ -22,147 +22,147 @@ using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public interface IMultiplayerObject
-	{
-		/// <summary>
-		/// Is our current session active?
-		/// </summary>
-		bool IsSessionActive { get; }
+    public interface IMultiplayerObject
+    {
+        /// <summary>
+        /// Is our current session active?
+        /// </summary>
+        bool IsSessionActive { get; }
 
-		/// <summary>
-		/// Are we the host of this session?
-		/// </summary>
-		bool IsHost { get; }
+        /// <summary>
+        /// Are we the host of this session?
+        /// </summary>
+        bool IsHost { get; }
 
-		/// <summary>
-		/// Are we a client in this session?
-		/// </summary>
-		bool IsClient { get; }
+        /// <summary>
+        /// Are we a client in this session?
+        /// </summary>
+        bool IsClient { get; }
 
-		/// <summary>
-		/// Are we replicating the session from the host as a client?
-		/// </summary>
-		bool IsReplicating { get; }
+        /// <summary>
+        /// Are we replicating the session from the host as a client?
+        /// </summary>
+        bool IsReplicating { get; }
 
-		/// <summary>
-		/// Has this object been disposed of yet?
-		/// </summary>
-		bool IsDisposed { get; }
+        /// <summary>
+        /// Has this object been disposed of yet?
+        /// </summary>
+        bool IsDisposed { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		uint Revision { get; }
+        /// <summary>
+        ///
+        /// </summary>
+        uint Revision { get; }
 
-		/// <summary>
-		/// The currently active session belonging to this multiplayer object.
-		/// </summary>
-		NetworkSessionInfo? CurrentSession { get; }
+        /// <summary>
+        /// The currently active session belonging to this multiplayer object.
+        /// </summary>
+        NetworkSessionInfo? CurrentSession { get; }
 
-		/// <summary>
-		/// The <see cref="PeerId"/> of this machine.
-		/// </summary>
-		PeerId LocalPeerId { get; }
+        /// <summary>
+        /// The <see cref="PeerId"/> of this machine.
+        /// </summary>
+        PeerId LocalPeerId { get; }
 
-		/// <summary>
-		/// The <see cref="PeerId"/> of the host machine.
-		/// </summary>
-		PeerId HostPeerId { get; }
+        /// <summary>
+        /// The <see cref="PeerId"/> of the host machine.
+        /// </summary>
+        PeerId HostPeerId { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TArgs"></typeparam>
-		/// <param name="name"></param>
-		/// <param name="nameSpace"></param>
-		/// <returns></returns>
-		IGameEvent<TArgs> GetEvent<TArgs>( string name, string nameSpace )
-			where TArgs : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="nameSpace"></param>
+        /// <returns></returns>
+        IGameEvent<TArgs> GetEvent<TArgs>(string name, string nameSpace)
+            where TArgs : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TArgs"></typeparam>
-		/// <param name="id"></param>
-		/// <param name="gameEvent"></param>
-		void RegisterNetworkEvent<TArgs>( MessageIds id, IGameEvent<TArgs> gameEvent )
-			where TArgs : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="gameEvent"></param>
+        void RegisterNetworkEvent<TArgs>(MessageIds id, IGameEvent<TArgs> gameEvent)
+            where TArgs : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TRpc"></typeparam>
-		/// <param name="id"></param>
-		/// <param name="handler"></param>
-		void RegisterRpc<TRpc>( MessageIds id, NetworkRpcHandler<TRpc> handler )
-			where TRpc : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TRpc"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="handler"></param>
+        void RegisterRpc<TRpc>(MessageIds id, NetworkRpcHandler<TRpc> handler)
+            where TRpc : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TArgs"></typeparam>
-		/// <param name="gameEvent"></param>
-		/// <param name="callback"></param>
-		void Subscribe<TArgs>( IGameEvent<TArgs> gameEvent, EventCallback<TArgs> callback )
-			where TArgs : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="gameEvent"></param>
+        /// <param name="callback"></param>
+        void Subscribe<TArgs>(IGameEvent<TArgs> gameEvent, EventCallback<TArgs> callback)
+            where TArgs : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TArgs"></typeparam>
-		/// <param name="gameEvent"></param>
-		/// <param name="payload"></param>
-		/// <param name="mode"></param>
-		/// <returns></returns>
-		bool PublishHostEvent<TArgs>( IGameEvent<TArgs> gameEvent, in TArgs payload, NetworkSendMode mode = NetworkSendMode.Reliable )
-			where TArgs : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="gameEvent"></param>
+        /// <param name="payload"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        bool PublishHostEvent<TArgs>(IGameEvent<TArgs> gameEvent, in TArgs payload, NetworkSendMode mode = NetworkSendMode.Reliable)
+            where TArgs : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TArgs"></typeparam>
-		/// <param name="gameEvent"></param>
-		/// <param name="payload"></param>
-		/// <param name="mode"></param>
-		/// <returns></returns>
-		bool ReplicateEventToRemotePeers<TArgs>( IGameEvent<TArgs> gameEvent, in TArgs payload, NetworkSendMode mode = NetworkSendMode.Reliable )
-			where TArgs : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="gameEvent"></param>
+        /// <param name="payload"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        bool ReplicateEventToRemotePeers<TArgs>(IGameEvent<TArgs> gameEvent, in TArgs payload, NetworkSendMode mode = NetworkSendMode.Reliable)
+            where TArgs : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TRpc"></typeparam>
-		/// <param name="rpc"></param>
-		/// <param name="mode"></param>
-		/// <returns></returns>
-		bool SendRpcToHost<TRpc>( in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable )
-			where TRpc : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TRpc"></typeparam>
+        /// <param name="rpc"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        bool SendRpcToHost<TRpc>(in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable)
+            where TRpc : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TRpc"></typeparam>
-		/// <param name="peerId"></param>
-		/// <param name="rpc"></param>
-		/// <param name="mode"></param>
-		/// <returns></returns>
-		bool SendRpcToPeer<TRpc>( PeerId peerId, in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable )
-			where TRpc : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TRpc"></typeparam>
+        /// <param name="peerId"></param>
+        /// <param name="rpc"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        bool SendRpcToPeer<TRpc>(PeerId peerId, in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable)
+            where TRpc : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <typeparam name="TRpc"></typeparam>
-		/// <param name="rpc"></param>
-		/// <param name="mode"></param>
-		/// <returns></returns>
-		bool BroadcastRpc<TRpc>( in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable )
-			where TRpc : struct;
+        /// <summary>
+        ///
+        /// </summary>
+        /// <typeparam name="TRpc"></typeparam>
+        /// <param name="rpc"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        bool BroadcastRpc<TRpc>(in TRpc rpc, NetworkSendMode mode = NetworkSendMode.Reliable)
+            where TRpc : struct;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="cleanup"></param>
-		void AddCleanup( Action cleanup );
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="cleanup"></param>
+        void AddCleanup(Action cleanup);
+    }
 }

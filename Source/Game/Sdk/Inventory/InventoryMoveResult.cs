@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public enum InventoryMoveResult : byte
-	{
-		Success,
-		InvalidAmount,
-		SourceMissing,
-		DestinationRejected,
-		DestinationFull,
-		DestinationOverweight
-	}
+    public enum InventoryMoveResult : byte
+    {
+        Success,
+        InvalidAmount,
+        SourceMissing,
+        DestinationRejected,
+        DestinationFull,
+        DestinationOverweight
+    }
 }

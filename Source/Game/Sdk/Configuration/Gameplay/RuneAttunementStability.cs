@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration.Gameplay
 {
-	public enum RuneAttunementStability : byte
-	{
-		Guaranteed,
-		Reliable,
-		Risky,
-		Unstable,
+    public enum RuneAttunementStability : byte
+    {
+        Guaranteed,
+        Reliable,
+        Risky,
+        Unstable,
 
-		Count
-	}
+        Count
+    }
 }

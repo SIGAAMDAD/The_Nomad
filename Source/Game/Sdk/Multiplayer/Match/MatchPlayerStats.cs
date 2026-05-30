@@ -17,16 +17,16 @@ using Nomad.Core.OnlineServices;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public sealed record MatchPlayerStats
-	{
-		public PeerId PlayerId { get; init; }
+    public sealed record MatchPlayerStats
+    {
+        public PeerId PlayerId { get; init; }
 
-		public uint Kills { get; init; }
-		public uint Deaths { get; init; }
+        public uint Kills { get; init; }
+        public uint Deaths { get; init; }
 
-		public uint HillTimeSeconds { get; init; }
+        public uint HillTimeSeconds { get; init; }
 
-		public uint FlagCaptures { get; init; }
-		public uint FlagReturns { get; init; }
-	}
+        public uint FlagCaptures { get; init; }
+        public uint FlagReturns { get; init; }
+    }
 }

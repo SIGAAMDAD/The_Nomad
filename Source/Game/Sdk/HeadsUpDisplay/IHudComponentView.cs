@@ -17,16 +17,16 @@ using System.Numerics;
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IHudComponentView
-	{
-		bool Visible { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IHudComponentView
+    {
+        bool Visible { get; }
 
-		void SetColor( Vector4 color );
+        void SetColor(Vector4 color);
 
-		void Show();
-		void Hide();
-	}
+        void Show();
+        void Hide();
+    }
 }

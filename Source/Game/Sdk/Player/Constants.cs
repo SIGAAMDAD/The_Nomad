@@ -17,16 +17,16 @@ using System;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public static class Constants
-	{
-		public const float MOVEMENT_ACCELERATION = 800.0f;
-		public const float MOVEMENT_FRICTION = 1000.0f;
-		public const float MOVEMENT_MAX_SPEED = 440.0f;
+    public static class Constants
+    {
+        public const float MOVEMENT_ACCELERATION = 800.0f;
+        public const float MOVEMENT_FRICTION = 1000.0f;
+        public const float MOVEMENT_MAX_SPEED = 440.0f;
 
-		public const float SLIDE_DURATION = 1.0f;
+        public const float SLIDE_DURATION = 1.0f;
 
-		public const int MAX_HOT_SLOTS = 6;
+        public const int MAX_HOT_SLOTS = 6;
 
-		public static readonly Guid LOCAL_GUID = Guid.NewGuid();
-	}
+        public static readonly Guid LOCAL_GUID = Guid.NewGuid();
+    }
 }

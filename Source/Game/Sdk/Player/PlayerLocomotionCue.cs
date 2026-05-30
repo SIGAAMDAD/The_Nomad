@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum PlayerLocomotionCue : byte
-	{
-		None = 0,
+    /// <summary>
+    ///
+    /// </summary>
+    public enum PlayerLocomotionCue : byte
+    {
+        None = 0,
 
-		HardStart,
-		HardStop,
-		Reverse,
-		SharpTurn
-	}
+        HardStart,
+        HardStop,
+        Reverse,
+        SharpTurn
+    }
 }

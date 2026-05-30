@@ -11,6 +11,8 @@
     <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
     <BuildInParallel>true</BuildInParallel>
 
+    <Version>0.1.0-alpha</Version>
+
     <!-- Performance -->
     <TieredCompilation>true</TieredCompilation>
     <Deterministic>true</Deterministic>

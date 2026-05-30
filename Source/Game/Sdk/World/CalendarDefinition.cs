@@ -17,11 +17,11 @@ using System.Collections.Generic;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public sealed record CalendarDefinition
-	{
-		public IReadOnlyList<MonthDefinition> Months { get; init; }
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed record CalendarDefinition
+    {
+        public IReadOnlyList<MonthDefinition> Months { get; init; }
+    }
 }

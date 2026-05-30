@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Modding;
 using Nomad.Modding.CVars;
 using Nomad.Modding.Events;
@@ -20,16 +21,21 @@ using Nomad.Modding.FileSystem;
 
 namespace Nomad.Game.Sdk.Mods
 {
+    /// <summary>
+    ///
+    /// </summary>
 	public interface IModuleContext
-	{
-		string ModuleId { get; }
-		ModuleInfo Module { get; }
+    {
+        string ModuleId { get; }
+        ModuleInfo Module { get; }
 
-		string RuntimeApiVersion { get; }
+        string RuntimeApiVersion { get; }
 
-		IModEventRegistry Events { get; }
-		IModLogger Logger { get; }
-		IModFileSystem FileSystem { get; }
-		IModCVarSystem CVarSystem { get; }
-	}
+        IWorldContentCache ContentCache { get; }
+        INomadBehaviorRegistry Behaviors { get; }
+        IModEventRegistry Events { get; }
+        IModLogger Logger { get; }
+        IModFileSystem FileSystem { get; }
+        IModCVarSystem CVarSystem { get; }
+    }
 }

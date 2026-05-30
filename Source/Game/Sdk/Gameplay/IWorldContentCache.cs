@@ -18,8 +18,8 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public interface IWorldContentCache : IDisposable
-	{
-		IItemCatalog Items { get; }
-	}
+    public interface IWorldContentCache : IDisposable
+    {
+        IItemCatalog Items { get; }
+    }
 }

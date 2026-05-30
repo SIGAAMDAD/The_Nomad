@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile.Badges
 {
-	public enum BadgeCategory : byte
-	{
-		Combat,
-		Faction,
-		Contract,
-		Duel,
-		BountyHunt,
-		Extraction,
-		Support,
-		Style,
-		Infamy
-	}
+    public enum BadgeCategory : byte
+    {
+        Combat,
+        Faction,
+        Contract,
+        Duel,
+        BountyHunt,
+        Extraction,
+        Support,
+        Style,
+        Infamy
+    }
 }

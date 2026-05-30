@@ -15,8 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Hazards
 {
-	public sealed record HazardDefinition
-	{
-		public HazardDefinitionId Id { get; init; }
-	}
+    public sealed record HazardDefinition
+    {
+        public HazardDefinitionId Id { get; init; }
+    }
 }

@@ -15,32 +15,32 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.State
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum PlayerStateId : sbyte
-	{
-		/// <summary>
-		/// Not moving, idling.
-		/// </summary>
-		Idle,
+    /// <summary>
+    ///
+    /// </summary>
+    public enum PlayerStateId : sbyte
+    {
+        /// <summary>
+        /// Not moving, idling.
+        /// </summary>
+        Idle,
 
-		/// <summary>
-		/// Can be running, dashing, or sliding.
-		/// </summary>
-		Moving,
+        /// <summary>
+        /// Can be running, dashing, or sliding.
+        /// </summary>
+        Moving,
 
-		/// <summary>
-		/// Duh.
-		/// </summary>
-		Dead,
+        /// <summary>
+        /// Duh.
+        /// </summary>
+        Dead,
 
-		/// <summary>
-		/// Currently resting at a checkpoint.
-		/// </summary>
-		RestingAtCheckpoint,
+        /// <summary>
+        /// Currently resting at a checkpoint.
+        /// </summary>
+        RestingAtCheckpoint,
 
-		Min = Idle,
-		Max = RestingAtCheckpoint
-	}
+        Min = Idle,
+        Max = RestingAtCheckpoint
+    }
 }

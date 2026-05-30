@@ -17,15 +17,15 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
 {
-	public readonly struct WeatherWeight
-	{
-		public InternString Id { get; }
-		public float Weight { get; }
+    public readonly struct WeatherWeight
+    {
+        public InternString Id { get; }
+        public float Weight { get; }
 
-		public WeatherWeight( InternString id, float weight )
-		{
-			Id = id;
-			Weight = weight;
-		}
-	}
+        public WeatherWeight(InternString id, float weight)
+        {
+            Id = id;
+            Weight = weight;
+        }
+    }
 }

@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Nomad.Game.Sdk.Items
 {
@@ -30,14 +31,39 @@ namespace Nomad.Game.Sdk.Items
             Value = value;
         }
 
-        public bool Equals(ItemInstanceId other)
+        public override bool Equals([NotNullWhen(true)] object? obj)
         {
-            return Value == other.Value;
+            return obj is ItemInstanceId other && Equals(other);
         }
 
-        public static implicit operator Guid(ItemInstanceId id)
+        public override int GetHashCode()
         {
-            return id.Value;
+            return Value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public bool Equals(ItemInstanceId other)
+        {
+            return other.Value == Value;
+        }
+
+        public static implicit operator Guid(ItemInstanceId value)
+        {
+            return value.Value;
+        }
+
+        public static bool operator ==(ItemInstanceId left, ItemInstanceId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ItemInstanceId left, ItemInstanceId right)
+        {
+            return !left.Equals(right);
         }
     }
 }

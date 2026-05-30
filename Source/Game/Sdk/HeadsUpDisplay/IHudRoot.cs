@@ -18,10 +18,10 @@ using Nomad.Game.Sdk.Configuration;
 
 namespace Nomad.Game.Sdk.HeadsUpDisplay
 {
-	public interface IHudRoot : IDisposable
-	{
-		HUDPreset Preset { get; }
+    public interface IHudRoot : IDisposable
+    {
+        HUDPreset Preset { get; }
 
-		void Render( float delta );
-	}
+        void Render(float delta);
+    }
 }

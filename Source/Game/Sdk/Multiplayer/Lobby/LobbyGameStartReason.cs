@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Lobby
 {
-	public enum LobbyGameStartReason : byte
-	{
-		None = 0,
-		HostStarted,
-		AllPlayersReady,
-		VotePassed,
+    public enum LobbyGameStartReason : byte
+    {
+        None = 0,
+        HostStarted,
+        AllPlayersReady,
+        VotePassed,
 
-		Count
-	}
+        Count
+    }
 }

@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public enum StatusEffectModifierOperation : byte
-	{
-		Add,
-		Multiply,
-		Override
-	}
+    public enum StatusEffectModifierOperation : byte
+    {
+        Add,
+        Multiply,
+        Override
+    }
 }

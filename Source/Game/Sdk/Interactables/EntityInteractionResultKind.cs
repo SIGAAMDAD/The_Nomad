@@ -15,29 +15,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	public enum EntityInteractionResultKind : byte
-	{
-		None = 0,
+    public enum EntityInteractionResultKind : byte
+    {
+        None = 0,
 
-		Success,
-		Failed,
+        Success,
+        Failed,
 
-		InvalidActor,
-		InvalidTarget,
-		InvalidTool,
+        InvalidActor,
+        InvalidTarget,
+        InvalidTool,
 
-		OutOfRange,
-		NoLineOfSight,
+        OutOfRange,
+        NoLineOfSight,
 
-		Locked,
-		Disabled,
-		AlreadyUsed,
-		WrongKind,
-		MissingRequirement,
+        Locked,
+        Disabled,
+        AlreadyUsed,
+        WrongKind,
+        MissingRequirement,
 
-		InventoryFull,
-		NoUsesRemaining,
+        InventoryFull,
+        NoUsesRemaining,
 
-		PreviewOnly
-	}
+        PreviewOnly
+    }
 }

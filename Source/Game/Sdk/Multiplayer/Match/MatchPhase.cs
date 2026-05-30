@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	/// <summary>
-	///
-	/// </summary>
-	public enum MatchPhase : byte
-	{
-		None,
-		WaitingForPlayers,
-		Loading,
-		Warmup,
-		Countdown,
-		Active,
-		RoundEnd,
-		MatchEnd,
-		PostMatch,
-		ReturningToLobby
-	}
+    /// <summary>
+    ///
+    /// </summary>
+    public enum MatchPhase : byte
+    {
+        None,
+        WaitingForPlayers,
+        Loading,
+        Warmup,
+        Countdown,
+        Active,
+        RoundEnd,
+        MatchEnd,
+        PostMatch,
+        ReturningToLobby
+    }
 }

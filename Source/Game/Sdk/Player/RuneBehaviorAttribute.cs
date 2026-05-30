@@ -17,14 +17,14 @@ using System;
 
 namespace Nomad.Game.Sdk.Player
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public sealed class RuneBehaviorAttribute : Attribute
-	{
-		public string Id { get; }
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class RuneBehaviorAttribute : Attribute
+    {
+        public string Id { get; }
 
-		public RuneBehaviorAttribute( string id )
-		{
-			Id = id;
-		}
-	}
+        public RuneBehaviorAttribute(string id)
+        {
+            Id = id;
+        }
+    }
 }

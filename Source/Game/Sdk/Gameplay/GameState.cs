@@ -15,29 +15,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum GameState : byte
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		Menu,
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum GameState : byte
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Menu,
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Level,
+        /// <summary>
+        /// 
+        /// </summary>
+        Level,
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Paused,
+        /// <summary>
+        /// 
+        /// </summary>
+        Paused,
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Count
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        Count
+    }
 }

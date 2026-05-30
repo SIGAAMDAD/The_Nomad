@@ -17,27 +17,27 @@ using System;
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModDiagnosticSnapshot
-	{
-		public ModuleManifest Mod { get; init; }
-		public ModRuntimeStatus Status { get; init; }
+    public sealed record ModDiagnosticSnapshot
+    {
+        public ModuleManifest Mod { get; init; }
+        public ModRuntimeStatus Status { get; init; }
 
-		public int InfoCount { get; init; }
-		public int WarningCount { get; init; }
-		public int ErrorCount { get; init; }
-		public int FatalCount { get; init; }
+        public int InfoCount { get; init; }
+        public int WarningCount { get; init; }
+        public int ErrorCount { get; init; }
+        public int FatalCount { get; init; }
 
-		public int ExceptionCount { get; init; }
-		public int PolicyViolationCount { get; init; }
-		public int ValidationFailureCount { get; init; }
+        public int ExceptionCount { get; init; }
+        public int PolicyViolationCount { get; init; }
+        public int ValidationFailureCount { get; init; }
 
-		public int ConsecutiveRuntimeFailures { get; init; }
+        public int ConsecutiveRuntimeFailures { get; init; }
 
-		public bool IsDisabled { get; init; }
-		public string? DisableReason { get; init; }
+        public bool IsDisabled { get; init; }
+        public string? DisableReason { get; init; }
 
-		public string? LastErrorCode { get; init; }
-		public string? LastErrorMessage { get; init; }
-		public DateTimeOffset? LastFaultTime { get; init; }
-	}
+        public string? LastErrorCode { get; init; }
+        public string? LastErrorMessage { get; init; }
+        public DateTimeOffset? LastFaultTime { get; init; }
+    }
 }

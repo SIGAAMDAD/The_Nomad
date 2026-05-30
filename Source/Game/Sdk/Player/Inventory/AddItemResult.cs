@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Inventory
 {
-	public readonly struct AddItemResult
-	{
-		public int AddedQuantity { get; }
-		public bool Succeeded { get; }
+    public readonly struct AddItemResult
+    {
+        public int AddedQuantity { get; }
+        public bool Succeeded { get; }
 
-		public AddItemResult( int addedQuantity, bool succeeded )
-		{
-			AddedQuantity = addedQuantity;
-			Succeeded = succeeded;
-		}
-	}
+        public AddItemResult(int addedQuantity, bool succeeded)
+        {
+            AddedQuantity = addedQuantity;
+            Succeeded = succeeded;
+        }
+    }
 }

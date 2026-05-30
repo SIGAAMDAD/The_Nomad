@@ -20,11 +20,11 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IPlayerAnimationController : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerAnimationStateChangedEventArgs" )]
-		[EventPayload( "OldState", typeof( PlayerAnimationState ), Order = 1 )]
-		[EventPayload( "NewState", typeof( PlayerAnimationState ), Order = 2 )]
-		IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
-	}
+    public interface IPlayerAnimationController : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerAnimationStateChangedEventArgs")]
+        [EventPayload("OldState", typeof(PlayerAnimationState), Order = 1)]
+        [EventPayload("NewState", typeof(PlayerAnimationState), Order = 2)]
+        IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
+    }
 }

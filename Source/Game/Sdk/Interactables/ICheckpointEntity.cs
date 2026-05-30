@@ -19,33 +19,33 @@ using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/*
+    /*
 	===================================================================================
 
 	ICheckpointEntity
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Optional capability for checkpoint/rest entities.
-	/// </summary>
+    /// <summary>
+    /// Optional capability for checkpoint/rest entities.
+    /// </summary>
 
-	public interface ICheckpointEntity : IInteractableEntity
-	{
-		CheckpointInstanceId CheckpointId { get; }
+    public interface ICheckpointEntity : IInteractableEntity
+    {
+        CheckpointInstanceId CheckpointId { get; }
 
-		PlayerId CurrentPlayerId { get; }
+        PlayerId CurrentPlayerId { get; }
 
-		CheckpointStatus Status { get; }
+        CheckpointStatus Status { get; }
 
-		bool CanRest { get; }
+        bool CanRest { get; }
 
-		bool IsTemporary { get; }
+        bool IsTemporary { get; }
 
-		uint CheckpointRevision { get; }
+        uint CheckpointRevision { get; }
 
-		bool TryActivateCheckpoint( PlayerId playerId );
-		bool TryRest( PlayerId playerId );
-		bool TryLeave( PlayerId playerId );
-	}
+        bool TryActivateCheckpoint(PlayerId playerId);
+        bool TryRest(PlayerId playerId);
+        bool TryLeave(PlayerId playerId);
+    }
 }

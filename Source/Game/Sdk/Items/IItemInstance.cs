@@ -23,9 +23,7 @@ namespace Nomad.Game.Sdk.Items
     /// <summary>
     ///
     /// </summary>
-    /// <typeparam name="TDefinition"></typeparam>
-    public interface IItemInstance<TDefinition> : IEntityBase
-        where TDefinition : ItemDefinition
+    public interface IItemInstance : IEntityBase
     {
         ItemInstanceId InstanceId { get; }
         ItemDefinition Definition { get; }

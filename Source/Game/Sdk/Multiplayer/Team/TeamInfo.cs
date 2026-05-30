@@ -17,23 +17,23 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Multiplayer.Team
 {
-	public readonly struct TeamInfo
-	{
-		public TeamId Id { get; }
-		public InternString Name { get; }
-		public int MaxMembers { get; }
-		public int MemberCount { get; }
-		public bool IsPlayable { get; }
+    public readonly struct TeamInfo
+    {
+        public TeamId Id { get; }
+        public InternString Name { get; }
+        public int MaxMembers { get; }
+        public int MemberCount { get; }
+        public bool IsPlayable { get; }
 
-		public bool IsFull => MaxMembers > 0 && MemberCount >= MaxMembers;
+        public bool IsFull => MaxMembers > 0 && MemberCount >= MaxMembers;
 
-		public TeamInfo( TeamId id, string name, int maxMembers, int memberCount, bool isPlayable )
-		{
-			Id = id;
-			Name = name != null ? new InternString( name ) : InternString.Empty;
-			MaxMembers = maxMembers;
-			MemberCount = memberCount;
-			IsPlayable = isPlayable;
-		}
-	}
+        public TeamInfo(TeamId id, string name, int maxMembers, int memberCount, bool isPlayable)
+        {
+            Id = id;
+            Name = name != null ? new InternString(name) : InternString.Empty;
+            MaxMembers = maxMembers;
+            MemberCount = memberCount;
+            IsPlayable = isPlayable;
+        }
+    }
 }

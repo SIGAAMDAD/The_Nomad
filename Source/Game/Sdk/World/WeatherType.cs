@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.World
 {
-	public enum WeatherType : byte
-	{
-		Clear,
-		Overcast,
-		Rain,
-		Storm,
-		Fog,
-		Snow,
-		DustStorm,
-		HeatHaze,
-		Ashfall
-	}
+    public enum WeatherType : byte
+    {
+        Clear,
+        Overcast,
+        Rain,
+        Storm,
+        Fog,
+        Snow,
+        DustStorm,
+        HeatHaze,
+        Ashfall
+    }
 }

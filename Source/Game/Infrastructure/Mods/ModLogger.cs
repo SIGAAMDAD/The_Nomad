@@ -17,10 +17,11 @@ using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Logger;
 using Nomad.Game.Sdk.Mods;
+using Nomad.Modding;
 
 namespace Nomad.Game.Infrastructure.Mods
 {
-	internal sealed class ModLogger : IDisposable
+	internal sealed class ModLogger : IModLogger, IDisposable
 	{
 		private readonly ILoggerService _logger;
 		private readonly IModDiagnostics _diagnostics;

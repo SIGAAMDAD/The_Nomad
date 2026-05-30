@@ -15,10 +15,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IBoon
-	{
-		void OnEquipped();
-		void OnUnequipped();
-		void Tick( float delta );
-	}
+    public interface IBoon
+    {
+        void OnEquipped();
+        void OnUnequipped();
+        void Tick(float delta);
+    }
 }

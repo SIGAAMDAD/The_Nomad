@@ -13,14 +13,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System;
+using Nomad.Game.Sdk.Interactables;
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu
+namespace Nomad.Game.Sdk.Items
 {
-	public interface ICustomDifficultyContainerView
-	{
-		event Action BackRequested;
-
-		void SetVisibility( bool visible );
-	}
+    public interface IConsumableBehavior
+    {
+        void OnInteract(in EntityInteractionContext context);
+    }
 }

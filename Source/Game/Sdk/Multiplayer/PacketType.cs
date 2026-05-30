@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public enum PacketType : byte
-	{
-		None = 0,
+    public enum PacketType : byte
+    {
+        None = 0,
 
-		ClientInput = 1,
-		StateSnapshot = 2,
+        ClientInput = 1,
+        StateSnapshot = 2,
 
-		PlayerKilled = 20,
-		PlayerRespawned = 21,
-		ScoreChanged = 22,
-		MatchPhaseChanged = 23,
+        PlayerKilled = 20,
+        PlayerRespawned = 21,
+        ScoreChanged = 22,
+        MatchPhaseChanged = 23,
 
-		ObjectiveChanged = 40,
-		BountyChanged = 41,
-		ExtractionStateChanged = 42
-	}
+        ObjectiveChanged = 40,
+        BountyChanged = 41,
+        ExtractionStateChanged = 42
+    }
 }

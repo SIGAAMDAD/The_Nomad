@@ -18,24 +18,25 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Items
 {
-	public sealed record AmmoDefinition : ItemDefinition
-	{
-		public override ItemType BaseType => ItemType.Ammunition;
-		public AmmoType Type { get; init; }
-		public AmmoModifier Modifier { get; init; }
-		public float Range { get; init; }
-		public float Velocity { get; init; }
-		public float Damage { get; init; }
+    public sealed record AmmoDefinition : ItemDefinition
+    {
+        public override ItemType BaseType => ItemType.Ammunition;
+        public AmmoType Type { get; init; }
+        public AmmoModifier Modifier { get; init; }
+        public float Range { get; init; }
+        public float Velocity { get; init; }
+        public float Damage { get; init; }
 
-		public static AmmoDefinition Load( JsonElement json )
-		{
-			return new AmmoDefinition {
-				Type = JsonLoader.GetRequired<AmmoType>( json, nameof( Type ) ),
-				Modifier = JsonLoader.GetRequired<AmmoModifier>( json, nameof( Modifier ) ),
-				Damage = JsonLoader.GetRequired<float>( json, nameof( Damage ) ),
-				Velocity = JsonLoader.GetRequired<float>( json, nameof( Velocity ) ),
-				Range = JsonLoader.GetRequired<float>( json, nameof( Range ) )
-			};
-		}
-	}
+        public static AmmoDefinition Load(JsonElement json)
+        {
+            return new AmmoDefinition
+            {
+                Type = JsonLoader.GetRequired<AmmoType>(json, nameof(Type)),
+                Modifier = JsonLoader.GetRequired<AmmoModifier>(json, nameof(Modifier)),
+                Damage = JsonLoader.GetRequired<float>(json, nameof(Damage)),
+                Velocity = JsonLoader.GetRequired<float>(json, nameof(Velocity)),
+                Range = JsonLoader.GetRequired<float>(json, nameof(Range))
+            };
+        }
+    }
 }

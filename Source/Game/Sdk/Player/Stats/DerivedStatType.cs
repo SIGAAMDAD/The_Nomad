@@ -15,21 +15,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public enum DerivedStatType : sbyte
-	{
-		Min = 0,
+    public enum DerivedStatType : sbyte
+    {
+        Min = 0,
 
-		MovementSpeedMultiplier = Min,
-		EffectiveMovementSpeed,
-		DashSpeedMultiplier,
-		EffectiveDashSpeed,
-		EffectiveHealthMax,
-		EffectiveRageMax,
-		EffectiveSanityMax,
-		SanityDrainMultiplier,
+        MovementSpeedMultiplier = Min,
+        EffectiveMovementSpeed,
+        DashSpeedMultiplier,
+        EffectiveDashSpeed,
+        EffectiveHealthMax,
+        EffectiveRageMax,
+        EffectiveSanityMax,
+        SanityDrainMultiplier,
 
-		Max,
+        Max,
 
-		Count = Max
-	}
+        Count = Max
+    }
 }

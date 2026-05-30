@@ -62,6 +62,10 @@ text = "UI_SETTINGSMENU"
 layout_mode = 2
 text = "UI_EXTRASMENU"
 
+[node name="ModsButton" parent="OptionsContainer" unique_id=1459987771 instance=ExtResource("3_lpod2")]
+layout_mode = 2
+text = "UI_MODS"
+
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=1407120179 instance=ExtResource("3_lpod2")]
 layout_mode = 2
 text = "UI_QUITGAME"

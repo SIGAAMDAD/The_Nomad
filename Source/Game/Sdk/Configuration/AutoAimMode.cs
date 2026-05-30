@@ -15,12 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	public enum AutoAimMode : uint
-	{
-		Off,
-		Soft,
-		LockOn,
+    public enum AutoAimMode : uint
+    {
+        Off,
+        Soft,
+        LockOn,
 
-		Count
-	}
+        Count
+    }
 }

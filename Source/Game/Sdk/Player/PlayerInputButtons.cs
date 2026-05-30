@@ -17,15 +17,15 @@ using System;
 
 namespace Nomad.Game.Sdk.Player
 {
-	[Flags]
-	public enum PlayerInputButtons : ushort
-	{
-		None = 0,
-		Slide = 1 << 0,
-		Dash = 1 << 1,
-		Primary = 1 << 2,
-		Secondary = 1 << 3,
+    [Flags]
+    public enum PlayerInputButtons : ushort
+    {
+        None = 0,
+        Slide = 1 << 0,
+        Dash = 1 << 1,
+        Primary = 1 << 2,
+        Secondary = 1 << 3,
 
-		Count = 1 << 15
-	}
+        Count = 1 << 15
+    }
 }

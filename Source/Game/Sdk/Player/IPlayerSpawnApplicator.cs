@@ -18,15 +18,15 @@ using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IPlayerSpawnApplicator
-	{
-		void Apply(
-			IPlayerBase player,
-			PlayerSpawnProfileDefinition profile,
-			IPlayerDerivedStatService derivedStats,
-			IPlayerResourceService resources,
-			IPlayerFlagService flags,
-			in PlayerSpawnContext context
-		);
-	}
+    public interface IPlayerSpawnApplicator
+    {
+        void Apply(
+            IPlayerBase player,
+            PlayerSpawnProfileDefinition profile,
+            IPlayerDerivedStatService derivedStats,
+            IPlayerResourceService resources,
+            IPlayerFlagService flags,
+            in PlayerSpawnContext context
+        );
+    }
 }

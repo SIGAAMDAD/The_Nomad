@@ -56,6 +56,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			_itemCatalog = new ItemCatalog( fileSystem, logger );
 			_itemCatalog.AddLoader( ItemType.Ammunition, AmmoDefinition.Load );
 			_itemCatalog.AddLoader( ItemType.FirearmWeapon, FirearmDefinition.Load );
+			_itemCatalog.AddLoader( ItemType.Consumable, ConsumableDefinition.Load );
 
 			_itemInstances = new ItemInstanceRepository( logger, eventFactory, _itemCatalog );
 

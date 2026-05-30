@@ -22,66 +22,66 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IPlayerFlagService : IDisposable
-	{
-		/// <summary>
-		///
-		/// </summary>
-		IReadOnlyList<string> CurrentFlags { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IPlayerFlagService : IDisposable
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        IReadOnlyList<string> CurrentFlags { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		PlayerFlags Bits { get; }
+        /// <summary>
+        ///
+        /// </summary>
+        PlayerFlags Bits { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerFlagsChangedEventArgs" )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 1 )]
-		[EventPayload( "OldFlags", typeof( PlayerFlags ), Order = 2 )]
-		[EventPayload( "NewFlags", typeof( PlayerFlags ), Order = 3 )]
-		IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerFlagsChangedEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldFlags", typeof(PlayerFlags), Order = 2)]
+        [EventPayload("NewFlags", typeof(PlayerFlags), Order = 3)]
+        IGameEvent<PlayerFlagsChangedEventArgs> FlagsChanged { get; }
 
-		/// <summary>
-		///
-		/// </summary>
-		void ClearFlags();
+        /// <summary>
+        ///
+        /// </summary>
+        void ClearFlags();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="flags"></param>
-		/// <returns></returns>
-		bool GetFlags( PlayerFlags flags );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        bool GetFlags(PlayerFlags flags);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="flags"></param>
-		void AddFlags( PlayerFlags flags );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="flags"></param>
+        void AddFlags(PlayerFlags flags);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="flags"></param>
-		void RemoveFlags( PlayerFlags flags );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="flags"></param>
+        void RemoveFlags(PlayerFlags flags);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="flagName"></param>
-		/// <param name="state"></param>
-		void SetFlag( string flagName, bool state );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="flagName"></param>
+        /// <param name="state"></param>
+        void SetFlag(string flagName, bool state);
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="flags"></param>
-		/// <param name="clearFlags"></param>
-		void ApplyFlags( IReadOnlyList<string> flags, bool clearFlags = false );
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <param name="clearFlags"></param>
+        void ApplyFlags(IReadOnlyList<string> flags, bool clearFlags = false);
+    }
 }

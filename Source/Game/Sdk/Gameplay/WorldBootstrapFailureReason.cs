@@ -15,14 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public enum WorldBootstrapFailureReason : byte
-	{
-		Unknown = 0,
-		InvalidRequest,
-		WorldLoadFailed,
-		NetworkStartFailed,
-		NetworkJoinFailed,
+    public enum WorldBootstrapFailureReason : byte
+    {
+        Unknown = 0,
+        InvalidRequest,
+        WorldLoadFailed,
+        NetworkStartFailed,
+        NetworkJoinFailed,
 
-		Count
-	}
+        Count
+    }
 }

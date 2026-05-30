@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	/// The player's global animation state.
-	/// </summary>
-	public enum PlayerAnimationState : uint
-	{
-		Idle,
-		Running,
-		Sliding,
+    /// <summary>
+    /// The player's global animation state.
+    /// </summary>
+    public enum PlayerAnimationState : uint
+    {
+        Idle,
+        Running,
+        Sliding,
 
-		RestingAtCheckpoint,
-		Dying,
+        RestingAtCheckpoint,
+        Dying,
 
-		TrueIdle,
+        TrueIdle,
 
-		Count
-	}
+        Count
+    }
 }

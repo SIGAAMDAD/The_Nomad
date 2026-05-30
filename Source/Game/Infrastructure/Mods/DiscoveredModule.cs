@@ -24,5 +24,6 @@ namespace Nomad.Game.Infrastructure.Mods
 		public ModuleLoadContext LoadContext { get; init; }
 		public Assembly Assembly { get; init; }
 		public INomadModule Instance { get; init; }
+		public IModuleContext? Context { get; init; }
 	};
 };

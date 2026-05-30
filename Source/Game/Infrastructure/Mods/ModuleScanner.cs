@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
 using Nomad.Game.Sdk.Mods;
 
 namespace Nomad.Game.Infrastructure.Mods
@@ -44,6 +45,7 @@ namespace Nomad.Game.Infrastructure.Mods
 
 		private readonly ModAssemblyValidator _validator;
 		private readonly ModSecurityPolicy _policy;
+		private readonly ILoggerCategory? _category;
 
 		/*
 		===============
@@ -56,10 +58,11 @@ namespace Nomad.Game.Infrastructure.Mods
 		/// <param name="apiVersion"></param>
 		/// <param name="fileSystem"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public ModuleScanner( string apiVersion, IFileSystem fileSystem )
+		public ModuleScanner( string apiVersion, IFileSystem fileSystem, ILoggerCategory? category = null )
 		{
 			_apiVersion = apiVersion;
 			_fileSystem = fileSystem ?? throw new ArgumentNullException( nameof( fileSystem ) );
+			_category = category;
 
 			_policy = new ModSecurityPolicy();
 			_validator = new ModAssemblyValidator( _policy );
@@ -76,8 +79,14 @@ namespace Nomad.Game.Infrastructure.Mods
 		/// <param name="path"></param>
 		public void AddScanRoot( string path )
 		{
-			if ( !string.IsNullOrWhiteSpace( path ) ) {
-				_scanRoots.Add( path );
+			if ( string.IsNullOrWhiteSpace( path ) ) {
+				return;
+			}
+
+			string normalizedPath = Path.GetFullPath( path );
+
+			if ( !_scanRoots.Contains( normalizedPath, StringComparer.OrdinalIgnoreCase ) ) {
+				_scanRoots.Add( normalizedPath );
 			}
 		}
 
@@ -93,14 +102,25 @@ namespace Nomad.Game.Infrastructure.Mods
 		public IReadOnlyList<DiscoveredModule> ScanAndLoad()
 		{
 			var manifests = ScanManifests();
+			if ( manifests.Count == 0 ) {
+				_category?.PrintWarning( "No module manifests were discovered." );
+				return Array.Empty<DiscoveredModule>();
+			}
+
 			ValidateManifests( manifests );
 
 			var sorted = SortByDependencies( manifests );
 			var loaded = new List<DiscoveredModule>();
 
 			foreach ( var manifest in sorted ) {
-				var module = LoadModuleAssembly( manifest );
-				loaded.Add( module );
+				try {
+					var module = LoadModuleAssembly( manifest );
+					loaded.Add( module );
+				} catch ( Exception ex ) {
+					_category?.PrintError(
+						$"Failed to load module '{manifest.Id}' from '{manifest.DirectoryPath}': {ex}"
+					);
+				}
 			}
 
 			return loaded;
@@ -121,21 +141,27 @@ namespace Nomad.Game.Infrastructure.Mods
 
 			foreach ( var root in _scanRoots ) {
 				if ( !_fileSystem.DirectoryExists( root ) ) {
+					_category?.PrintDebug( $"Module scan root does not exist: '{root}'." );
 					continue;
 				}
+
+				_category?.PrintDebug( $"Scanning module root: '{root}'." );
 
 				foreach ( var directory in _fileSystem.GetDirectories( root ) ) {
 					string manifestPath = Path.Combine( directory, "module.json" );
 
 					if ( !_fileSystem.FileExists( manifestPath ) ) {
+						_category?.PrintDebug( $"Skipping module directory without manifest: '{directory}'." );
 						continue;
 					}
 
 					try {
+						_category?.PrintLine( $"Found module manifest: '{manifestPath}'." );
+
 						using var fileBuffer = _fileSystem.LoadFile( manifestPath );
 
 						var manifest = JsonSerializer.Deserialize<ModuleManifest>(
-							fileBuffer.AsStream(),
+							fileBuffer.ToArray(),
 							new JsonSerializerOptions {
 								PropertyNameCaseInsensitive = true,
 								ReadCommentHandling = JsonCommentHandling.Skip,
@@ -144,7 +170,8 @@ namespace Nomad.Game.Infrastructure.Mods
 						);
 
 						if ( manifest == null ) {
-							// TODO: warning
+							_category?.PrintWarning( $"Module manifest '{manifestPath}' did not deserialize." );
+							continue;
 						}
 
 						manifest.DirectoryPath = directory;
@@ -152,7 +179,9 @@ namespace Nomad.Game.Infrastructure.Mods
 						manifests.Add( manifest );
 					}
 					catch ( Exception ex ) {
-
+						_category?.PrintError(
+							$"Failed to read module manifest '{manifestPath}': {ex}"
+						);
 					}
 				}
 			}
@@ -281,21 +310,39 @@ namespace Nomad.Game.Infrastructure.Mods
 		private DiscoveredModule LoadModuleAssembly( ModuleManifest manifest )
 		{
 			string assemblyPath = Path.Combine( manifest.DirectoryPath, manifest.Assembly );
-			string fullAssemblyPath = Path.Combine( assemblyPath );
+			string fullAssemblyPath = Path.GetFullPath( assemblyPath );
 
-			var report = _validator.Validate( assemblyPath );
+			_category?.PrintLine( $"Loading module '{manifest.Id}' from '{fullAssemblyPath}'." );
+
+			var report = _validator.Validate( fullAssemblyPath );
 			if ( !report.IsAllowed ) {
-				throw new Exception();
+				string issues = string.Join(
+					Environment.NewLine,
+					report.Issues.Select(
+						issue => $"{issue.Code}: {issue.Message}" +
+							(string.IsNullOrWhiteSpace( issue.Location ) ? string.Empty : $" ({issue.Location})")
+					)
+				);
+
+				throw new InvalidOperationException(
+					$"Module '{manifest.Id}' failed assembly validation:{Environment.NewLine}{issues}"
+				);
 			}
 
 			var loadContext = new ModuleLoadContext( fullAssemblyPath, _policy );
 			Assembly assembly = loadContext.LoadFromAssemblyPath( fullAssemblyPath );
 
+			_category.PrintLine( $"Assembly Info:" );
+			_category.PrintLine( $"[Name] {assembly.FullName}" );
+			_category.PrintLine( $"[Defined Types] {assembly.DefinedTypes}" );
+			_category.PrintLine( $"[Runtime Version] {assembly.ImageRuntimeVersion}" );
+			_category.PrintLine( $"[Exported Types] {assembly.ExportedTypes}" );
+
 			Type? entryType = assembly.GetType( manifest.EntryType, throwOnError: false );
 
 			if ( entryType == null ) {
 				throw new InvalidOperationException(
-					$"Module '{manifest.Id}' entr type not found: {manifest.EntryType}"
+					$"Module '{manifest.Id}' entry type not found: {manifest.EntryType}"
 				);
 			}
 

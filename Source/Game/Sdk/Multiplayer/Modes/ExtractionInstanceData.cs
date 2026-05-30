@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Modes
 {
-	public readonly struct ExtractionInstanceData
-	{
-	}
+    public readonly struct ExtractionInstanceData
+    {
+    }
 }

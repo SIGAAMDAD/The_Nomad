@@ -17,39 +17,39 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Multiplayer.Lobby
 {
-	/// <summary>
-	///
-	/// </summary>
-	public sealed record GameModeDefinition
-	{
-		/// <summary>
-		///
-		/// </summary>
-		public InternString Id { get; init; }
+    /// <summary>
+    ///
+    /// </summary>
+    public sealed record GameModeDefinition
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        public InternString Id { get; init; }
 
-		/// <summary>
-		///
-		/// </summary>
-		public InternString DisplayName { get; init; }
+        /// <summary>
+        ///
+        /// </summary>
+        public InternString DisplayName { get; init; }
 
-		/// <summary>
-		///
-		/// </summary>
-		public InternString Description { get; init; }
+        /// <summary>
+        ///
+        /// </summary>
+        public InternString Description { get; init; }
 
-		/// <summary>
-		/// The minimum required players in a lobby to start the game.
-		/// </summary>
-		public int MinPlayers { get; init; }
+        /// <summary>
+        /// The minimum required players in a lobby to start the game.
+        /// </summary>
+        public int MinPlayers { get; init; }
 
-		/// <summary>
-		/// The maximum amount of players allowed in the lobby for this gamemode.
-		/// </summary>
-		public int MaxPlayers { get; init; }
+        /// <summary>
+        /// The maximum amount of players allowed in the lobby for this gamemode.
+        /// </summary>
+        public int MaxPlayers { get; init; }
 
-		/// <summary>
-		///
-		/// </summary>
-		public MultiplayerMode Mode { get; init; }
-	}
+        /// <summary>
+        ///
+        /// </summary>
+        public MultiplayerMode Mode { get; init; }
+    }
 }

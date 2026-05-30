@@ -20,17 +20,17 @@ using Nomad.Game.Sdk.Multiplayer.Team;
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public sealed record MatchResult
-	{
-		public MultiplayerMode Mode { get; init; }
-		public string MapId { get; init; }
+    public sealed record MatchResult
+    {
+        public MultiplayerMode Mode { get; init; }
+        public string MapId { get; init; }
 
-		public DateTimeOffset StartedAtUtc { get; init; }
-		public DateTimeOffset EndedAtUtc { get; init; }
+        public DateTimeOffset StartedAtUtc { get; init; }
+        public DateTimeOffset EndedAtUtc { get; init; }
 
-		public TeamId WinningTeamId { get; init; }
-		public PeerId? WinningPlayer { get; init; }
+        public TeamId WinningTeamId { get; init; }
+        public PeerId? WinningPlayer { get; init; }
 
-		public IReadOnlyList<MatchPlayerStats> Players { get; init; }
-	}
+        public IReadOnlyList<MatchPlayerStats> Players { get; init; }
+    }
 }

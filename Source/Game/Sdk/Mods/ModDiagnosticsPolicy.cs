@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public sealed record ModDiagnosticsPolicy
-	{
-		public int MaxRuntimeExceptionsBeforeDisable { get; init; } = 8;
-		public int MaxPolicyViolationsBeforeDisable { get; init; } = 1;
-		public int MaxValidationFailuresBeforeReject { get; init; } = 1;
+    public sealed record ModDiagnosticsPolicy
+    {
+        public int MaxRuntimeExceptionsBeforeDisable { get; init; } = 8;
+        public int MaxPolicyViolationsBeforeDisable { get; init; } = 1;
+        public int MaxValidationFailuresBeforeReject { get; init; } = 1;
 
-		public int MaxStoredRecordsPerMod { get; init; } = 128;
+        public int MaxStoredRecordsPerMod { get; init; } = 128;
 
-		public bool DisableOnPolicyViolation { get; init; } = true;
-		public bool DisableOnRepeatedRuntimeExceptions { get; init; } = true;
-		public bool RejectOnValidationFailure { get; init; } = true;
-	}
+        public bool DisableOnPolicyViolation { get; init; } = true;
+        public bool DisableOnRepeatedRuntimeExceptions { get; init; } = true;
+        public bool RejectOnValidationFailure { get; init; } = true;
+    }
 }

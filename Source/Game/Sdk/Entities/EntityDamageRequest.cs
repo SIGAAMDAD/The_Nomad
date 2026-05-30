@@ -15,24 +15,24 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public readonly struct EntityDamageRequest
-	{
-		public readonly EntityId? AttackerId;
-		public readonly DamageSource Source;
-		public readonly float Amount;
-		public readonly bool CanKill;
+    public readonly struct EntityDamageRequest
+    {
+        public readonly EntityId? AttackerId;
+        public readonly DamageSource Source;
+        public readonly float Amount;
+        public readonly bool CanKill;
 
-		public EntityDamageRequest(
-			EntityId? attackerId,
-			DamageSource source,
-			float amount,
-			bool canKill = true
-		)
-		{
-			AttackerId = attackerId;
-			Source = source;
-			Amount = amount;
-			CanKill = canKill;
-		}
-	}
+        public EntityDamageRequest(
+            EntityId? attackerId,
+            DamageSource source,
+            float amount,
+            bool canKill = true
+        )
+        {
+            AttackerId = attackerId;
+            Source = source;
+            Amount = amount;
+            CanKill = canKill;
+        }
+    }
 }

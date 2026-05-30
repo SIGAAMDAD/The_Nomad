@@ -15,39 +15,39 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.JumpKit
 {
-	public readonly struct DashUpdateResult
-	{
-		public float BurnoutAmount { get; }
-		public float DashDuration { get; }
-		public float RemainingDashTime { get; }
-		public bool DashEnded { get; }
-		public bool BurnoutChangedThisFrame { get; }
-		public bool BurnedOutThisFrame { get; }
-		public bool RechargedThisFrame { get; }
-		public bool IsDashing { get; }
-		public bool IsBurnedOut { get; }
+    public readonly struct DashUpdateResult
+    {
+        public float BurnoutAmount { get; }
+        public float DashDuration { get; }
+        public float RemainingDashTime { get; }
+        public bool DashEnded { get; }
+        public bool BurnoutChangedThisFrame { get; }
+        public bool BurnedOutThisFrame { get; }
+        public bool RechargedThisFrame { get; }
+        public bool IsDashing { get; }
+        public bool IsBurnedOut { get; }
 
-		public DashUpdateResult(
-			float burnoutAmount,
-			float dashDuration,
-			float remainingDashTime,
-			bool dashEnded,
-			bool burnoutChangedThisFrame,
-			bool burnedOutThisFrame,
-			bool rechargedThisFrame,
-			bool isDashing,
-			bool isBurnedOut
-		)
-		{
-			BurnoutAmount = burnoutAmount;
-			DashDuration = dashDuration;
-			RemainingDashTime = remainingDashTime;
-			DashEnded = dashEnded;
-			BurnoutChangedThisFrame = burnoutChangedThisFrame;
-			BurnedOutThisFrame = burnedOutThisFrame;
-			RechargedThisFrame = rechargedThisFrame;
-			IsDashing = isDashing;
-			IsBurnedOut = isBurnedOut;
-		}
-	}
+        public DashUpdateResult(
+            float burnoutAmount,
+            float dashDuration,
+            float remainingDashTime,
+            bool dashEnded,
+            bool burnoutChangedThisFrame,
+            bool burnedOutThisFrame,
+            bool rechargedThisFrame,
+            bool isDashing,
+            bool isBurnedOut
+        )
+        {
+            BurnoutAmount = burnoutAmount;
+            DashDuration = dashDuration;
+            RemainingDashTime = remainingDashTime;
+            DashEnded = dashEnded;
+            BurnoutChangedThisFrame = burnoutChangedThisFrame;
+            BurnedOutThisFrame = burnedOutThisFrame;
+            RechargedThisFrame = rechargedThisFrame;
+            IsDashing = isDashing;
+            IsBurnedOut = isBurnedOut;
+        }
+    }
 }

@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum RegionPlayerStatus : byte
-	{
-		Outside,
-		Inside,
-		Undiscovered
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum RegionPlayerStatus : byte
+    {
+        Outside,
+        Inside,
+        Undiscovered
+    }
 }

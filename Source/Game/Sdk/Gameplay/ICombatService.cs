@@ -22,17 +22,17 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Gameplay
 {
-	public interface ICombatService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay" )]
-		[EventPayload( "WeaponId", typeof( ItemInstanceId ), Order = 1 )]
-		[EventPayload( "FromPosition", typeof( Vector2 ), Order = 2 )]
-		[EventPayload( "AngleRadians", typeof( float ), Order = 3 )]
-		IGameEvent<UseWeaponFirearmRequestEventArgs> UseWeaponFirearmRequest { get; }
+    public interface ICombatService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay")]
+        [EventPayload("WeaponId", typeof(ItemInstanceId), Order = 1)]
+        [EventPayload("FromPosition", typeof(Vector2), Order = 2)]
+        [EventPayload("AngleRadians", typeof(float), Order = 3)]
+        IGameEvent<UseWeaponFirearmRequestEventArgs> UseWeaponFirearmRequest { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay" )]
-		[EventPayload( "HitEntityId", typeof( EntityId ), Order = 1 )]
-		[EventPayload( "DamageAmount", typeof( float ), Order = 2 )]
-		IGameEvent<UseWeaponResultEventArgs> UseWeaponResult { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay")]
+        [EventPayload("HitEntityId", typeof(EntityId), Order = 1)]
+        [EventPayload("DamageAmount", typeof(float), Order = 2)]
+        IGameEvent<UseWeaponResultEventArgs> UseWeaponResult { get; }
+    }
 }

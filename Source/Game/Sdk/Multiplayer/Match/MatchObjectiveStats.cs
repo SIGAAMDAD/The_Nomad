@@ -15,7 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public abstract record CaptureTheFlagStats
-	{
-	}
+    public abstract record CaptureTheFlagStats
+    {
+    }
 }

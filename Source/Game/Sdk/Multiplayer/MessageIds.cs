@@ -15,42 +15,42 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer
 {
-	public enum MessageIds : ushort
-	{
-		VoteServiceStateChanged,
-		VoteStarted,
-		VoteCast,
-		VoteEnded,
-		VoteCancelled,
+    public enum MessageIds : ushort
+    {
+        VoteServiceStateChanged,
+        VoteStarted,
+        VoteCast,
+        VoteEnded,
+        VoteCancelled,
 
-		VoteStartGameRequestRpc,
-		VoteCastRequestRpc,
+        VoteStartGameRequestRpc,
+        VoteCastRequestRpc,
 
-		WaitingRoomStateChanged,
-		PeerReadyChanged,
-		CountdownStarted,
-		CountdownCancelled,
-		GameStartRequested,
+        WaitingRoomStateChanged,
+        PeerReadyChanged,
+        CountdownStarted,
+        CountdownCancelled,
+        GameStartRequested,
 
-		LobbyReadyRequestRpc,
-		LobbyCancelCountdownRequestRpc,
+        LobbyReadyRequestRpc,
+        LobbyCancelCountdownRequestRpc,
 
-		DuelRoundBegin,
-		DuelRoundEnd,
+        DuelRoundBegin,
+        DuelRoundEnd,
 
-		TeamChanged,
-		TeamServiceStateChanged,
-		TeamsReset,
+        TeamChanged,
+        TeamServiceStateChanged,
+        TeamsReset,
 
-		TeamJoinRequestRpc,
-		TeamLeaveRequestRpc,
-		TeamAutoAssignRequestRpc,
+        TeamJoinRequestRpc,
+        TeamLeaveRequestRpc,
+        TeamAutoAssignRequestRpc,
 
-		PlayerInputCommandRpc,
+        PlayerInputCommandRpc,
 
-		PlayerDie,
-		PlayerRespawnRequestRpc,
+        PlayerDie,
+        PlayerRespawnRequestRpc,
 
-		MatchPhaseChangedRpc,
-	}
+        MatchPhaseChangedRpc,
+    }
 }

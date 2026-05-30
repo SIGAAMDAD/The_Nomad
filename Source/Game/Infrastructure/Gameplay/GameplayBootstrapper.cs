@@ -25,6 +25,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 	internal sealed class GameplayBootstrapper : IBootstrapper
 	{
 		private IWorldContentCache? _worldContentCache;
+		private INomadBehaviorRegistry? _behaviorRegistry;
 
 		public void Initialize( IServiceRegistry registry, IServiceLocator locator )
 		{
@@ -38,7 +39,10 @@ namespace Nomad.Game.Infrastructure.Gameplay
 				eventFactory
 			);
 
+			_behaviorRegistry = new NomadBehaviorRegistry();
+
 			registry.AddSingleton( _worldContentCache );
+			registry.AddSingleton( _behaviorRegistry );
 		}
 
 		public void Shutdown()

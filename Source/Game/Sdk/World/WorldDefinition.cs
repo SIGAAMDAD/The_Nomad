@@ -18,17 +18,17 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	///
-	/// </summary>
-	public sealed record WorldDefinition
-	{
-		public InternString Name { get; init; }
+    /// <summary>
+    ///
+    /// </summary>
+    public sealed record WorldDefinition
+    {
+        public InternString Name { get; init; }
 
-		public WorldTime StartTime { get; init; }
+        public WorldTime StartTime { get; init; }
 
-		public CalendarDefinition Calendar { get; init; }
-		public IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> Seasons { get; init; }
-		public IReadOnlyList<BiomeDefinition> Biomes { get; init; }
-	}
+        public CalendarDefinition Calendar { get; init; }
+        public IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> Seasons { get; init; }
+        public IReadOnlyList<BiomeDefinition> Biomes { get; init; }
+    }
 }

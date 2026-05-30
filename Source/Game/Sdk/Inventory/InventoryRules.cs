@@ -18,11 +18,11 @@ using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public sealed record InventoryRules
-	{
-		public float MaxWeight { get; init; }
-		public bool IgnoreWeight { get; init; }
+    public sealed record InventoryRules
+    {
+        public float MaxWeight { get; init; }
+        public bool IgnoreWeight { get; init; }
 
-		public Func<ItemDefinition, bool> AcceptsItem { get; init; } = _ => true;
-	}
+        public Func<ItemDefinition, bool> AcceptsItem { get; init; } = _ => true;
+    }
 }

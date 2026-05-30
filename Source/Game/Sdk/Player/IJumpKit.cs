@@ -18,28 +18,28 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IJumpKit
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashStartEventArgs" )]
-		[EventPayload( "BurnoutAmount", typeof( float ) )]
-		IGameEvent<PlayerDashStartEventArgs> DashStarted { get; }
+    public interface IJumpKit
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashStartEventArgs")]
+        [EventPayload("BurnoutAmount", typeof(float))]
+        IGameEvent<PlayerDashStartEventArgs> DashStarted { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashEndedEventArgs" )]
-		IGameEvent<PlayerDashEndedEventArgs> DashEnded { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashEndedEventArgs")]
+        IGameEvent<PlayerDashEndedEventArgs> DashEnded { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashBurnoutEventArgs" )]
-		IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashBurnoutEventArgs")]
+        IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashRechargedEventArgs" )]
-		IGameEvent<PlayerDashRechargedEventArgs> DashRecharged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDashRechargedEventArgs")]
+        IGameEvent<PlayerDashRechargedEventArgs> DashRecharged { get; }
 
-		float BurnoutAmount { get; }
-		bool IsDashing { get; }
-		bool IsBurnedOut { get; }
-		bool CanDash { get; }
+        float BurnoutAmount { get; }
+        bool IsDashing { get; }
+        bool IsBurnedOut { get; }
+        bool CanDash { get; }
 
-		IDashModule? Module { get; }
+        IDashModule? Module { get; }
 
-		void SetModule( IDashModule module );
-	}
+        void SetModule(IDashModule module);
+    }
 }

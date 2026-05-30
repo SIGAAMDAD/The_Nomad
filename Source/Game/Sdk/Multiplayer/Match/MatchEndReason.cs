@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Match
 {
-	public enum MatchEndReason : byte
-	{
-		None,
-		TimeLimit,
-		ScoreLimit,
-		ObjectiveCompleted,
-		AllOpponentsEliminated,
-		HostEnded,
-		Forfeit,
-		NetworkFailure
-	}
+    public enum MatchEndReason : byte
+    {
+        None,
+        TimeLimit,
+        ScoreLimit,
+        ObjectiveCompleted,
+        AllOpponentsEliminated,
+        HostEnded,
+        Forfeit,
+        NetworkFailure
+    }
 }

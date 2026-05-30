@@ -17,13 +17,13 @@ using System;
 
 namespace Nomad.Game.Sdk.Player.JumpKit
 {
-	[Flags]
-	public enum PlayerJumpKitFlags : byte
-	{
-		IsBurnedOut = 1 << 0,
-		IsDashing = 1 << 1,
-		DashEnded = 1 << 2,
-		BurnedOutThisFrame = 1 << 3,
-		RechargedThisFrame = 1 << 4
-	}
+    [Flags]
+    public enum PlayerJumpKitFlags : byte
+    {
+        IsBurnedOut = 1 << 0,
+        IsDashing = 1 << 1,
+        DashEnded = 1 << 2,
+        BurnedOutThisFrame = 1 << 3,
+        RechargedThisFrame = 1 << 4
+    }
 }

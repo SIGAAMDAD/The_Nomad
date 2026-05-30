@@ -15,21 +15,21 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.JumpKit
 {
-	public readonly struct DashStartResult
-	{
-		public DashStartStatus Status { get; }
-		public float BurnoutAmount { get; }
-		public float DashDuration { get; }
-		public float RemainingDashTime { get; }
-		public bool IsBurnedOut { get; }
+    public readonly struct DashStartResult
+    {
+        public DashStartStatus Status { get; }
+        public float BurnoutAmount { get; }
+        public float DashDuration { get; }
+        public float RemainingDashTime { get; }
+        public bool IsBurnedOut { get; }
 
-		public DashStartResult( DashStartStatus status, float burnoutAmount, float dashDuration, float remainingDashTime, bool isBurnedOut )
-		{
-			Status = status;
-			BurnoutAmount = burnoutAmount;
-			DashDuration = dashDuration;
-			RemainingDashTime = remainingDashTime;
-			IsBurnedOut = isBurnedOut;
-		}
-	}
+        public DashStartResult(DashStartStatus status, float burnoutAmount, float dashDuration, float remainingDashTime, bool isBurnedOut)
+        {
+            Status = status;
+            BurnoutAmount = burnoutAmount;
+            DashDuration = dashDuration;
+            RemainingDashTime = remainingDashTime;
+            IsBurnedOut = isBurnedOut;
+        }
+    }
 }

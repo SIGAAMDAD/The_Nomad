@@ -20,37 +20,37 @@ using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface ICalendarService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ) )]
-		IGameEvent<MinuteChangedEventArgs> MinuteChanged { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface ICalendarService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Time", typeof(WorldTime))]
+        IGameEvent<MinuteChangedEventArgs> MinuteChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ) )]
-		IGameEvent<HourChangedEventArgs> HourChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Time", typeof(WorldTime))]
+        IGameEvent<HourChangedEventArgs> HourChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ) )]
-		IGameEvent<DayChangedEventArgs> DayChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Time", typeof(WorldTime))]
+        IGameEvent<DayChangedEventArgs> DayChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Current", typeof( InternString ), Order = 1 )]
-		[EventPayload( "Time", typeof( WorldTime ), Order = 2 )]
-		IGameEvent<MonthChangedEventArgs> MonthChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Current", typeof(InternString), Order = 1)]
+        [EventPayload("Time", typeof(WorldTime), Order = 2)]
+        IGameEvent<MonthChangedEventArgs> MonthChanged { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.World" )]
-		[EventPayload( "Time", typeof( WorldTime ) )]
-		IGameEvent<YearChangedEventArgs> YearChanged { get; }
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
+        [EventPayload("Time", typeof(WorldTime))]
+        IGameEvent<YearChangedEventArgs> YearChanged { get; }
 
-		WorldTime Current { get; }
+        WorldTime Current { get; }
 
-		long AbsoluteDay { get; }
-		long AbsoluteMinute { get; }
+        long AbsoluteDay { get; }
+        long AbsoluteMinute { get; }
 
-		void SetTime( WorldTime time );
-	}
+        void SetTime(WorldTime time);
+    }
 }

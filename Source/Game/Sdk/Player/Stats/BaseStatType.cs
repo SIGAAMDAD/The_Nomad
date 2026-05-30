@@ -15,23 +15,23 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	/// <summary>
-	/// Player statistic identifiers.
-	/// </summary>
-	public enum BaseStatType : sbyte
-	{
-		Min = 0,
+    /// <summary>
+    /// Player statistic identifiers.
+    /// </summary>
+    public enum BaseStatType : sbyte
+    {
+        Min = 0,
 
-		BaseMovementSpeed = Min,
-		InventoryWeight,
-		EncumbranceThreshold,
-		BaseDashSpeed,
-		BaseHealth,
-		BaseRage,
-		BaseSanity,
+        BaseMovementSpeed = Min,
+        InventoryWeight,
+        EncumbranceThreshold,
+        BaseDashSpeed,
+        BaseHealth,
+        BaseRage,
+        BaseSanity,
 
-		Max,
+        Max,
 
-		Count = Max
-	}
+        Count = Max
+    }
 }

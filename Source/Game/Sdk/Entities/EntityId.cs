@@ -18,41 +18,46 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public readonly struct EntityId : IEquatable<EntityId>
-	{
-		public static readonly EntityId Invalid = new EntityId( Guid.Empty );
+    public readonly struct EntityId : IEquatable<EntityId>
+    {
+        public static readonly EntityId Invalid = new EntityId(Guid.Empty);
 
-		public bool IsValid => Value != Guid.Empty;
-		public readonly Guid Value;
+        public bool IsValid => Value != Guid.Empty;
+        public readonly Guid Value;
 
-		public EntityId( Guid id )
-		{
-			Value = id;
-		}
+        public EntityId(Guid id)
+        {
+            Value = id;
+        }
 
-		public override bool Equals( [NotNullWhen( true )] object? obj )
-		{
-			return obj is EntityId other && Equals( other );
-		}
+        public override bool Equals([NotNullWhen(true)] object? obj)
+        {
+            return obj is EntityId other && Equals(other);
+        }
 
-		public override int GetHashCode()
-		{
-			return Value.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
 
-		public bool Equals( EntityId other )
-		{
-			return other.Value == Value;
-		}
+        public bool Equals(EntityId other)
+        {
+            return other.Value == Value;
+        }
 
-		public static bool operator ==( EntityId left, EntityId right )
-		{
-			return left.Equals( right );
-		}
+        public static implicit operator Guid(EntityId value)
+        {
+            return value.Value;
+        }
 
-		public static bool operator !=( EntityId left, EntityId right )
-		{
-			return !left.Equals( right );
-		}
-	}
+        public static bool operator ==(EntityId left, EntityId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EntityId left, EntityId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

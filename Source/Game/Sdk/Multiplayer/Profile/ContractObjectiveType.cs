@@ -15,20 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum ContractObjectiveType : byte
-	{
-		WinMatches,
-		CompleteMatches,
-		WinDuels,
-		ClaimBounties,
-		CompleteExtractions,
-		DefendObjective,
-		CaptureFlags,
-		EarnParryKills,
-		EarnNoDeathRounds,
-		AssistFactionMembers,
-		UseFactionWeapon,
-		CompleteContractWithoutBulletTime,
-		CompleteContractWithLowSanity
-	}
+    public enum ContractObjectiveType : byte
+    {
+        WinMatches,
+        CompleteMatches,
+        WinDuels,
+        ClaimBounties,
+        CompleteExtractions,
+        DefendObjective,
+        CaptureFlags,
+        EarnParryKills,
+        EarnNoDeathRounds,
+        AssistFactionMembers,
+        UseFactionWeapon,
+        CompleteContractWithoutBulletTime,
+        CompleteContractWithLowSanity
+    }
 }

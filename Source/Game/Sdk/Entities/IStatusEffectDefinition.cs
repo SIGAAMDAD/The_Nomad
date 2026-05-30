@@ -15,12 +15,12 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public interface IStatusEffectDefinition
-	{
-		string Id { get; }
-		string DisplayName { get; }
+    public interface IStatusEffectDefinition
+    {
+        string Id { get; }
+        string DisplayName { get; }
 
-		StatusEffectDurationPolicy DurationPolicy { get; }
-		StatusEffectStackingPolicy StackingPolicy { get; }
-	}
+        StatusEffectDurationPolicy DurationPolicy { get; }
+        StatusEffectStackingPolicy StackingPolicy { get; }
+    }
 }

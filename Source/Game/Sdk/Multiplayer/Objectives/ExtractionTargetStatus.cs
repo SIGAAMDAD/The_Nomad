@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Objectives
 {
-	public enum ExtractionTargetStatus : byte
-	{
-		Inactive = 0,
-		Unsecured,
-		Secured,
-		Carried,
-		Downed,
-		Extracting,
-		Extracted,
-		Killed,
-		Lost
-	}
+    public enum ExtractionTargetStatus : byte
+    {
+        Inactive = 0,
+        Unsecured,
+        Secured,
+        Carried,
+        Downed,
+        Extracting,
+        Extracted,
+        Killed,
+        Lost
+    }
 }

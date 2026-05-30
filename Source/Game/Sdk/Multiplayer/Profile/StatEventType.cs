@@ -15,37 +15,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Profile
 {
-	public enum StatEventType : byte
-	{
-		MatchCompleted,
-		MatchWon,
+    public enum StatEventType : byte
+    {
+        MatchCompleted,
+        MatchWon,
 
-		PlayerKilled,
-		PlayerDied,
-		AssistEarned,
+        PlayerKilled,
+        PlayerDied,
+        AssistEarned,
 
-		DuelRoundWon,
-		DuelMatchWon,
+        DuelRoundWon,
+        DuelMatchWon,
 
-		BountyClaimed,
-		BountySurvived,
+        BountyClaimed,
+        BountySurvived,
 
-		ExtractionCompleted,
-		ExtractionDenied,
+        ExtractionCompleted,
+        ExtractionDenied,
 
-		FlagCaptured,
-		FlagReturned,
+        FlagCaptured,
+        FlagReturned,
 
-		HillHeld,
+        HillHeld,
 
-		ParryKill,
-		HeavyParrySuccess,
-		GrabParrySuccess,
+        ParryKill,
+        HeavyParrySuccess,
+        GrabParrySuccess,
 
-		DashOverheatKill,
-		NoDeathRound,
-		NoBulletTimeWin,
+        DashOverheatKill,
+        NoDeathRound,
+        NoBulletTimeWin,
 
-		WeeklyContractCompleted
-	}
+        WeeklyContractCompleted
+    }
 }

@@ -17,47 +17,47 @@ using System;
 
 namespace Nomad.Game.Sdk.Multiplayer.Voting
 {
-	public readonly struct VoteId : IEquatable<VoteId>
-	{
-		public readonly Guid Id;
+    public readonly struct VoteId : IEquatable<VoteId>
+    {
+        public readonly Guid Id;
 
-		public static readonly VoteId Invalid = new VoteId( Guid.Empty );
+        public static readonly VoteId Invalid = new VoteId(Guid.Empty);
 
-		public bool IsValid => Id != Guid.Empty;
+        public bool IsValid => Id != Guid.Empty;
 
-		public VoteId( Guid id )
-		{
-			Id = id;
-		}
+        public VoteId(Guid id)
+        {
+            Id = id;
+        }
 
-		public bool Equals( VoteId other )
-		{
-			return Id == other.Id;
-		}
+        public bool Equals(VoteId other)
+        {
+            return Id == other.Id;
+        }
 
-		public override bool Equals( object obj )
-		{
-			return obj is VoteId other && Equals( other );
-		}
+        public override bool Equals(object obj)
+        {
+            return obj is VoteId other && Equals(other);
+        }
 
-		public override int GetHashCode()
-		{
-			return Id.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
 
-		public override string ToString()
-		{
-			return Id.ToString();
-		}
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
 
-		public static bool operator ==( VoteId left, VoteId right )
-		{
-			return left.Equals( right );
-		}
+        public static bool operator ==(VoteId left, VoteId right)
+        {
+            return left.Equals(right);
+        }
 
-		public static bool operator !=( VoteId left, VoteId right )
-		{
-			return !left.Equals( right );
-		}
-	}
+        public static bool operator !=(VoteId left, VoteId right)
+        {
+            return !left.Equals(right);
+        }
+    }
 }

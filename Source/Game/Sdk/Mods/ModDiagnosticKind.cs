@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Mods
 {
-	public enum ModDiagnosticKind : byte
-	{
-		Info,
-		Warning,
-		Exception,
-		PolicyViolation,
-		QuotaExceeded,
-		LoadFailure,
-		DependencyFailure,
-		ValidationFailure,
-		Disabled
-	}
+    public enum ModDiagnosticKind : byte
+    {
+        Info,
+        Warning,
+        Exception,
+        PolicyViolation,
+        QuotaExceeded,
+        LoadFailure,
+        DependencyFailure,
+        ValidationFailure,
+        Disabled
+    }
 }

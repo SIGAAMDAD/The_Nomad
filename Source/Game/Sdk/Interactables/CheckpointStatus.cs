@@ -15,28 +15,28 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/// <summary>
-	/// A checkpoint's live status according to how the player has interacted with it thus far.
-	/// </summary>
-	public enum CheckpointStatus : byte
-	{
-		/// <summary>
-		/// The checkpoint has never been activated before, currently undiscovered.
-		/// </summary>
-		Inactive,
+    /// <summary>
+    /// A checkpoint's live status according to how the player has interacted with it thus far.
+    /// </summary>
+    public enum CheckpointStatus : byte
+    {
+        /// <summary>
+        /// The checkpoint has never been activated before, currently undiscovered.
+        /// </summary>
+        Inactive,
 
-		/// <summary>
-		/// The checkpoint has been activated but it is not the one the player is currently
-		/// using.
-		/// </summary>
-		Activated,
+        /// <summary>
+        /// The checkpoint has been activated but it is not the one the player is currently
+        /// using.
+        /// </summary>
+        Activated,
 
-		/// <summary>
-		/// This the player's current checkpoint that they are resting at.
-		/// </summary>
-		Current,
+        /// <summary>
+        /// This the player's current checkpoint that they are resting at.
+        /// </summary>
+        Current,
 
-		Min = Inactive,
-		Max = Current
-	}
+        Min = Inactive,
+        Max = Current
+    }
 }

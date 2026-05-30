@@ -14,11 +14,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Events.Globals;
 using Nomad.Game.Application.UI.Menus;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Sdk.Events.Gameplay;
-using Nomad.Game.Presentation.Screens.NewGameMenu;
+using Nomad.Core.Events;
 
 namespace Nomad.Game.Presentation.Screens.NewGameMenu
 {
@@ -35,30 +34,37 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 
 	public sealed class NewGameMenuPresenter : IDisposable
 	{
-		private readonly INewGameMenuView _view;
-		private readonly NewGameMenuModel _model;
+		private readonly NewGameMenuView _view;
+		private readonly IGameEventRegistryService _eventFactory;
 
-		public NewGameMenuPresenter( INewGameMenuView view, NewGameMenuModel model )
+		private bool _isDisposed = false;
+
+		public NewGameMenuPresenter( NewGameMenuView view, IGameEventRegistryService eventFactory )
 		{
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
-			_model = model ?? throw new ArgumentNullException( nameof( model ) );
-
-			_view.OptionsView.StandardModeRequested += OnStandardModeRequested;
-			_view.OptionsView.HardModeRequested += OnHardModeRequested;
-			_view.OptionsView.CustomModeRequested += OnCustomModeRequested;
-			_view.OptionsView.BackRequested += OnOptionsBackRequested;
-			_view.CustomDifficultyView.BackRequested += OnCustomDifficultyBackRequested;
-
-			SyncView();
+			_view.StartStandardMode += OnStandardModeRequested;
+			_view.StartHardMode += OnHardModeRequested;
+			_view.StartCustomDifficulty += OnCustomModeRequested;
+			_view.OptionsBack += OnOptionsBackRequested;
+			_view.CustomDifficultyBack += OnCustomDifficultyBackRequested;
 		}
 
 		public void Dispose()
 		{
-			_view.OptionsView.StandardModeRequested -= OnStandardModeRequested;
-			_view.OptionsView.HardModeRequested -= OnHardModeRequested;
-			_view.OptionsView.CustomModeRequested -= OnCustomModeRequested;
-			_view.OptionsView.BackRequested -= OnOptionsBackRequested;
-			_view.CustomDifficultyView.BackRequested -= OnCustomDifficultyBackRequested;
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.StartStandardMode -= OnStandardModeRequested;
+			_view.StartHardMode -= OnHardModeRequested;
+			_view.StartCustomDifficulty -= OnCustomModeRequested;
+			_view.OptionsBack -= OnOptionsBackRequested;
+			_view.CustomDifficultyBack -= OnCustomDifficultyBackRequested;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		private void OnStandardModeRequested()
@@ -68,49 +74,52 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 
 		private void OnHardModeRequested()
 		{
-			// TODO:
-			// When BeginGameEventArgs carries difficulty/preset information,
-			// this is where Hard mode should be passed through.
 			BeginGame();
 		}
 
 		private void OnCustomModeRequested()
 		{
-			_model.ShowCustomDifficulty();
-			SyncView();
+			_view.SetOptionsContainerVisibility( false );
+			_view.SetCustomDifficultyContainerVisibility( true );
 		}
 
 		private void OnOptionsBackRequested()
 		{
-			GameEventRegistry.GetEvent<MenuTransitionRequestedEventArgs>(
-				MenuTransitionRequestedEventArgs.Name,
-				MenuTransitionRequestedEventArgs.NameSpace
-			).Publish( new MenuTransitionRequestedEventArgs( MenuState.NewGame, MenuState.Main ) );
+			_eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
+				.Publish(
+					new MenuTransitionRequestedEventArgs(
+						MenuState.NewGame,
+						MenuState.Main
+					)
+				);
 		}
 
 		private void OnCustomDifficultyBackRequested()
 		{
-			_model.ShowOptions();
-			SyncView();
+			_view.SetCustomDifficultyContainerVisibility( false );
+			_view.SetOptionsContainerVisibility( true );
 		}
 
-		private void SyncView()
+		private void BeginGame()
 		{
-			_view.OptionsView.SetVisibility( _model.IsOptionsVisible );
-			_view.CustomDifficultyView.SetVisibility( _model.IsCustomDifficultyVisible );
-		}
-
-		private static void BeginGame()
-		{
-			GameEventRegistry
-				.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace )
-				.Publish( new WorldBootstrapRequestEventArgs(
-					requestId: Guid.NewGuid(),
-					mode: WorldBootstrapMode.SinglePlayerNewGame,
-					worldId: "world.single.default",
-					difficulty: DifficultyPreset.Standard,
-					lobbyid: null
-				) );
+			_eventFactory
+				.GetEvent<WorldBootstrapRequestEventArgs>(
+					WorldBootstrapRequestEventArgs.Name,
+					WorldBootstrapRequestEventArgs.NameSpace
+				)
+				.Publish(
+					new WorldBootstrapRequestEventArgs(
+						requestId: Guid.NewGuid(),
+						mode: WorldBootstrapMode.SinglePlayerNewGame,
+						worldId: "world.single.default",
+						difficulty: DifficultyPreset.Standard,
+						lobbyid: null
+					)
+				);
 		}
 	};
 };

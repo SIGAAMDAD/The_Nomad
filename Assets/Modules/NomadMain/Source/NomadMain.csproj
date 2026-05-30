@@ -3,8 +3,6 @@
     <!-- Build Configuration -->
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>14.0</LangVersion>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>annotations</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EnforceCodeStyleInBuilds>true</EnforceCodeStyleInBuilds>
@@ -18,13 +16,13 @@
     <Optimize>true</Optimize>
     <SkipLocalsInit>true</SkipLocalsInit>
     <ImplicitUsings>disable</ImplicitUsings>
+    <OutputPath>../Dll/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
     <NoWarn>$(NoWarn);CA2213;CA1501;CA1812;CA1822;CA1506</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Ensures the source generation works correctly -->
 	<ProjectReference Include="../../../../Source/Game/Sdk/Nomad.Game.Sdk.csproj" />
-	<ProjectReference Include="../../../../Source/Modding/Nomad.Modding.csproj" />
   </ItemGroup>
 </Project>

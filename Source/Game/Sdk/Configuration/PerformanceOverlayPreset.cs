@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Configuration
 {
-	public enum PerformanceOverlayPreset : uint
-	{
-		Hidden,
-		FpsOnly,
-		Partial,
-		Full,
+    public enum PerformanceOverlayPreset : uint
+    {
+        Hidden,
+        FpsOnly,
+        Partial,
+        Full,
 
-		Count,
+        Count,
 
-		Default = Hidden
-	}
+        Default = Hidden
+    }
 }

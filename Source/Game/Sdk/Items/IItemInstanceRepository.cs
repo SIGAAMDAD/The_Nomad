@@ -25,20 +25,23 @@ namespace Nomad.Game.Sdk.Items
         /// <summary>
         ///
         /// </summary>
-        /// <typeparam name="TItemDefinition"></typeparam>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        IItemInstance<TItemDefinition>? Get<TItemDefinition>(ItemInstanceId itemId)
-            where TItemDefinition : ItemDefinition;
+        IItemInstance? Get(ItemInstanceId itemId);
 
         /// <summary>
         ///
         /// </summary>
-        /// <typeparam name="TItemDefinition"></typeparam>
         /// <param name="itemId"></param>
         /// <param name="instance"></param>
         /// <returns></returns>
-        bool TryGet<TItemDefinition>(ItemInstanceId itemId, out IItemInstance<TItemDefinition>? instance)
-            where TItemDefinition : ItemDefinition;
+        bool TryGet(ItemInstanceId itemId, out IItemInstance? instance);
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="instance"></param>
+        bool TryAdd(ItemInstanceId itemId, IItemInstance instance);
     }
 }

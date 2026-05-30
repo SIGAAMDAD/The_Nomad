@@ -26,6 +26,9 @@ using Nomad.Game.Presentation.Screens.ExtrasMenu;
 using Nomad.Game.Presentation.Screens.MainMenu;
 using Nomad.Game.Presentation.Screens.PauseMenu;
 using Nomad.Game.Presentation.Screens.SettingsMenu;
+using Nomad.Game.Presentation.Screens.LoadGameMenu;
+using Nomad.Save.Services;
+using Nomad.Game.Presentation.Screens.NewGameMenu;
 
 namespace Nomad.Game.Presentation.Screens
 {
@@ -135,6 +138,48 @@ namespace Nomad.Game.Presentation.Screens
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
 
 			return new ExtrasMenuPresenter(
+				view,
+				eventFactory
+			);
+		}
+
+		/*
+		===============
+		CreateLoadGameMenuPresenter
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="view"></param>
+		/// <returns></returns>
+		public static LoadGameMenuPresenter CreateLoadGameMenuPresenter( LoadGameMenuView view )
+		{
+			var saveDataProvider = _locator.GetService<ISaveDataProvider>();
+			var eventFactory = _locator.GetService<IGameEventRegistryService>();
+
+			return new LoadGameMenuPresenter(
+				view,
+				saveDataProvider,
+				eventFactory
+			);
+		}
+
+		/*
+		===============
+		CreateNewGameMenuPresenter
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="view"></param>
+		/// <returns></returns>
+		public static NewGameMenuPresenter CreateNewGameMenuPresenter( NewGameMenuView view )
+		{
+			var eventFactory = _locator.GetService<IGameEventRegistryService>();
+
+			return new NewGameMenuPresenter(
 				view,
 				eventFactory
 			);

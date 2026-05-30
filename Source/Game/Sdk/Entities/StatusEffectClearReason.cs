@@ -15,15 +15,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Entities
 {
-	public enum StatusEffectClearReason : byte
-	{
-		None = 0,
+    public enum StatusEffectClearReason : byte
+    {
+        None = 0,
 
-		Death,
-		Respawn,
-		RoundEnd,
-		MatchEnd,
-		Cleanse,
-		EntityDisposed
-	}
+        Death,
+        Respawn,
+        RoundEnd,
+        MatchEnd,
+        Cleanse,
+        EntityDisposed
+    }
 }

@@ -20,10 +20,10 @@ using Nomad.Game.Sdk.Events.Gameplay;
 
 namespace Nomad.Game.Sdk.Player
 {
-	public interface IValdensBookService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "ValdensBookPageFoundEventArgs" )]
-		[EventPayload( "PageId", typeof( InternString ) )]
-		IGameEvent<ValdensBookPageFoundEventArgs> PageFound { get; }
-	}
+    public interface IValdensBookService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "ValdensBookPageFoundEventArgs")]
+        [EventPayload("PageId", typeof(InternString))]
+        IGameEvent<ValdensBookPageFoundEventArgs> PageFound { get; }
+    }
 }

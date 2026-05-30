@@ -21,20 +21,20 @@ using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	///
-	/// </summary>
-	public interface IPlayerSpawnService : IDisposable
-	{
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerSpawnResultEventArgs" )]
-		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "PlayerId", typeof( PlayerId ), Order = 2 )]
-		[EventPayload( "Success", typeof( bool ), Order = 3 )]
-		IGameEvent<PlayerSpawnResultEventArgs> SpawnResultsReady { get; }
+    /// <summary>
+    ///
+    /// </summary>
+    public interface IPlayerSpawnService : IDisposable
+    {
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerSpawnResultEventArgs")]
+        [EventPayload("RequestId", typeof(Guid), Order = 1)]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 2)]
+        [EventPayload("Success", typeof(bool), Order = 3)]
+        IGameEvent<PlayerSpawnResultEventArgs> SpawnResultsReady { get; }
 
-		[Event( nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerSpawnRequestedEventArgs" )]
-		[EventPayload( "RequestId", typeof( Guid ), Order = 1 )]
-		[EventPayload( "Context", typeof( PlayerSpawnContext ), Order = 2 )]
-		IGameEvent<PlayerSpawnRequestedEventArgs> SpawnRequested { get; }
-	}
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerSpawnRequestedEventArgs")]
+        [EventPayload("RequestId", typeof(Guid), Order = 1)]
+        [EventPayload("Context", typeof(PlayerSpawnContext), Order = 2)]
+        IGameEvent<PlayerSpawnRequestedEventArgs> SpawnRequested { get; }
+    }
 }

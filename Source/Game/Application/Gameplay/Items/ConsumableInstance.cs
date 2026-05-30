@@ -13,11 +13,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-namespace Nomad.Game.Presentation.Screens.NewGameMenu
+using System;
+using Nomad.Core.Events;
+using Nomad.Game.Sdk.Items;
+
+namespace Nomad.Game.Application.Gameplay.Items
 {
-	public interface INewGameMenuView
+	internal sealed class ConsumableInstance : ItemInstance, IItemInstance
 	{
-		IOptionsContainerView OptionsView { get; }
-		ICustomDifficultyContainerView CustomDifficultyView { get; }
-	}
-}
+		private readonly IConsumableBehavior _behavior;
+
+		public ConsumableInstance( ItemInstanceId instanceId, ConsumableDefinition definition, IConsumableBehavior behavior, IGameEventRegistryService eventFactory )
+			: base( instanceId, definition, eventFactory )
+		{
+			_behavior = behavior ?? throw new ArgumentNullException( nameof( behavior ) );
+		}
+	};
+};

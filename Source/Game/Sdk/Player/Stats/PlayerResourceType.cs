@@ -15,16 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Player.Stats
 {
-	public enum PlayerResourceType : sbyte
-	{
-		Health,
-		Rage,
-		Sanity,
-		JumpKitHeat,
+    public enum PlayerResourceType : sbyte
+    {
+        Health,
+        Rage,
+        Sanity,
+        JumpKitHeat,
 
-		Max,
-		Count = Max,
+        Max,
+        Count = Max,
 
-		Min = Health
-	}
+        Min = Health
+    }
 }

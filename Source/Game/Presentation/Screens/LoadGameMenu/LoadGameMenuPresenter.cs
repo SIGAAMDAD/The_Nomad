@@ -13,40 +13,135 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Collections.Generic;
+using BenchmarkDotNet.Jobs;
+using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.Events;
+using Nomad.Game.Application.UI.Menus;
 using Nomad.Save.Services;
+using Nomad.Save.ValueObjects;
 
 namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 {
 	/*
 	===================================================================================
-	
+
 	LoadGameMenuPresenter
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
-	internal sealed class LoadGameMenuPresenter
+	internal sealed class LoadGameMenuPresenter : IDisposable
 	{
-		public LoadGameMenuPresenter( LoadGameMenuView view, LoadGameMenuModel model, ISaveDataProvider dataProvider )
-		{
-			view.SlotSelected += OnSlotSelected;
-			view.Back += OnBackPressed;
+		private readonly LoadGameMenuView _view;
 
-			var files = dataProvider.ListSaveFiles();
-			foreach ( var file in files ) {
-				view.AddSlot( file );
+		private readonly IGameEventRegistryService _eventFactory;
+		private readonly ISaveDataProvider _saveDataProvider;
+
+		private bool _isDisposed = false;
+
+		/*
+		===============
+		LoadGameMenuPresenter
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="view"></param>
+		/// <param name="dataProvider"></param>
+		/// <param name="eventFactory"></param>
+		public LoadGameMenuPresenter( LoadGameMenuView view, ISaveDataProvider dataProvider, IGameEventRegistryService eventFactory )
+		{
+			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+			_saveDataProvider = dataProvider ?? throw new ArgumentNullException( nameof( dataProvider ) );
+
+			_view = view ?? throw new ArgumentNullException( nameof( view ) );
+			_view.SlotSelected += OnSlotSelected;
+			_view.Back += OnBackPressed;
+			_view.LoadSlot += OnLoadSlot;
+			_view.DeleteSlot += OnDeleteSlot;
+
+			IReadOnlyList<SaveFileMetadata> files = _saveDataProvider.ListSaveFiles();
+			for ( int i = 0; i < files.Count; i++ ) {
+				view.AddSlot( files[i].SaveName, i );
 			}
 		}
 
-		private void OnSlotSelected( int slot )
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.SlotSelected -= OnSlotSelected;
+			_view.Back -= OnBackPressed;
+			_view.LoadSlot -= OnLoadSlot;
+			_view.DeleteSlot -= OnDeleteSlot;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
+		}
+
+		private void OnDeleteSlot()
 		{
 		}
 
+		private void OnLoadSlot()
+		{
+		}
+
+		/*
+		===============
+		OnSlotSelected
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="slot"></param>
+		private void OnSlotSelected( int slot )
+		{
+			IReadOnlyList<SaveFileMetadata> files = _saveDataProvider.ListSaveFiles();
+
+			var file = files[slot];
+			_view.SetSlotName( file.SaveName );
+			_view.SetLastAccessedTime( file.LastAccessTime.ToLongDateString() );
+		}
+
+		/*
+		===============
+		OnBackPressed
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void OnBackPressed()
 		{
+			_eventFactory
+				.GetEvent<MenuTransitionRequestedEventArgs>(
+					MenuTransitionRequestedEventArgs.Name,
+					MenuTransitionRequestedEventArgs.NameSpace
+				)
+				.Publish(
+					new MenuTransitionRequestedEventArgs(
+						MenuState.LoadGame,
+						MenuState.Main
+					)
+				);
 		}
 	};
 };

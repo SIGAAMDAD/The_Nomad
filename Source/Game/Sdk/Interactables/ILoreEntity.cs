@@ -18,28 +18,28 @@ using Nomad.Game.Sdk.Entities;
 
 namespace Nomad.Game.Sdk.Interactables
 {
-	/*
+    /*
 	===================================================================================
 
 	ILoreEntity
 
 	===================================================================================
 	*/
-	/// <summary>
-	/// Optional capability for lore/readable/discoverable entities.
-	///
-	/// Valden's Book interactables should likely implement this.
-	/// </summary>
+    /// <summary>
+    /// Optional capability for lore/readable/discoverable entities.
+    ///
+    /// Valden's Book interactables should likely implement this.
+    /// </summary>
 
-	public interface ILoreEntity : IInteractableEntity
-	{
-		InternString JournalEntryId { get; }
+    public interface ILoreEntity : IInteractableEntity
+    {
+        InternString JournalEntryId { get; }
 
-		bool IsDiscovered { get; }
+        bool IsDiscovered { get; }
 
-		uint LoreRevision { get; }
+        uint LoreRevision { get; }
 
-		bool CanUnlockLore( EntityId actorId );
-		bool UnlockLore( EntityId actorId );
-	}
+        bool CanUnlockLore(EntityId actorId);
+        bool UnlockLore(EntityId actorId);
+    }
 }

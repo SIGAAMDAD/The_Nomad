@@ -15,13 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Inventory
 {
-	public enum InventoryContainerType : byte
-	{
-		Backpack,
-		MelioraStash,
-		GroundLoot,
-		MerchantStock,
-		TotemSlot,
-		RuneSlot
-	}
+    public enum InventoryContainerType : byte
+    {
+        Backpack,
+        MelioraStash,
+        GroundLoot,
+        MerchantStock,
+        TotemSlot,
+        RuneSlot
+    }
 }

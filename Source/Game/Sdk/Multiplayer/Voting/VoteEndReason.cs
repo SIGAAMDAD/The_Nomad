@@ -15,18 +15,18 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 namespace Nomad.Game.Sdk.Multiplayer.Voting
 {
-	public enum VoteEndReason : byte
-	{
-		None = 0,
-		Passed,
-		Failed,
-		Cancelled,
-		Expired,
-		Interrupted,
-		SessionEnded,
-		TargetLeft,
-		NotEnoughVotes,
+    public enum VoteEndReason : byte
+    {
+        None = 0,
+        Passed,
+        Failed,
+        Cancelled,
+        Expired,
+        Interrupted,
+        SessionEnded,
+        TargetLeft,
+        NotEnoughVotes,
 
-		Count
-	}
+        Count
+    }
 }

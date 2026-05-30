@@ -17,52 +17,52 @@ using System;
 
 namespace Nomad.Game.Sdk.Player
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	[Flags]
-	public enum PlayerFlags : uint
-	{
-		None = 0,
+    /// <summary>
+    /// 
+    /// </summary>
+    [Flags]
+    public enum PlayerFlags : uint
+    {
+        None = 0,
 
-		/// <summary>
-		/// Player is sliding.
-		/// </summary>
-		Sliding = 1 << 0,
+        /// <summary>
+        /// Player is sliding.
+        /// </summary>
+        Sliding = 1 << 0,
 
-		/// <summary>
-		/// Player is in "stealth mode".
-		/// </summary>
-		Crouching = 1 << 1,
+        /// <summary>
+        /// Player is in "stealth mode".
+        /// </summary>
+        Crouching = 1 << 1,
 
-		/// <summary>
-		/// Player is in bullet time.
-		/// </summary>
-		BulletTime = 1 << 2,
+        /// <summary>
+        /// Player is in bullet time.
+        /// </summary>
+        BulletTime = 1 << 2,
 
-		/// <summary>
-		/// Player is dashing.
-		/// </summary>
-		Dashing = 1 << 3,
+        /// <summary>
+        /// Player is dashing.
+        /// </summary>
+        Dashing = 1 << 3,
 
-		/// <summary>
-		/// Mana was used this frame.
-		/// </summary>
-		UsedMana = 1 << 4,
+        /// <summary>
+        /// Mana was used this frame.
+        /// </summary>
+        UsedMana = 1 << 4,
 
-		/// <summary>
-		/// Player is currently in their idle animation.
-		/// </summary>
-		IdleAnimation = 1 << 6,
+        /// <summary>
+        /// Player is currently in their idle animation.
+        /// </summary>
+        IdleAnimation = 1 << 6,
 
-		/// <summary>
-		/// 
-		/// </summary>
-		Checkpoint = 1 << 7,
+        /// <summary>
+        /// 
+        /// </summary>
+        Checkpoint = 1 << 7,
 
-		/// <summary>
-		/// The player's input is currently blocked.
-		/// </summary>
-		BlockedInput = 1 << 8,
-	}
+        /// <summary>
+        /// The player's input is currently blocked.
+        /// </summary>
+        BlockedInput = 1 << 8,
+    }
 }

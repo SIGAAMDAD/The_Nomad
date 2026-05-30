@@ -17,21 +17,21 @@ using System;
 
 namespace Nomad.Game.Sdk.Entities
 {
-	[Flags]
-	public enum StatusEffectFlags : uint
-	{
-		None = 0,
+    [Flags]
+    public enum StatusEffectFlags : uint
+    {
+        None = 0,
 
-		Harmful = 1 << 0,
-		Beneficial = 1 << 1,
-		Neutral = 1 << 2,
+        Harmful = 1 << 0,
+        Beneficial = 1 << 1,
+        Neutral = 1 << 2,
 
-		RemovedOnDeath = 1 << 3,
-		RemovedOnRespawn = 1 << 4,
-		RemovedOnRoundEnd = 1 << 5,
-		PersistsThroughDeath = 1 << 6,
+        RemovedOnDeath = 1 << 3,
+        RemovedOnRespawn = 1 << 4,
+        RemovedOnRoundEnd = 1 << 5,
+        PersistsThroughDeath = 1 << 6,
 
-		Hidden = 1 << 7,
-		Replicated = 1 << 8
-	}
+        Hidden = 1 << 7,
+        Replicated = 1 << 8
+    }
 }

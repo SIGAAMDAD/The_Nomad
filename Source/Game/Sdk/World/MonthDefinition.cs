@@ -17,16 +17,16 @@ using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
 {
-	/// <summary>
-	///
-	/// </summary>
-	public readonly struct MonthDefinition
-	{
-		public InternString Id { get; init; }
-		public InternString DisplayName { get; init; }
-		public SeasonDefinitionId SeasonId { get; init; }
-		public SeasonDefinitionId TransitionSeasonId { get; init; }
-		public float TransitionStartNormalized { get; init; }
-		public int DayCount { get; init; }
-	}
+    /// <summary>
+    ///
+    /// </summary>
+    public readonly struct MonthDefinition
+    {
+        public InternString Id { get; init; }
+        public InternString DisplayName { get; init; }
+        public SeasonDefinitionId SeasonId { get; init; }
+        public SeasonDefinitionId TransitionSeasonId { get; init; }
+        public float TransitionStartNormalized { get; init; }
+        public int DayCount { get; init; }
+    }
 }
