@@ -44,6 +44,7 @@ namespace Nomad.Game.Prefabs
 		private readonly HudComponentView _impl;
 
 		private VBoxContainer _optionsContainer = null;
+		private TextureRect _optionsMenu = null;
 		private readonly List<Button> _buttons = new List<Button>( 6 );
 
 		private Label _prompt;
@@ -74,12 +75,12 @@ namespace Nomad.Game.Prefabs
 				}
 			}
 
-			_optionsContainer.Visible = options.Count > 0;
+			_optionsMenu.Visible = options.Count > 0;
 		}
 
 		public void HideMenu()
 		{
-			_optionsContainer.Hide();
+			_optionsMenu.Hide();
 		}
 
 		public void ShowPrompt( string prompt )
@@ -112,7 +113,8 @@ namespace Nomad.Game.Prefabs
 		{
 			base._Ready();
 
-			_optionsContainer = GetNode<VBoxContainer>( "OptionsContainer" );
+			_optionsMenu = GetNode<TextureRect>( "Background" );
+			_optionsContainer = _optionsMenu.GetNode<VBoxContainer>( "OptionsContainer" );
 			_prompt = GetNode<Label>( "InteractionPrompt" );
 			HideMenu();
 		}

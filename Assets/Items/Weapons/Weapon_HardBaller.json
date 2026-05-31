@@ -9,6 +9,10 @@
 	"Slot": "LightSidearm",
 	"FireRate": 3.2,
 	"MagazineSize": 7,
+	"AcceptedAmmoTypes": [
+		"9mm",
+		"45ACP"
+	],
 	"BaseAimDownSightsSpeed": 1.12,
 	"BaseHipFireAccuracy": 0.76,
 	"BaseReloadSpeed": 1.05,

@@ -21,7 +21,7 @@ namespace Nomad.Game.Sdk.Npc.Planner
     {
         WorkingMemory Memory { get; }
         AgentArchetype Archetype { get; }
-        int PlanningBuget { get; }
+        int PlanningBudget { get; }
 
         void OnPlanBuilt(INpcAgent agent, Plan plan, ReplanReason reasons);
         void OnPlanFailed(INpcAgent agent, GoalDef goal, ReplanReason reasons);

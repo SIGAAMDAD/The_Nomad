@@ -18,17 +18,17 @@ using Nomad.Game.Sdk.Npc.Planner;
 
 namespace Nomad.Modules.NomadMain.AI.Mercenary.Gatling
 {
-	public class MercenaryGatlingStateCompiler : IStateCompiler
-	{
-		public WorldState BuildState( INpcAgent agent )
-		{
-			var a = (MercenaryGatlingAgent)agent;
-			var m = a.Memory;
+    public class MercenaryGatlingStateCompiler : IStateCompiler
+    {
+        public WorldState BuildState( INpcAgent agent )
+        {
+            var a = (MercenaryGatlingAgent)agent;
+            var m = a.Memory;
 
-			WorldState state = default;
-			state = state.Set( WorldKey.EnemyVisible, m.EnemyVisible );
-			state = state.Set( WorldKey.EnemyAudible, m.EnemyAudible );
-			return state;
-		}
-	};
-};
+            WorldState state = default;
+            state = state.Set( WorldKey.EnemyVisible, m.EnemyVisible );
+            state = state.Set( WorldKey.EnemyAudible, m.EnemyAudible );
+            return state;
+        }
+    }
+}

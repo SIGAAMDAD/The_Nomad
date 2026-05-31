@@ -74,11 +74,12 @@ theme_override_styles/tab_unselected = SubResource("StyleBoxEmpty_amo7r")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_lwvah")
 theme_override_styles/tab_selected = SubResource("StyleBoxFlat_1rltl")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_lwvah")
-current_tab = 0
+current_tab = 2
 script = ExtResource("5_lwvah")
 metadata/_tab_index = 0
 
 [node name="Basic" type="VBoxContainer" parent="TabContainer/Display" unique_id=2084214716]
+visible = false
 use_parent_material = true
 layout_mode = 2
 metadata/_tab_index = 0
@@ -110,11 +111,6 @@ layout_mode = 2
 ConfigVarName = "display.VSyncMode"
 Title = "UI_SETTINGS_DISPLAY_VSYNC_MODE"
 
-[node name="AspectRatioList" parent="TabContainer/Display/Basic" unique_id=304588338 instance=ExtResource("4_sceel")]
-layout_mode = 2
-ConfigVarName = "display.AspectRatio"
-Title = "UI_SETTINGS_DISPLAY_ASPECT_RATIO"
-
 [node name="MaxFpsSlider" parent="TabContainer/Display/Basic" unique_id=233075417 instance=ExtResource("5_yx041")]
 layout_mode = 2
 offset_transform_enabled = true
@@ -144,7 +140,6 @@ text = "UI_SETTINGS_DISPLAY_ANTI_ALIASING"
 layout_mode = 2
 
 [node name="AntiAliasingList" parent="TabContainer/Display/Advanced" unique_id=1393170708 instance=ExtResource("4_sceel")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.AntiAliasing"
 Title = "UI_SETTINGS_DISPLAY_ANTI_ALIASING"
@@ -157,13 +152,11 @@ theme_override_constants/margin_left = 120
 layout_mode = 2
 
 [node name="SharpeningEnabled" parent="TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=836527264 instance=ExtResource("6_m4e4s")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningEnabled"
 Title = "UI_SETTINGS_DISPLAY_SHARPENING_ENABLED"
 
 [node name="SharpeningAmount" parent="TabContainer/Display/Advanced/AntiAliasingOptions/VBoxContainer" unique_id=1230149142 instance=ExtResource("5_yx041")]
-unique_name_in_owner = true
 layout_mode = 2
 ConfigVarName = "display.SharpeningAmount"
 Title = "UI_SETTINGS_DISPLAY_SHARPENING_AMOUNT"
@@ -175,7 +168,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Filters" type="VBoxContainer" parent="TabContainer/Display" unique_id=1401944297]
-visible = false
 use_parent_material = true
 layout_mode = 2
 metadata/_tab_index = 2

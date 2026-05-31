@@ -19,65 +19,55 @@ using Nomad.Game.Sdk.Npc.Planner.Goals;
 
 namespace Nomad.Modules.NomadMain.AI.Mercenary.Gatling
 {
-	/*
+    /*
 	===================================================================================
 
 	MercenaryGatlingAgent
 
 	===================================================================================
 	*/
-	/// <summary>
-	///
-	/// </summary>
+    /// <summary>
+    ///
+    /// </summary>
 
-	public class MercenaryGatlingAgent : INpcAgentBehavior
-	{
-		public WorkingMemory Memory {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+    public class MercenaryGatlingAgent : INpcAgentBehavior
+    {
+        public WorkingMemory Memory => _memory;
+        private readonly MercenaryGatlingMemory _memory;
 
-		public AgentArchetype Archetype {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+        public AgentArchetype Archetype => _archetype;
+        private readonly AgentArchetype _archetype;
 
-		public int PlanningBuget {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+        public int PlanningBudget => 96;
 
-		public void OnActionFailed( INpcAgent agent, PlannerAction action )
-		{
-			throw new System.NotImplementedException();
-		}
+        public MercenaryGatlingAgent()
+        {
+            _archetype = new AgentArchetype {
+            };
+        }
 
-		public void OnActionStarted( INpcAgent agent, PlannerAction action )
-		{
-			throw new System.NotImplementedException();
-		}
+        public void OnActionFailed( INpcAgent agent, PlannerAction action )
+        {
+        }
 
-		public void OnActionSucceeded( INpcAgent agent, PlannerAction action )
-		{
-			throw new System.NotImplementedException();
-		}
+        public void OnActionStarted( INpcAgent agent, PlannerAction action )
+        {
+        }
 
-		public void OnPlanBuilt( INpcAgent agent, Plan plan, ReplanReason reasons )
-		{
-			throw new System.NotImplementedException();
-		}
+        public void OnActionSucceeded( INpcAgent agent, PlannerAction action )
+        {
+        }
 
-		public void OnPlanCompleted( INpcAgent agent, GoalDef goal )
-		{
-			throw new System.NotImplementedException();
-		}
+        public void OnPlanBuilt( INpcAgent agent, Plan plan, ReplanReason reasons )
+        {
+        }
 
-		public void OnPlanFailed( INpcAgent agent, GoalDef goal, ReplanReason reasons )
-		{
-			throw new System.NotImplementedException();
-		}
-	};
-};
+        public void OnPlanCompleted( INpcAgent agent, GoalDef goal )
+        {
+        }
+
+        public void OnPlanFailed( INpcAgent agent, GoalDef goal, ReplanReason reasons )
+        {
+        }
+    }
+}

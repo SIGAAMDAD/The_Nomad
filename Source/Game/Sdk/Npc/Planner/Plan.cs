@@ -33,5 +33,5 @@ namespace Nomad.Game.Sdk.Npc.Planner
             Steps = steps ?? Array.Empty<PlanStep>();
             CurrentIndex = 0;
         }
-    };
-};
+    }
+}

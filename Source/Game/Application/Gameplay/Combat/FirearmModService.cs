@@ -22,6 +22,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 	internal sealed class FirearmModService
 	{
 		private readonly InstalledFirearmMod[] _modSlots = new InstalledFirearmMod[(int)FirearmModSlot.Count];
+		private readonly FirearmModDefinition?[] _modDefinitions = new FirearmModDefinition?[(int)FirearmModSlot.Count];
 		private readonly FirearmDefinition _definition;
 
 		public FirearmModService( FirearmDefinition definition )
@@ -31,24 +32,38 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 		public void Clear()
 		{
+			Array.Clear( _modSlots );
+			Array.Clear( _modDefinitions );
 		}
 
 		public bool IsSlotUsed( FirearmModSlot slot )
 		{
+			if ( !IsValidSlot( slot ) ) {
+				return false;
+			}
+
 			return _modSlots[ (int)slot ].IsValid;
 		}
 
 		public bool CanInstallMod( FirearmModDefinition mod )
 		{
+			if ( mod == null || !IsValidSlot( mod.Slot ) ) {
+				return false;
+			}
+
 			if ( !SupportsSlot( mod.Slot ) ) {
 				return false;
 			}
 
-			if ( mod.RequiredFirearmFlags != FirearmFlags.None && (_definition.Flags & mod.BlockedFirearmFlags) != 0 ) {
+			if ( mod.RequiredFirearmFlags != FirearmFlags.None && (_definition.Flags & mod.RequiredFirearmFlags) != mod.RequiredFirearmFlags ) {
 				return false;
 			}
 
-			if ( mod.Flags.HasFlag( FirearmModFlags.Unique ) && _modSlots[(int)mod.Slot].IsValid ) {
+			if ( mod.BlockedFirearmFlags != FirearmFlags.None && (_definition.Flags & mod.BlockedFirearmFlags) != 0 ) {
+				return false;
+			}
+
+			if ( _modSlots[(int)mod.Slot].IsValid ) {
 				return false;
 			}
 
@@ -65,8 +80,32 @@ namespace Nomad.Game.Application.Gameplay.Combat
 				mod.Slot,
 				mod.Id
 			);
+			_modDefinitions[(int)mod.Slot] = mod;
 
 			return true;
+		}
+
+		public bool TryRemoveMod( FirearmModSlot slot )
+		{
+			if ( !IsValidSlot( slot ) || !_modSlots[(int)slot].IsValid ) {
+				return false;
+			}
+
+			_modSlots[(int)slot] = default;
+			_modDefinitions[(int)slot] = null;
+			return true;
+		}
+
+		public IReadOnlyList<FirearmModDefinition> GetInstalledMods()
+		{
+			var mods = new List<FirearmModDefinition>();
+			for ( int i = 0; i < _modDefinitions.Length; i++ ) {
+				if ( _modDefinitions[i] != null ) {
+					mods.Add( _modDefinitions[i]! );
+				}
+			}
+
+			return mods;
 		}
 
 		private bool SupportsSlot( FirearmModSlot slot )
@@ -75,6 +114,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 				FirearmModSlot.Optic => _definition.Flags.HasFlag( FirearmFlags.SupportsOptics ),
 				FirearmModSlot.Barrel => _definition.Flags.HasFlag( FirearmFlags.SupportsBarrelMods ),
 				FirearmModSlot.Magazine => _definition.Flags.HasFlag( FirearmFlags.SupportsMagazineMods ),
+				FirearmModSlot.Ammo => _definition.Flags.HasFlag( FirearmFlags.SupportsAmmoMods ),
 				FirearmModSlot.Underbarrel => _definition.Flags.HasFlag( FirearmFlags.SupportsUnderbarrel ),
 
 				FirearmModSlot.Stock => true,
@@ -84,6 +124,11 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 				_ => false
 			};
+		}
+
+		private static bool IsValidSlot( FirearmModSlot slot )
+		{
+			return slot > FirearmModSlot.None && slot < FirearmModSlot.Count;
 		}
 
 		public FirearmResolvedStats Resolve( IReadOnlyList<FirearmModDefinition> mods )

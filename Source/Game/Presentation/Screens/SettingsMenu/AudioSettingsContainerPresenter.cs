@@ -13,9 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.EngineUtils.Settings.Services;
-using Nomad.Game.Presentation.Screens.SettingsMenu;
+using System;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
@@ -35,10 +33,12 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		private readonly AudioSettingsContainerView _view;
 		private readonly AudioSettingsContainerModel _model;
 
+		private bool _isDisposed = false;
+
 		public AudioSettingsContainerPresenter( AudioSettingsContainerView view, AudioSettingsContainerModel model )
 		{
-			_view = view;
-			_model = model;
+			_view = view ?? throw new ArgumentNullException( nameof( view ) );
+			_model = model ?? throw new ArgumentNullException( nameof( model ) );
 
 			_view.MusicVolumeChanged += _model.SetMusicVolume;
 			_view.MusicOnChanged += _model.SetMusicOn;
@@ -48,6 +48,23 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 			_view.AudioDriverChanged += _model.SetAudioDriverAPI;
 
 			SyncView();
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.MusicVolumeChanged -= _model.SetMusicVolume;
+			_view.MusicOnChanged -= _model.SetMusicOn;
+			_view.EffectsVolumeChanged -= _model.SetEffectsVolume;
+			_view.EffectsOnChanged -= _model.SetEffectsOn;
+			_view.OutputDeviceChanged -= _model.SetOutputDevice;
+			_view.AudioDriverChanged -= _model.SetAudioDriverAPI;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		public void Reset()

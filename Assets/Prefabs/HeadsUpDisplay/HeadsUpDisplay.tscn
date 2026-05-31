@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bg86t65h20dd3" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/HealthBarView.cs" id="2_xk7bv"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="3_ia0rx"]
 [ext_resource type="Script" uid="uid://bi4x0sxwbck6b" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/RageBarView.cs" id="3_xs3se"]
+[ext_resource type="Texture2D" uid="uid://cgq5fs8i76veq" path="res://Assets/Textures/UserInterface/parchment.png" id="4_vgsxp"]
 [ext_resource type="Texture2D" uid="uid://cp7mt2ochnjfp" path="res://icon.svg" id="5_kj2yv"]
 [ext_resource type="Script" uid="uid://cmim40wcvghc7" path="res://Assets/Prefabs/HeadsUpDisplay/Neutral/DashStatusBarView.cs" id="5_uq2bp"]
 [ext_resource type="Script" uid="uid://bh18t5qaaayqq" path="res://Assets/Prefabs/HeadsUpDisplay/Combat/HotSlotsContainerView.cs" id="8_6bk6h"]
@@ -106,8 +107,98 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 script = ExtResource("1_fk5k7")
+metadata/_edit_use_anchors_ = true
+
+[node name="CombatHUD" type="Control" parent="." unique_id=1259599951]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HotSlotsContainer" type="VBoxContainer" parent="CombatHUD" unique_id=497008511]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.892
+anchor_top = 0.163
+anchor_right = 1.0
+anchor_bottom = 0.837
+offset_left = 0.39996338
+offset_top = 0.19999695
+offset_bottom = -0.2000122
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 10
+script = ExtResource("8_6bk6h")
+metadata/_edit_use_anchors_ = true
+
+[node name="HotSlot0" parent="CombatHUD/HotSlotsContainer" unique_id=483126325 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot1" parent="CombatHUD/HotSlotsContainer" unique_id=426577831 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot2" parent="CombatHUD/HotSlotsContainer" unique_id=10731724 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot3" parent="CombatHUD/HotSlotsContainer" unique_id=1818924886 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot4" parent="CombatHUD/HotSlotsContainer" unique_id=598585394 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="HotSlot5" parent="CombatHUD/HotSlotsContainer" unique_id=1213340026 instance=ExtResource("9_bqotp")]
+layout_mode = 2
+
+[node name="WeaponStatusContainer" type="VBoxContainer" parent="CombatHUD" unique_id=316757214]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.892
+anchor_top = 0.94200003
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.39996338
+offset_top = -0.2000122
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="WeaponIcon" type="TextureRect" parent="CombatHUD/WeaponStatusContainer" unique_id=503786097]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="CombatHUD/WeaponStatusContainer" unique_id=1588688972]
+layout_mode = 2
+
+[node name="AmmoCounterLabel" type="Label" parent="CombatHUD/WeaponStatusContainer" unique_id=601177881]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="ExplorationHUD" type="Control" parent="." unique_id=455022615]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="LocationLabel" type="Label" parent="ExplorationHUD" unique_id=2041213495]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.9620001
+anchor_right = 0.3
+anchor_bottom = 1.0
+offset_top = -0.20007324
+offset_right = -239.00002
+grow_vertical = 0
+size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
 
 [node name="NeutralHUD" type="Control" parent="." unique_id=2071778833]
@@ -117,7 +208,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="InteractionMenu" type="MarginContainer" parent="NeutralHUD" unique_id=1872239974]
@@ -127,8 +217,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
-theme_override_constants/margin_left = 60
+theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 60
 theme_override_constants/margin_right = 60
 theme_override_constants/margin_bottom = 60
@@ -136,21 +225,32 @@ script = ExtResource("2_8k8bm")
 _buttonPrefab = ExtResource("3_ia0rx")
 metadata/_edit_use_anchors_ = true
 
-[node name="OptionsContainer" type="VBoxContainer" parent="NeutralHUD/InteractionMenu" unique_id=1257003829]
-top_level = true
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-offset_transform_enabled = true
-mouse_filter = 0
-mouse_behavior_recursive = 2
-alignment = 1
-
 [node name="InteractionPrompt" type="Label" parent="NeutralHUD/InteractionMenu" unique_id=671114498]
 visible = false
 layout_mode = 2
 size_flags_vertical = 8
 horizontal_alignment = 1
+
+[node name="Background" type="TextureRect" parent="NeutralHUD/InteractionMenu" unique_id=58663680]
+visible = false
+custom_minimum_size = Vector2(300, 500)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource("4_vgsxp")
+
+[node name="OptionsContainer" type="VBoxContainer" parent="NeutralHUD/InteractionMenu/Background" unique_id=1060399407]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+metadata/_edit_use_anchors_ = true
 
 [node name="StatBarContainer" type="VBoxContainer" parent="NeutralHUD" unique_id=1228700349]
 layout_mode = 1
@@ -229,97 +329,4 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("8_otcf6")
-metadata/_edit_use_anchors_ = true
-
-[node name="CombatHUD" type="Control" parent="." unique_id=1259599951]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="HotSlotsContainer" type="VBoxContainer" parent="CombatHUD" unique_id=497008511]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.892
-anchor_top = 0.163
-anchor_right = 1.0
-anchor_bottom = 0.837
-offset_left = 0.39996338
-offset_top = 0.19999695
-offset_bottom = -0.2000122
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 10
-script = ExtResource("8_6bk6h")
-metadata/_edit_use_anchors_ = true
-
-[node name="HotSlot0" parent="CombatHUD/HotSlotsContainer" unique_id=483126325 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="HotSlot1" parent="CombatHUD/HotSlotsContainer" unique_id=426577831 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="HotSlot2" parent="CombatHUD/HotSlotsContainer" unique_id=10731724 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="HotSlot3" parent="CombatHUD/HotSlotsContainer" unique_id=1818924886 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="HotSlot4" parent="CombatHUD/HotSlotsContainer" unique_id=598585394 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="HotSlot5" parent="CombatHUD/HotSlotsContainer" unique_id=1213340026 instance=ExtResource("9_bqotp")]
-layout_mode = 2
-
-[node name="WeaponStatusContainer" type="VBoxContainer" parent="CombatHUD" unique_id=316757214]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.892
-anchor_top = 0.94200003
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.39996338
-offset_top = -0.2000122
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_horizontal = 3
-metadata/_edit_use_anchors_ = true
-
-[node name="WeaponIcon" type="TextureRect" parent="CombatHUD/WeaponStatusContainer" unique_id=503786097]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HSeparator" type="HSeparator" parent="CombatHUD/WeaponStatusContainer" unique_id=1588688972]
-layout_mode = 2
-
-[node name="AmmoCounterLabel" type="Label" parent="CombatHUD/WeaponStatusContainer" unique_id=601177881]
-layout_mode = 2
-horizontal_alignment = 1
-
-[node name="ExplorationHUD" type="Control" parent="." unique_id=455022615]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-metadata/_edit_use_anchors_ = true
-
-[node name="LocationLabel" type="Label" parent="ExplorationHUD" unique_id=2041213495]
-custom_minimum_size = Vector2(240, 0)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.9620001
-anchor_right = 0.3
-anchor_bottom = 1.0
-offset_top = -0.20007324
-offset_right = -239.00002
-grow_vertical = 0
-size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true

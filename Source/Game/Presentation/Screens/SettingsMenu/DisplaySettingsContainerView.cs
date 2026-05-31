@@ -18,9 +18,9 @@ using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Engine.Rendering;
 using Nomad.Core.Engine.Windowing;
+using Nomad.Game.Presentation.Widgets.OptionCheckbox;
 using Nomad.Game.Presentation.Widgets.OptionList;
 using Nomad.Game.Presentation.Widgets.OptionSlider;
-using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
@@ -43,12 +43,24 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public event Action<int> MaximumFramerateChanged;
 		public event Action<VSyncMode> VSyncModeChanged;
 		public event Action<float> BrightnessChanged;
+		public event Action<AntiAliasingMode> AntiAliasingChanged;
 
 		private OptionList _monitorIndex;
 		private OptionList _windowMode;
 		private OptionList _windowResolution;
 		private OptionList _vsyncList;
 		private OptionSlider _maximumFramerate;
+		private OptionSlider _brightness;
+
+		private OptionList _antiAliasingList;
+		private OptionCheckbox _sharpeningEnabled;
+		private OptionSlider _sharpeningAmount;
+
+		public void SetAntiAliasingMode( AntiAliasingMode value )
+		{
+			_antiAliasingList.Value = (int)value;
+			AntiAliasingChanged?.Invoke( value );
+		}
 
 		public void SetMonitorIndex( int value )
 		{
@@ -132,6 +144,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 			_maximumFramerate = GetNode<OptionSlider>( "Basic/MaxFpsSlider" );
 			_maximumFramerate.ValueChanged.Subscribe( ( in value ) => MaximumFramerateChanged?.Invoke( (int)value.Value ) );
+
+			_antiAliasingList = GetNode<OptionList>( "AdvancedAntiAliasingList" );
+			_antiAliasingList.ValueSet.Subscribe( ( in value ) => AntiAliasingChanged?.Invoke( (AntiAliasingMode)value.Value ) );
 		}
 	};
 };

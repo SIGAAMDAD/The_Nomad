@@ -19,18 +19,18 @@ using Nomad.Modding.Events;
 
 namespace Nomad.Modules.NomadMain.Items
 {
-	public sealed class FirelinkChargeBehavior : IConsumableBehavior
-	{
-		public FirelinkChargeBehavior( ConsumableDefinition definition, IModEventRegistry eventFactory )
-		{
-		}
+    public sealed class FirelinkChargeBehavior : IConsumableBehavior
+    {
+        public FirelinkChargeBehavior( ConsumableDefinition definition, IModEventRegistry eventFactory )
+        {
+        }
 
-		public void OnInteract( in EntityInteractionContext context )
-		{
-			switch ( context.Kind ) {
-				case EntityInteractionKind.Consume:
-					break;
-			}
-		}
-	};
-};
+        public void OnInteract( in EntityInteractionContext context )
+        {
+            switch ( context.Kind ) {
+                case EntityInteractionKind.Consume:
+                    break;
+            }
+        }
+    }
+}
