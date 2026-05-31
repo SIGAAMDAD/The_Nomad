@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ulx82mh34v25" path="res://Assets/Prefabs/HeadsUpDisplay/Combat/HotSlot/HotSlotView.cs" id="1_4tci5"]
 
 [node name="HotSlot" type="HBoxContainer" unique_id=483126325]
+anchors_preset = -1
 anchor_right = 0.10700001
 anchor_bottom = 0.10700001
 offset_right = -45.600006

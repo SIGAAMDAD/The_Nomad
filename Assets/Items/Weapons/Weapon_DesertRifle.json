@@ -10,8 +10,8 @@
 	"FireRate": 0.42,
 	"MagazineSize": 1,
 	"AcceptedAmmoTypes": [
-		"7.62",
-		"50BMG"
+		"7.62mm",
+		".50 BMG"
 	],
 	"BaseAimDownSightsSpeed": 0.62,
 	"BaseHipFireAccuracy": 0.18,

@@ -14,8 +14,10 @@
 {4da15ed0-63ef-42b1-bfdb-d8190d8e912c} bus:/SoundEffects/Foley
 {9c074212-9b5e-4b1a-856d-28cef64582d1} bus:/SoundEffects/Foley/Walk
 {08340847-5532-4b62-aba9-2e3b5c6c6fb2} bus:/SoundEffects/UserInterface
+{e74e69a9-25c9-48f6-b9b3-0dcc430410ce} bus:/Voice
 {14434654-6dd0-444f-bb95-4d855e541017} event:/Music/UserInterface/MainMenuTheme
 {9a58edf6-74ca-45aa-b799-71fe95b7d79d} event:/SoundEffects/Ambience/DesertWinds
+{d5316d34-9b44-4764-97a4-000a07a91c02} event:/SoundEffects/FX/Player/ChangeWeapon
 {3efe5c6b-5ada-48d9-81f3-6f8b88066a23} event:/SoundEffects/FX/Player/DashActivate
 {9356ef2b-ac3e-480c-9d4b-2b5dcae56d7b} event:/SoundEffects/FX/Player/DashBurnout
 {893543a9-1238-44ac-b6ac-0c3f9d75029f} event:/SoundEffects/FX/Player/DashRecharge

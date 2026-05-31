@@ -1,0 +1,16 @@
+{
+	"BaseType": "Ammunition",
+	"Id": "AMMO_45ACP",
+	"Name": "45 ACP",
+	"JournalEntry": "A heavy sidearm cartridge with a slower projectile, stronger impact, and more pronounced recoil than 9mm.",
+	"Weight": 0.021,
+	"BaseCost": 3.0,
+	"IsStackable": true,
+	"Type": "45 ACP",
+	"Category": "Light",
+	"Modifier": "None",
+	"Damage": 24.0,
+	"Velocity": 260.0,
+	"Range": 36.0,
+	"Recoil": 0.82
+}

@@ -1,0 +1,16 @@
+{
+	"BaseType": "Ammunition",
+	"Id": "AMMO_556MM",
+	"Name": "5.56mm",
+	"JournalEntry": "A fast intermediate rifle cartridge tuned for flat trajectory, controllable recoil, and reliable mid-range fire.",
+	"Weight": 0.012,
+	"BaseCost": 4.0,
+	"IsStackable": true,
+	"Type": "5.56mm",
+	"Category": "Heavy",
+	"Modifier": "None",
+	"Damage": 32.0,
+	"Velocity": 910.0,
+	"Range": 125.0,
+	"Recoil": 1.05
+}

@@ -47,6 +47,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 		private readonly PlayerId _playerId = PlayerId.Invalid;
 
+		private readonly Node2D _animatorRoot;
 		private readonly AnimatedSprite2D _torsoAnimator;
 		private readonly Sprite2D _headAnimator;
 		private readonly AnimatedSprite2D _legAnimator;
@@ -94,6 +95,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_playerId = playerId;
+
+			_animatorRoot = prefab.GetNode<Node2D>( "Animations" );
 
 			_headAnimator = prefab.GetNode<Sprite2D>( "Animations/HeadSprite" );
 
@@ -148,6 +151,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			_leftHandAnimator.Rotation = args.NewAngle;
 			_rightHandAnimator.Rotation = args.NewAngle;
+
+			if ( flip ) {
+				_leftHandAnimator.ZIndex = 2;
+				_rightHandAnimator.ZIndex = 0;
+			} else {
+				_leftHandAnimator.ZIndex = 0;
+				_rightHandAnimator.ZIndex = 2;
+			}
 		}
 
 		private void OnLocomotionCue( in PlayerLocomotionCueEventArgs args )
