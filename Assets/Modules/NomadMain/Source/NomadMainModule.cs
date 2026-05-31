@@ -19,30 +19,30 @@ using Nomad.Modules.NomadMain.Items;
 
 namespace Nomad.Modules.NomadMain
 {
-	public sealed class NomadMainModule : NomadModule
-	{
-		public override string Id => "gdr.nomadmain";
+    public sealed class NomadMainModule : NomadModule
+    {
+        public override string Id => "gdr.nomadmain";
 
-		public override void OnPreLoad(IModuleContext context)
-		{
-			context.Logger.Debug("NomadMain preload started.");
-		}
+        public override void OnPreLoad( IModuleContext context )
+        {
+            context.Logger.Debug( "NomadMain preload started." );
+        }
 
-		public override void OnInitialized(IModuleContext context)
-		{
-			context.Logger.Info(
-				$"NomadMain initialized against mod API {context.RuntimeApiVersion}."
-			);
+        public override void OnInitialized( IModuleContext context )
+        {
+            context.Logger.Info(
+                $"NomadMain initialized against mod API {context.RuntimeApiVersion}."
+            );
 
-			context.Behaviors.AddConsumable<FirelinkChargeBehavior>(
-				"gdr.nomadmain.firelink_charge",
-				(module, definition) => new FirelinkChargeBehavior(definition, module.Events)
-			);
-		}
+            context.Behaviors.AddConsumable<FirelinkChargeBehavior>(
+                "gdr.nomadmain.firelink_charge",
+                ( module, definition ) => new FirelinkChargeBehavior( definition, module.Events )
+            );
+        }
 
-		public override void OnShutdown(IModuleContext context)
-		{
-			context.Logger.Info("NomadMain shutting down.");
-		}
-	}
+        public override void OnShutdown( IModuleContext context )
+        {
+            context.Logger.Info( "NomadMain shutting down." );
+        }
+    }
 }

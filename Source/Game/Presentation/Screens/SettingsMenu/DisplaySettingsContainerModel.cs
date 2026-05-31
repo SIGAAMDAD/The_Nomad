@@ -25,13 +25,13 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
 	/*
 	===================================================================================
-	
+
 	DisplaySettingsContainerModel
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class DisplaySettingsContainerModel
@@ -39,6 +39,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public WindowMode WindowMode => _service.Config.WindowMode;
 		public WindowResolution WindowResolution => _service.Config.Resolution;
 		public int MonitorIndex => _service.Config.MonitorIndex;
+
+		public AntiAliasingMode AntiAliasing => _service.Config.AntiAliasing;
 
 		public VSyncMode VSyncMode => _service.Config.VSyncMode;
 
@@ -66,7 +68,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="windowService"></param>
 		/// <param name="service"></param>

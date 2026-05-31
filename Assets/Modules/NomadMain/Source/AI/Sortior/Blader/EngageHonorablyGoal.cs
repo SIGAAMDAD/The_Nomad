@@ -18,32 +18,32 @@ using Nomad.Game.Sdk.Npc.Planner.Goals;
 
 namespace Nomad.Modules.NomadMain.AI.Sortior.Blader
 {
-	public class EngageHonorablyGoal : AiGoal
-	{
-		public override string Name => "EngageHonorably";
-		public override int BasePriority => 60;
+    public class EngageHonorablyGoal : AiGoal
+    {
+        public override string Name => "EngageHonorably";
+        public override int BasePriority => 60;
 
-		public override int GetScoreModifier( PlanningContext context )
-		{
-			var m = (SortorianBladerMemory)context.Memory;
-			int score = 0;
-			if ( m.EnemyVisible ) {
-				score += 25;
-			}
-			if ( m.PathToTargetClear ) {
-				score += 10;
-			}
-			if ( m.RecentlyHitByGunfire ) {
-				score -= 10;
-			}
-			return score;
-		}
+        public override int GetScoreModifier( PlanningContext context )
+        {
+            var m = (SortorianBladerMemory)context.Memory;
+            int score = 0;
+            if ( m.EnemyVisible ) {
+                score += 25;
+            }
+            if ( m.PathToTargetClear ) {
+                score += 10;
+            }
+            if ( m.RecentlyHitByGunfire ) {
+                score -= 10;
+            }
+            return score;
+        }
 
-		protected override GoalBuilder Build()
-		{
-			var builder = new GoalBuilder();
-			builder.Wants( WorldKey.EnemyVisible, true );
-			return builder;
-		}
-	};
+        protected override GoalBuilder Build()
+        {
+            var builder = new GoalBuilder();
+            builder.Wants( WorldKey.EnemyVisible, true );
+            return builder;
+        }
+    };
 };

@@ -17,7 +17,6 @@ using System;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Combat;
 using Nomad.Game.Sdk.Entities;
-using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Events.Combat;
 using Nomad.Game.Sdk.Inventory;
@@ -33,19 +32,36 @@ namespace Nomad.Game.Application.Gameplay.Combat
 	===================================================================================
 	*/
 	/// <summary>
-	///
+	/// Runtime state and behavior for a concrete firearm item.
 	/// </summary>
-
-	internal class FirearmInstance : WeaponInstance<FirearmDefinition>, IFirearmInstance
+	/// <remarks>
+	/// <para>
+	/// The instance combines immutable catalog data from
+	/// <see cref="FirearmDefinition"/> with mutable magazine and modification
+	/// state. The resolved <see cref="Stats"/> value is firearm handling only:
+	/// fire rate, magazine size, reload speed, aiming behavior, reliability,
+	/// attachment effects, and similar mechanical values.
+	/// </para>
+	/// <para>
+	/// Projectile output stays ammo-owned. Damage, range, projectile velocity,
+	/// recoil impulse, and ammo category are read from <see cref="LoadedAmmo"/>
+	/// and are not copied into firearm stats. Compatibility is checked by the
+	/// firearm's accepted data-loaded ammo types, allowing one firearm to accept
+	/// several granular cartridges while rejecting others.
+	/// </para>
+	/// </remarks>
+	internal sealed class FirearmInstance : WeaponInstance<FirearmDefinition>, IFirearmInstance
 	{
 		public FirearmDefinition FirearmDefinition => definition;
 		public FirearmMagazine AmmoSnapshot => _magazineService.Snapshot;
 		public FirearmResolvedStats Stats => _resolvedStats;
+		public AmmoDefinition? LoadedAmmo => _magazineService.LoadedAmmo;
 
 		private readonly FirearmModService _modService;
 		private readonly FirearmMagazineService _magazineService;
 
 		private FirearmResolvedStats _resolvedStats;
+		private bool _isUsing;
 
 		public IGameEvent<FirearmJammedEventArgs> FirearmJammed => _jammed;
 		private readonly IGameEvent<FirearmJammedEventArgs> _jammed = null;
@@ -62,6 +78,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_modService = new FirearmModService( definition );
+			_magazineService = new FirearmMagazineService( this );
 			_resolvedStats = _modService.Resolve( Array.Empty<FirearmModDefinition>() );
 
 			_jammed = eventFactory
@@ -98,30 +115,65 @@ namespace Nomad.Game.Application.Gameplay.Combat
 
 		public bool TryReload( IStorageUnit inventory )
 		{
-			return _magazineService.TryReload( inventory );
+			if ( !_magazineService.TryReload( inventory, out int roundsLoaded ) ) {
+				return false;
+			}
+
+			_reloaded.Publish( new FirearmReloadedEventArgs( InstanceId, roundsLoaded ) );
+			return true;
+		}
+
+		public bool TrySetAmmo( AmmoDefinition ammoDefinition )
+		{
+			return _magazineService.TrySetAmmo( ammoDefinition );
 		}
 
 		public bool TryStartUse()
 		{
-			if ( !_magazineService.CanUse ) {
+			if ( _isUsing || !_magazineService.TryConsumeRound() ) {
 				return false;
 			}
+
+			_isUsing = true;
+			_used.Publish( new FirearmUsedEventArgs( InstanceId ) );
 			return true;
 		}
 
 		public bool TryEndUse()
 		{
-			return false;
+			if ( !_isUsing ) {
+				return false;
+			}
+
+			_isUsing = false;
+			return true;
 		}
 
 		public bool TryAddMod( FirearmModSlot slot, FirearmModDefinition mod )
 		{
-			return false;
+			ArgumentGuard.ThrowIfNull( mod, nameof( mod ) );
+
+			if ( slot != mod.Slot || !_modService.TryInstallMod( mod ) ) {
+				return false;
+			}
+
+			RefreshResolvedStats();
+			return true;
 		}
 
 		public bool TryRemoveMod( FirearmModSlot slot )
 		{
-			return false;
+			if ( !_modService.TryRemoveMod( slot ) ) {
+				return false;
+			}
+
+			RefreshResolvedStats();
+			return true;
+		}
+
+		private void RefreshResolvedStats()
+		{
+			_resolvedStats = _modService.Resolve( _modService.GetInstalledMods() );
 		}
 	};
 };

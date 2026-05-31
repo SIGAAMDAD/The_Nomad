@@ -9,6 +9,10 @@
 	"Slot": "HeavyPrimary",
 	"FireRate": 0.42,
 	"MagazineSize": 1,
+	"AcceptedAmmoTypes": [
+		"7.62",
+		"50BMG"
+	],
 	"BaseAimDownSightsSpeed": 0.62,
 	"BaseHipFireAccuracy": 0.18,
 	"BaseReloadSpeed": 0.72,

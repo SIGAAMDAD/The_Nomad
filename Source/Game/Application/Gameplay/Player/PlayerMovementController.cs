@@ -110,28 +110,28 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			eventFactory
 				.GetEvent<PlayerDashStartEventArgs>(
-					$"{Id}:{PlayerDashStartEventArgs.Name}",
+					PlayerDashStartEventArgs.Name,
 					PlayerDashStartEventArgs.NameSpace
 				)
 				.Subscribe( OnDashStarted );
 
 			eventFactory
 				.GetEvent<PlayerDashEndedEventArgs>(
-					$"{Id}:{PlayerDashEndedEventArgs.Name}",
+					PlayerDashEndedEventArgs.Name,
 					PlayerDashEndedEventArgs.NameSpace
 				)
 				.Subscribe( OnDashEnded );
 
 			eventFactory
 				.GetEvent<PlayerDerivedStatChangedEventArgs>(
-					$"{Id}:{PlayerDerivedStatChangedEventArgs.Name}",
+					PlayerDerivedStatChangedEventArgs.Name,
 					PlayerDerivedStatChangedEventArgs.NameSpace
 				)
 				.Subscribe( OnStatChanged );
 
 			_locomotionCue = eventFactory
 				.GetEvent<PlayerLocomotionCueEventArgs>(
-					$"{Id}:{PlayerLocomotionCueEventArgs.Name}",
+					PlayerLocomotionCueEventArgs.Name,
 					PlayerLocomotionCueEventArgs.NameSpace,
 					EventFlags.NoLock
 				);
@@ -394,6 +394,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 		MoveToward
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="delta"></param>
+		/// <returns></returns>
 		private static Vector2 MoveToward( Vector2 from, Vector2 to, float delta )
 		{
 			Vector2 vector = to - from;
@@ -409,6 +416,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnStatChanged
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnStatChanged( in PlayerDerivedStatChangedEventArgs args )
 		{
 			if ( args.StatId == DerivedStatType.EffectiveMovementSpeed ) {
@@ -421,6 +432,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnSlideTimerTimeout
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
 		private void OnSlideTimerTimeout()
 		{
 			Flags.RemoveFlags( PlayerFlags.Sliding );
@@ -431,6 +445,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		OnDashStarted
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
 		private void OnDashStarted( in PlayerDashStartEventArgs args )
 		{
 			Flags.AddFlags( PlayerFlags.Dashing );

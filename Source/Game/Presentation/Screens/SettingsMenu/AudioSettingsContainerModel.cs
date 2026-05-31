@@ -20,7 +20,6 @@ using Nomad.Audio.ValueObjects;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
 using Nomad.EngineUtils.Settings.Services;
-using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
@@ -51,6 +50,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 		public IReadOnlyList<string> OutputDevices => _device.OutputDevices;
 		public IReadOnlyList<string> AudioDrivers => _device.AudioDrivers;
+		public IReadOnlyList<string> SpeakerModes => null;
 
 		public event Action Changed;
 
@@ -119,6 +119,15 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		public void SetEffectsOn( bool value )
 		{
 			_service.Config.SoundEffectsOn = value;
+		}
+
+		public void SetMasterVolume( float volume )
+		{
+		}
+
+		public void SetSpeakerMode( int value )
+		{
+			_service.Config.SpeakerMode = (SpeakerMode)value;
 		}
 
 		public void SetOutputDevice( int value )

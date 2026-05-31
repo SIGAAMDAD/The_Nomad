@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
@@ -32,6 +33,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 	{
 		private readonly DisplaySettingsContainerModel _model;
 		private readonly DisplaySettingsContainerView _view;
+
+		private bool _isDisposed = false;
 
 		/*
 		===============
@@ -55,6 +58,22 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 			_view.MaximumFramerateChanged += _model.SetMaximumFramerate;
 
 			SyncView();
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.MonitorChanged -= _model.SetMonitorIndex;
+			_view.WindowResolutionChanged -= _model.SetWindowResolution;
+			_view.WindowModeChanged -= _model.SetWindowMode;
+			_view.VSyncModeChanged -= _model.SetVSyncMode;
+			_view.MaximumFramerateChanged -= _model.SetMaximumFramerate;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*

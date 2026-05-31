@@ -19,7 +19,6 @@ using Godot;
 using Nomad.Game.Presentation.Widgets.OptionCheckbox;
 using Nomad.Game.Presentation.Widgets.OptionList;
 using Nomad.Game.Presentation.Widgets.OptionSlider;
-using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu
 {
@@ -38,6 +37,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 	{
 		public event Action<int> AudioDriverChanged;
 		public event Action<int> OutputDeviceChanged;
+		public event Action<int> SpeakerModeChanged;
 		public event Action<float> MasterVolumeChanged;
 		public event Action<float> MusicVolumeChanged;
 		public event Action<bool> MusicOnChanged;
@@ -100,6 +100,17 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 			_outputDevice.SetOptions( items );
 		}
 
+		public void SetSpeakerMode( int value )
+		{
+			_speakerMode.Value = value;
+			SpeakerModeChanged?.Invoke( value );
+		}
+
+		public void SetSpeakerModes( IReadOnlyList<string> items )
+		{
+			_speakerMode.SetOptions( items );
+		}
+
 		public void SetAudioDriver( int value )
 		{
 			_driverAPI.Value = value;
@@ -128,6 +139,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 			_outputDevice = GetNode<OptionList>( "OutputDeviceList" );
 			_outputDevice.ValueSet.Subscribe( ( in value ) => OutputDeviceChanged?.Invoke( value.Value ) );
+
+			_speakerMode = GetNode<OptionList>( "SpeakerModeList" );
+			_speakerMode.ValueSet.Subscribe( ( in value ) => SpeakerModeChanged?.Invoke( value.Value ) );
 
 			_masterVolume = GetNode<OptionSlider>( "MasterVolumeSlider" );
 			_masterVolume.ValueChanged.Subscribe( ( in value ) => MasterVolumeChanged?.Invoke( value.Value ) );

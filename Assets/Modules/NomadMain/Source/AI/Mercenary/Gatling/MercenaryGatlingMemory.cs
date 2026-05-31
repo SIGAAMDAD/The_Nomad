@@ -17,9 +17,9 @@ using Nomad.Game.Sdk.Npc.Planner;
 
 namespace Nomad.Modules.NomadMain.AI.Mercenary.Gatling
 {
-	public class MercenaryGatlingMemory : WorkingMemory
-	{
-		public bool IsShooting;
-		public bool IsRevving;
-	};
-};
+    public class MercenaryGatlingMemory : WorkingMemory
+    {
+        public bool IsShooting;
+        public bool IsRevving;
+    }
+}

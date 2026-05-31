@@ -15,7 +15,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Compatibility.Guards;
-using Nomad.Core.Events;
 using Nomad.Game.Sdk.Combat;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Inventory;
@@ -30,31 +29,34 @@ namespace Nomad.Game.Application.Gameplay.Combat
 	===================================================================================
 	*/
 	/// <summary>
-	///
+	/// Owns mutable magazine state for a firearm instance.
 	/// </summary>
-
+	/// <remarks>
+	/// The service tracks the selected ammunition definition and the number of
+	/// rounds currently loaded. It does not resolve damage, range, velocity, or
+	/// recoil; those values stay on <see cref="AmmoDefinition"/> and are read
+	/// from <see cref="LoadedAmmo"/> by combat systems.
+	/// </remarks>
 	internal sealed class FirearmMagazineService
 	{
 		public bool CanUse => _ammoCount > 0;
+		public AmmoDefinition? LoadedAmmo => _ammoDefinition;
 
 		private readonly IFirearmInstance _instance;
 
 		/// <summary>
 		/// The current number of bullets loaded into the firearm.
 		/// </summary>
-		private int _ammoCount = 0;
-		private AmmoDefinition _ammoDefinition;
+		private int _ammoCount;
+		private AmmoDefinition? _ammoDefinition;
 
 		public FirearmMagazine Snapshot => new FirearmMagazine(
 			_instance.Stats.MagazineSize,
 			_ammoCount
 		);
 
-		public FirearmMagazineService( AmmoDefinition ammoDefinition, IFirearmInstance instance, IGameEventRegistryService eventFactory )
+		public FirearmMagazineService( IFirearmInstance instance )
 		{
-			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
-
-			TrySetAmmo( ammoDefinition );
 			_instance = instance ?? throw new ArgumentNullException( nameof( instance ) );
 		}
 
@@ -64,14 +66,24 @@ namespace Nomad.Game.Application.Gameplay.Combat
 		===============
 		*/
 		/// <summary>
-		///
+		/// Selects the ammunition definition used by subsequent reloads.
 		/// </summary>
-		/// <param name="ammoDefinition"></param>
-		/// <returns></returns>
-		/// <exception cref="IndexOutOfRangeException"></exception>
+		/// <param name="ammoDefinition">Ammo definition to select.</param>
+		/// <returns>
+		/// True when the firearm accepts the ammo type and supports the ammo's
+		/// projectile modifier.
+		/// </returns>
 		public bool TrySetAmmo( AmmoDefinition ammoDefinition )
 		{
 			ArgumentGuard.ThrowIfNull( ammoDefinition, nameof( ammoDefinition ) );
+
+			if ( !_instance.FirearmDefinition.AcceptsAmmo( ammoDefinition ) ) {
+				return false;
+			}
+
+			if ( _ammoCount > 0 && _ammoDefinition != null && _ammoDefinition.Id != ammoDefinition.Id ) {
+				return false;
+			}
 
 			switch ( ammoDefinition.Modifier ) {
 				case AmmoModifier.ArmorPiercing:
@@ -111,17 +123,52 @@ namespace Nomad.Game.Application.Gameplay.Combat
 					throw new IndexOutOfRangeException( nameof( ammoDefinition.Modifier ) );
 			}
 
+			_ammoDefinition = ammoDefinition;
 			return true;
 		}
 
-		public bool TryReload( IStorageUnit inventory )
+		/// <summary>
+		/// Attempts to load rounds from inventory into the magazine.
+		/// </summary>
+		/// <param name="inventory">Inventory containing a stack of the selected ammo.</param>
+		/// <param name="roundsLoaded">Number of rounds successfully loaded.</param>
+		/// <returns>True when one or more rounds were loaded.</returns>
+		public bool TryReload( IStorageUnit inventory, out int roundsLoaded )
 		{
-			int reloadAmount = _instance.Stats.MagazineSize + 1 - _ammoCount;
+			roundsLoaded = 0;
+			ArgumentGuard.ThrowIfNull( inventory, nameof( inventory ) );
 
-			if ( !inventory.TryRemove( _ammoDefinition.Id, reloadAmount ) ) {
+			if ( _ammoDefinition == null ) {
 				return false;
 			}
 
+			int reloadAmount = Math.Max( 0, _instance.Stats.MagazineSize - _ammoCount );
+			if ( reloadAmount == 0 ) {
+				return false;
+			}
+
+			for ( int amount = reloadAmount; amount > 0; amount-- ) {
+				if ( inventory.TryRemove( _ammoDefinition.Id, amount ) ) {
+					_ammoCount += amount;
+					roundsLoaded = amount;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Consumes a single loaded round.
+		/// </summary>
+		/// <returns>True when a round was available and consumed.</returns>
+		public bool TryConsumeRound()
+		{
+			if ( _ammoCount <= 0 ) {
+				return false;
+			}
+
+			_ammoCount--;
 			return true;
 		}
 	};
