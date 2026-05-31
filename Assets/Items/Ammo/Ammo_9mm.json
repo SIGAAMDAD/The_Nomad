@@ -1,0 +1,16 @@
+{
+	"BaseType": "Ammunition",
+	"Id": "AMMO_9MM",
+	"Name": "9mm",
+	"JournalEntry": "A common light pistol cartridge with mild recoil and dependable close-range performance.",
+	"Weight": 0.012,
+	"BaseCost": 2.0,
+	"IsStackable": true,
+	"Type": "9mm",
+	"Category": "Light",
+	"Modifier": "None",
+	"Damage": 18.0,
+	"Velocity": 380.0,
+	"Range": 42.0,
+	"Recoil": 0.55
+}

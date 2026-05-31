@@ -1,0 +1,16 @@
+{
+	"BaseType": "Ammunition",
+	"Id": "AMMO_50BMG",
+	"Name": ".50 BMG",
+	"JournalEntry": "An anti-material cartridge built for extreme range, brutal penetration, and punishing recoil.",
+	"Weight": 0.115,
+	"BaseCost": 18.0,
+	"IsStackable": true,
+	"Type": ".50 BMG",
+	"Category": "AntiMaterial",
+	"Modifier": "None",
+	"Damage": 95.0,
+	"Velocity": 890.0,
+	"Range": 260.0,
+	"Recoil": 3.2
+}

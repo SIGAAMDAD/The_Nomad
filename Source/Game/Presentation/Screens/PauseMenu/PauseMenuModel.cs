@@ -15,19 +15,19 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Audio.Interfaces;
-using Nomad.Game.Sdk;
+using Nomad.Game.Sdk.Audio;
 
 namespace Nomad.Game.Presentation.Screens.PauseMenu
 {
 	/*
 	===================================================================================
-	
+
 	PauseMenuModel
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class PauseMenuModel
@@ -42,7 +42,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="factory"></param>
 		public PauseMenuModel( IEmitterFactory factory )
@@ -57,7 +57,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="isPaused"></param>
 		/// <returns><see langword="true"/> when the pause state changed.</returns>

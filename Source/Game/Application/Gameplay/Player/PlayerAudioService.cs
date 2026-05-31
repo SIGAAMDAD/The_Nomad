@@ -15,17 +15,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Godot;
 using Nomad.Audio.Interfaces;
-using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
-using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Prefabs;
-using Nomad.Scene.GameObjects;
 using Nomad.Game.Sdk.Multiplayer;
-using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Sdk.Audio;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -99,24 +96,31 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			eventFactory
 				.GetEvent<PlayerDashStartEventArgs>(
-					$"{Id}:{PlayerDashStartEventArgs.Name}",
+					PlayerDashStartEventArgs.Name,
 					PlayerDashStartEventArgs.NameSpace
 				)
 				.Subscribe( OnDashStarted );
 
 			eventFactory
 				.GetEvent<PlayerDashBurnoutEventArgs>(
-					$"{Id}:{PlayerDashBurnoutEventArgs.Name}",
+					PlayerDashBurnoutEventArgs.Name,
 					PlayerDashBurnoutEventArgs.NameSpace
 				)
 				.Subscribe( OnDashBurnout );
 
 			eventFactory
 				.GetEvent<PlayerDashRechargedEventArgs>(
-					$"{Id}:{PlayerDashRechargedEventArgs.Name}",
+					PlayerDashRechargedEventArgs.Name,
 					PlayerDashRechargedEventArgs.NameSpace
 				)
 				.Subscribe( OnDashRecharged );
+
+			eventFactory
+				.GetEvent<WeaponSlotChangedEventArgs>(
+					WeaponSlotChangedEventArgs.Name,
+					WeaponSlotChangedEventArgs.NameSpace
+				)
+				.Subscribe( OnWeaponSlotChanged );
 		}
 
 		/*
@@ -207,6 +211,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 			} else if ( args.OldFlags.HasFlag( PlayerFlags.BulletTime ) ) {
 				_internalEffectsEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerSlowMoEnd ).Path );
 			}
+		}
+
+		private void OnWeaponSlotChanged( in WeaponSlotChangedEventArgs args )
+		{
+			_internalEffectsEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerChangeWeapon ).Path );
 		}
 
 		/*

@@ -1,0 +1,16 @@
+{
+	"BaseType": "Ammunition",
+	"Id": "AMMO_762MM",
+	"Name": "7.62mm",
+	"JournalEntry": "A full-power rifle cartridge with strong penetration, long reach, and a sharper recoil impulse.",
+	"Weight": 0.025,
+	"BaseCost": 6.0,
+	"IsStackable": true,
+	"Type": "7.62mm",
+	"Category": "Heavy",
+	"Modifier": "None",
+	"Damage": 46.0,
+	"Velocity": 830.0,
+	"Range": 180.0,
+	"Recoil": 1.65
+}

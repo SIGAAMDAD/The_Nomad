@@ -5,20 +5,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nomad.Game.Sdk;
+namespace Nomad.Game.Sdk.Audio;
 
 public enum AudioEventId
 {
     None = 0,
     MusicUserInterfaceMainMenuTheme,
     SoundEffectsAmbienceDesertWinds,
-    SoundEffectsFoleyPlayerBodyClothRuffle,
-    SoundEffectsFoleyPlayerBodyMetalArm,
     SoundEffectsFoleyPlayerSlide,
     SoundEffectsFoleyPlayerWalkGravel,
     SoundEffectsFoleyPlayerWalkSand,
     SoundEffectsFoleyPlayerWalkStone,
     SoundEffectsFoleyPlayerWalkWood,
+    SoundEffectsFXPlayerChangeWeapon,
     SoundEffectsFXPlayerDashActivate,
     SoundEffectsFXPlayerDashBurnout,
     SoundEffectsFXPlayerDashRecharge,
@@ -55,8 +54,11 @@ public enum AudioBusId
     SoundEffects,
     SoundEffectsAmbience,
     SoundEffectsFoley,
+    SoundEffectsFoleyWalk,
     SoundEffectsFX,
+    SoundEffectsFXBarks,
     SoundEffectsUserInterface,
+    Voice,
 }
 
 public readonly struct AudioEventDefinition {
@@ -68,7 +70,7 @@ public readonly struct AudioEventDefinition {
 		Guid = guid;
 		Path = path;
 	}
-}
+};
 
 public readonly struct AudioSnapshotDefinition {
 	public AudioSnapshotId Id { get; }
@@ -79,7 +81,7 @@ public readonly struct AudioSnapshotDefinition {
 		Guid = guid;
 		Path = path;
 	}
-}
+};
 
 public readonly struct AudioBusDefinition {
 	public AudioBusId Id { get; }
@@ -90,7 +92,7 @@ public readonly struct AudioBusDefinition {
 		Guid = guid;
 		Path = path;
 	}
-}
+};
 
 public static partial class AudioEventIdConstants
 {
@@ -99,13 +101,12 @@ public static partial class AudioEventIdConstants
         {
             [AudioEventId.MusicUserInterfaceMainMenuTheme] = new AudioEventDefinition(AudioEventId.MusicUserInterfaceMainMenuTheme, new Guid("14434654-6dd0-444f-bb95-4d855e541017"), "event:/Music/UserInterface/MainMenuTheme"),
             [AudioEventId.SoundEffectsAmbienceDesertWinds] = new AudioEventDefinition(AudioEventId.SoundEffectsAmbienceDesertWinds, new Guid("9a58edf6-74ca-45aa-b799-71fe95b7d79d"), "event:/SoundEffects/Ambience/DesertWinds"),
-            [AudioEventId.SoundEffectsFoleyPlayerBodyClothRuffle] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerBodyClothRuffle, new Guid("197eb14e-e0c4-490f-b883-ef008f7baae5"), "event:/SoundEffects/Foley/Player/Body/ClothRuffle"),
-            [AudioEventId.SoundEffectsFoleyPlayerBodyMetalArm] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerBodyMetalArm, new Guid("8a76a3e9-5658-40a6-8e5a-845864e7e4b5"), "event:/SoundEffects/Foley/Player/Body/MetalArm"),
             [AudioEventId.SoundEffectsFoleyPlayerSlide] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerSlide, new Guid("4d76b293-ddd4-4fa8-aa4c-fd2bf34f9678"), "event:/SoundEffects/Foley/Player/Slide"),
             [AudioEventId.SoundEffectsFoleyPlayerWalkGravel] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerWalkGravel, new Guid("1218c35a-68d0-4a80-881f-a6a8e3ff4db9"), "event:/SoundEffects/Foley/Player/Walk/Gravel"),
             [AudioEventId.SoundEffectsFoleyPlayerWalkSand] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerWalkSand, new Guid("3f88d86f-9ff5-4867-9d89-9dd655744b57"), "event:/SoundEffects/Foley/Player/Walk/Sand"),
             [AudioEventId.SoundEffectsFoleyPlayerWalkStone] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerWalkStone, new Guid("3078a25e-a569-413c-8f04-37f6bd5b9b7d"), "event:/SoundEffects/Foley/Player/Walk/Stone"),
             [AudioEventId.SoundEffectsFoleyPlayerWalkWood] = new AudioEventDefinition(AudioEventId.SoundEffectsFoleyPlayerWalkWood, new Guid("dd64a2a3-fc7c-42fe-b7d3-c204cc837dd6"), "event:/SoundEffects/Foley/Player/Walk/Wood"),
+            [AudioEventId.SoundEffectsFXPlayerChangeWeapon] = new AudioEventDefinition(AudioEventId.SoundEffectsFXPlayerChangeWeapon, new Guid("d5316d34-9b44-4764-97a4-000a07a91c02"), "event:/SoundEffects/FX/Player/ChangeWeapon"),
             [AudioEventId.SoundEffectsFXPlayerDashActivate] = new AudioEventDefinition(AudioEventId.SoundEffectsFXPlayerDashActivate, new Guid("3efe5c6b-5ada-48d9-81f3-6f8b88066a23"), "event:/SoundEffects/FX/Player/DashActivate"),
             [AudioEventId.SoundEffectsFXPlayerDashBurnout] = new AudioEventDefinition(AudioEventId.SoundEffectsFXPlayerDashBurnout, new Guid("9356ef2b-ac3e-480c-9d4b-2b5dcae56d7b"), "event:/SoundEffects/FX/Player/DashBurnout"),
             [AudioEventId.SoundEffectsFXPlayerDashRecharge] = new AudioEventDefinition(AudioEventId.SoundEffectsFXPlayerDashRecharge, new Guid("893543a9-1238-44ac-b6ac-0c3f9d75029f"), "event:/SoundEffects/FX/Player/DashRecharge"),
@@ -142,8 +143,11 @@ public static partial class AudioEventIdConstants
             [AudioBusId.SoundEffects] = new AudioBusDefinition(AudioBusId.SoundEffects, new Guid("1a7b11c7-fb58-4575-b99c-77628efe6f5d"), "bus:/SoundEffects"),
             [AudioBusId.SoundEffectsAmbience] = new AudioBusDefinition(AudioBusId.SoundEffectsAmbience, new Guid("7fe132a6-aef4-41de-8361-2ea5eeb9fbc4"), "bus:/SoundEffects/Ambience"),
             [AudioBusId.SoundEffectsFoley] = new AudioBusDefinition(AudioBusId.SoundEffectsFoley, new Guid("4da15ed0-63ef-42b1-bfdb-d8190d8e912c"), "bus:/SoundEffects/Foley"),
+            [AudioBusId.SoundEffectsFoleyWalk] = new AudioBusDefinition(AudioBusId.SoundEffectsFoleyWalk, new Guid("9c074212-9b5e-4b1a-856d-28cef64582d1"), "bus:/SoundEffects/Foley/Walk"),
             [AudioBusId.SoundEffectsFX] = new AudioBusDefinition(AudioBusId.SoundEffectsFX, new Guid("7e8fe60e-d500-4654-8e71-e4e890588c88"), "bus:/SoundEffects/FX"),
+            [AudioBusId.SoundEffectsFXBarks] = new AudioBusDefinition(AudioBusId.SoundEffectsFXBarks, new Guid("7d880d51-daa1-4f32-9b92-98a278eb1a39"), "bus:/SoundEffects/FX/Barks"),
             [AudioBusId.SoundEffectsUserInterface] = new AudioBusDefinition(AudioBusId.SoundEffectsUserInterface, new Guid("08340847-5532-4b62-aba9-2e3b5c6c6fb2"), "bus:/SoundEffects/UserInterface"),
+            [AudioBusId.Voice] = new AudioBusDefinition(AudioBusId.Voice, new Guid("e74e69a9-25c9-48f6-b9b3-0dcc430410ce"), "bus:/Voice"),
         };
 
     public static AudioEventDefinition GetEvent(AudioEventId id)

@@ -11,7 +11,7 @@
 	"MagazineSize": 7,
 	"AcceptedAmmoTypes": [
 		"9mm",
-		"45ACP"
+		"45 ACP"
 	],
 	"BaseAimDownSightsSpeed": 1.12,
 	"BaseHipFireAccuracy": 0.76,

@@ -20,6 +20,7 @@ size = Vector2(0, 0)
 
 [node name="Player" type="CharacterBody2D" unique_id=449054365]
 process_mode = 1
+y_sort_enabled = true
 collision_layer = 4
 collision_mask = 13851
 script = ExtResource("1_07406")
@@ -39,8 +40,10 @@ position = Vector2(-3, 8)
 [node name="Animations" type="Node2D" parent="." unique_id=728925156]
 
 [node name="LeftArm" parent="Animations" unique_id=975599666 instance=ExtResource("3_5ofd5")]
+position = Vector2(0, -2)
 
 [node name="TorsoAnimator" type="AnimatedSprite2D" parent="Animations" unique_id=1408154902]
+z_index = 1
 position = Vector2(-1, 0)
 sprite_frames = ExtResource("3_qq8fn")
 animation = &"move"
@@ -48,6 +51,7 @@ autoplay = "idle"
 script = ExtResource("5_26jrr")
 
 [node name="LegAnimator" type="AnimatedSprite2D" parent="Animations" unique_id=1328575102]
+z_index = 1
 position = Vector2(-1, 0)
 sprite_frames = ExtResource("5_cgnku")
 animation = &"idle"
@@ -58,6 +62,7 @@ script = ExtResource("5_26jrr")
 position = Vector2(0.99999976, 14.000001)
 
 [node name="HeadSprite" type="Sprite2D" parent="Animations" unique_id=1230354207]
+z_index = 1
 position = Vector2(-1, -7)
 texture = ExtResource("3_qeavp")
 offset = Vector2(5, -5)
@@ -152,4 +157,6 @@ shape = SubResource("RectangleShape2D_40dfe")
 texture = ExtResource("8_40dfe")
 offset = Vector2(-0.075, 0)
 
-[node name="RightArm" parent="Animations" unique_id=2006628997 instance=ExtResource("3_5ofd5")]
+[node name="RightArm" parent="Animations" unique_id=1622967129 instance=ExtResource("3_5ofd5")]
+z_index = 2
+position = Vector2(-1, 0)
