@@ -1,0 +1,8 @@
+[gd_resource type="CanvasTexture" format=3 uid="uid://dvxaddph2dred"]
+
+[ext_resource type="Texture2D" uid="uid://c4g2icfq6nbsm" path="res://Assets/Textures/Environment/Firelink.png" id="1_g56vx"]
+[ext_resource type="Texture2D" uid="uid://bqsjbdr5pj3xd" path="res://Assets/Textures/Environment/Firelink_n.png" id="2_m0gvh"]
+
+[resource]
+diffuse_texture = ExtResource("1_g56vx")
+normal_texture = ExtResource("2_m0gvh")

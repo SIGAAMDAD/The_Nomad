@@ -27,6 +27,7 @@
   <ItemGroup>
     <!-- Ensures the source generation works correctly -->
     <ProjectReference Include="../../Modding/Nomad.Modding.csproj" />
+
     <ProjectReference Include="..\..\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
     <ProjectReference Include="..\..\NomadFramework\Source\Nomad.SourceGenerators\Nomad.SourceGenerators.csproj"
                     OutputItemType="Analyzer"

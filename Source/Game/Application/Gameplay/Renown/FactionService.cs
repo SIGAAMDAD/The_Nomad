@@ -13,7 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Collections.Generic;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
+using Nomad.Core.FileSystem;
+using Nomad.Game.Sdk.Renown;
 
 namespace Nomad.Game.Application.Gameplay.Renown
 {
@@ -28,10 +32,25 @@ namespace Nomad.Game.Application.Gameplay.Renown
 	///
 	/// </summary>
 
-	internal sealed class FactionService
+	internal sealed class FactionService : IFactionService
 	{
-		public FactionService( IGameEventRegistryService eventFactory )
+		private readonly Dictionary<FactionInstanceId, IFactionInstance> _instances = new();
+
+		public FactionService( IFileSystem fileSystem, IGameEventRegistryService eventFactory )
 		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
+			var files = fileSystem.GetFiles( $"{fileSystem.GetResourcePath()}/DataCache/Factions", "*.json", true );
+		}
+
+		public IReadOnlyCollection<IFactionInstance> GetActiveFactions()
+		{
+			return _instances.Values;
+		}
+
+		public bool TryGetFaction( FactionInstanceId factionId, out IFactionInstance instance )
+		{
+			throw new System.NotImplementedException();
 		}
 	};
 };

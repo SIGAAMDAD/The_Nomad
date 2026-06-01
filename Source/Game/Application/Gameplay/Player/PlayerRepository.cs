@@ -16,7 +16,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Concurrent;
 using Nomad.Core.Compatibility.Guards;
+using Nomad.Core.CVars;
 using Nomad.Core.Engine.SceneManagement;
+using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.OnlineServices;
@@ -31,6 +33,7 @@ using Nomad.Game.Sdk.Player.Inventory;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -54,6 +57,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly IGameStateService _gameStateService;
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly ILoggerService _logger;
+		private readonly IWorldContentCache _worldContent;
+		private readonly ILocalizationService _localizationService;
+		private readonly ICVarSystemService _cvarSystem;
 
 		private readonly IDisposable _gameStateChanged;
 
@@ -73,7 +79,17 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="gameStateService"></param>
 		/// <param name="sceneManager"></param>
 		/// <param name="playerPrefab"></param>
-		public PlayerRepository( IGameEventRegistryService eventFactory, IServiceRegistry registry, ILoggerService logger, IGameStateService gameStateService, ISceneManager sceneManager, string playerPrefab )
+		public PlayerRepository(
+			IGameEventRegistryService eventFactory,
+			IServiceRegistry registry,
+			ILoggerService logger,
+			IGameStateService gameStateService,
+			ISceneManager sceneManager,
+			IWorldContentCache worldContent,
+			ILocalizationService localizationService,
+			ICVarSystemService cvarSystem,
+			string playerPrefab
+		)
 		{
 			ArgumentGuard.ThrowIfNullOrWhiteSpace( playerPrefab, nameof( playerPrefab ) );
 
@@ -82,6 +98,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_sceneManager = sceneManager ?? throw new ArgumentNullException( nameof( sceneManager ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_logger = logger ?? throw new ArgumentNullException( nameof( logger ) );
+			_worldContent = worldContent ?? throw new ArgumentNullException( nameof( worldContent ) );
+			_localizationService = localizationService ?? throw new ArgumentNullException( nameof( localizationService ) );
+			_cvarSystem = cvarSystem ?? throw new ArgumentNullException( nameof( cvarSystem ) );
 
 			_gameStateChanged = _gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 		}
@@ -122,13 +141,35 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var prefab = composite.Root.CastAs<PlayerPrefab>();
 			prefab.PeerId = new PlayerId( new PeerId( Constants.LOCAL_GUID ) );
 
+			var playerBase = new PlayerAggregate( prefab.PeerId, composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
+			_players[prefab.PeerId] = playerBase;
+
+			BindHud( prefab, playerBase );
+
 			_logger.PrintLine( $"Adding player to active scene '{_sceneManager.ActiveScene.Name}'" );
 			_sceneManager.ActiveScene.Root.AddChild( prefab );
 
-			var playerBase = new PlayerAggregate( prefab.PeerId, composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
-
-			_players[prefab.PeerId] = playerBase;
 			return playerBase;
+		}
+
+		private void BindHud( PlayerPrefab prefab, PlayerBase player )
+		{
+			var hudView = prefab.GetNodeOrNull<HeadsUpDisplayView>( "HeadsUpDisplay" );
+			if ( hudView == null ) {
+				return;
+			}
+
+			hudView.Bind(
+				new HudRoot(
+					player.PlayerId,
+					hudView,
+					player.Runtime.InventoryCoordinator.WeaponSlots,
+					_worldContent.ItemInstances,
+					_localizationService,
+					_cvarSystem,
+					_eventFactory
+				)
+			);
 		}
 
 		public bool TryGetInventory( PlayerId playerId, out IPlayerInventoryCoordinator? inventory )
@@ -156,6 +197,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			reader = player.Runtime.StateCoordinator;
 			writer = player.Runtime.StateCoordinator;
+			return true;
+		}
+
+		public bool TryGetWeaponSlots( PlayerId playerId, out IWeaponSlotService? slots )
+		{
+			playerId.ThrowIfInvalid( nameof( TryGetState ) );
+
+			if ( !_players.TryGetValue( playerId, out PlayerBase? player ) ) {
+				slots = null;
+				return false;
+			}
+
+			slots = player.Runtime.InventoryCoordinator.WeaponSlots;
 			return true;
 		}
 

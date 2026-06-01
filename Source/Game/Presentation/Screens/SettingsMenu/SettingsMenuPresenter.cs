@@ -36,7 +36,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 	internal sealed class SettingsMenuPresenter : IDisposable
 	{
-		private readonly SettingsMenuView _view;
+		private readonly ISettingsMenuView _view;
 
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly ICVarSystemService _cvarSystem;
@@ -56,7 +56,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		/// <param name="view"></param>
 		/// <param name="cvarSystem"></param>
 		public SettingsMenuPresenter(
-			SettingsMenuView view,
+			ISettingsMenuView view,
 			ICVarSystemService cvarSystem,
 			IGameEventRegistryService eventFactory,
 			IFileSystem fileSystem,

@@ -16,27 +16,32 @@ of merchantability, fitness for a particular purpose and noninfringement.
 namespace Nomad.Game.Sdk.Gameplay
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public enum GameState : byte
     {
         /// <summary>
-        /// 
+        /// We are in a menu.
         /// </summary>
         Menu,
 
         /// <summary>
-        /// 
+        /// We are in an active gameplay loop.
         /// </summary>
         Level,
 
         /// <summary>
-        /// 
+        /// The game loop has been paused.
         /// </summary>
         Paused,
 
         /// <summary>
-        /// 
+        /// We are currently in the loading screen caching assets or rehydrating an archived world state.
+        /// </summary>
+        Loading,
+
+        /// <summary>
+        ///
         /// </summary>
         Count
     }

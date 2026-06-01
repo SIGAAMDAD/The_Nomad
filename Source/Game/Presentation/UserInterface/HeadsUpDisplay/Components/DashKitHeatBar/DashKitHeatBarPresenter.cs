@@ -80,18 +80,6 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKi
 			_resourceChanged.Dispose();
 		}
 
-		/*
-		===============
-		Render
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		public override void Render( float delta )
-		{
-		}
-
 		private void OnResourceChanged( in PlayerResourceChangedEventArgs args )
 		{
 			if ( args.PlayerId != _playerId || args.Resource != PlayerResourceType.JumpKitHeat ) {

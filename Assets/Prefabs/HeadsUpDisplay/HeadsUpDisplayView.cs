@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Game.Sdk.HeadsUpDisplay;
 
 namespace Nomad.Game.Prefabs
 {
@@ -30,5 +31,27 @@ namespace Nomad.Game.Prefabs
 
 	public partial class HeadsUpDisplayView : Control
 	{
+		private IHudRoot _root;
+
+		public void Bind( IHudRoot root )
+		{
+			_root?.Dispose();
+			_root = root;
+		}
+
+		public override void _Process( double delta )
+		{
+			base._Process( delta );
+
+			_root?.Render( (float)delta );
+		}
+
+		public override void _ExitTree()
+		{
+			base._ExitTree();
+
+			_root?.Dispose();
+			_root = null;
+		}
 	};
 };

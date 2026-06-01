@@ -100,6 +100,7 @@ shader_parameter/particle_scale_randomness = 0.5
 shader_parameter/particle_amount = 10
 
 [node name="HeadsUpDisplay" type="Control" unique_id=756735863]
+light_mask = 2
 visibility_layer = 2
 layout_mode = 3
 anchors_preset = 15
@@ -120,7 +121,6 @@ grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="HotSlotsContainer" type="VBoxContainer" parent="CombatHUD" unique_id=497008511]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.892
@@ -226,7 +226,6 @@ _buttonPrefab = ExtResource("3_ia0rx")
 metadata/_edit_use_anchors_ = true
 
 [node name="InteractionPrompt" type="Label" parent="NeutralHUD/InteractionMenu" unique_id=671114498]
-visible = false
 layout_mode = 2
 size_flags_vertical = 8
 horizontal_alignment = 1
@@ -332,6 +331,7 @@ texture = ExtResource("8_otcf6")
 metadata/_edit_use_anchors_ = true
 
 [node name="AnnouncementBanner" type="VBoxContainer" parent="NeutralHUD" unique_id=1328497685]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.48100004

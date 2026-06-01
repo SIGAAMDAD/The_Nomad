@@ -19,6 +19,7 @@ using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Sdk.Gameplay;
+using Nomad.Save.Services;
 
 namespace Nomad.Game.Infrastructure.Gameplay
 {
@@ -32,8 +33,10 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			var fileSystem = locator.GetService<IFileSystem>();
 			var logger = locator.GetService<ILoggerService>();
 			var eventFactory = locator.GetService<IGameEventRegistryService>();
+			var dataProvider = locator.GetService<ISaveDataProvider>();
 
 			_worldContentCache = new WorldContentCache(
+				dataProvider,
 				fileSystem,
 				logger,
 				eventFactory

@@ -17,13 +17,11 @@ using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.CVars;
 using Nomad.Core.Events;
-using Nomad.Core.Util;
-using Nomad.CVars;
 using Nomad.Events.Extensions;
 using Nomad.Game.Sdk.World;
 using Nomad.Game.Sdk.Events.World;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================

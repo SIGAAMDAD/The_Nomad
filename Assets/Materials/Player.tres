@@ -1,0 +1,8 @@
+[gd_resource type="CanvasTexture" format=3 uid="uid://bxu8oeeswbt4p"]
+
+[ext_resource type="Texture2D" uid="uid://diiwceik58u5q" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.png" id="1_2qsi6"]
+[ext_resource type="Texture2D" uid="uid://bdr7gxm6tmu02" path="res://Assets/Textures/Skins/TheWanderer/raio_torso_n.png" id="2_imxno"]
+
+[resource]
+diffuse_texture = ExtResource("1_2qsi6")
+normal_texture = ExtResource("2_imxno")

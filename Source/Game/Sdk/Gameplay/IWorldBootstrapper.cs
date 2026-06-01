@@ -35,7 +35,8 @@ namespace Nomad.Game.Sdk.Gameplay
         [EventPayload("Mode", typeof(WorldBootstrapMode), Order = 2)]
         [EventPayload("WorldId", typeof(string), Order = 3)]
         [EventPayload("WorldInstanceId", typeof(Guid), Order = 4)]
-        [EventPayload("LobbyId", typeof(Guid?), Order = 5)]
+        [EventPayload("SaveName", typeof(string), Order = 5)]
+        [EventPayload("LobbyId", typeof(Guid?), Order = 6)]
         IGameEvent<WorldBootstrapSucceededEventArgs> BootstrapSucceeded { get; }
 
         [Event(nameSpace: "Nomad.Game.Sdk.Events.Gameplay", PayloadName = "WorldBootstrapRequestEventArgs")]
@@ -43,7 +44,8 @@ namespace Nomad.Game.Sdk.Gameplay
         [EventPayload("Mode", typeof(WorldBootstrapMode), Order = 2)]
         [EventPayload("WorldId", typeof(string), Order = 3)]
         [EventPayload("Difficulty", typeof(DifficultyPreset), Order = 4)]
-        [EventPayload("Lobbyid", typeof(Guid?), Order = 5)]
+        [EventPayload("SaveName", typeof(string), Order = 5)]
+        [EventPayload("LobbyId", typeof(Guid?), Order = 6)]
         IGameEvent<WorldBootstrapRequestEventArgs> BootstrapRequest { get; }
     }
 }

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://lo18vwcn05qx"]
 
 [ext_resource type="Shader" uid="uid://dxjv16nnkg0c" path="res://Assets/Shaders/MenuFade.gdshader" id="1_mkkvq"]
-[ext_resource type="Shader" uid="uid://8yixyqoso0g1" path="res://Assets/Shaders/SplashScreenLogosFade.gdshader" id="2_5ao4a"]
+[ext_resource type="Shader" uid="uid://162d0sfslhhk" path="res://Assets/Shaders/SplashScreenLogosFade.gdshader" id="2_5ao4a"]
 [ext_resource type="Script" uid="uid://c8oyj6juc6akn" path="res://Assets/Prefabs/SplashScreen/SplashScreen.cs" id="2_gxtmw"]
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="2_mkkvq"]
 [ext_resource type="Texture2D" uid="uid://boqhrse1rtiog" path="res://Assets/Textures/Logos/Godot mascot with rapier logo.png" id="3_5ao4a"]

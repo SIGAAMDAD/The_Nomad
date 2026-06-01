@@ -13,49 +13,29 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using Nomad.Core.Engine.Services;
-using Nomad.Core.OnlineServices;
-using Nomad.Core.ServiceRegistry.Globals;
-using Nomad.Events.Globals;
-using Nomad.Game.Sdk.Multiplayer;
-using Nomad.Game.Sdk;
-using Nomad.Game.Sdk.Player;
-using Nomad.Game.Sdk.HeadsUpDisplay;
-using Nomad.Game.Prefabs;
-using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 using Nomad.UI;
+using Nomad.Game.Presentation.Screens.PauseMenu;
 
 namespace Nomad.Game.Presentation.Screens.Gameplay
 {
 	internal sealed partial class GameplayScreen : EnginePresentationLayer
 	{
-		private IHudRoot _hudRoot;
+		private PauseMenuPresenter _pauseMenuPresenter;
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 
-			var eventFactory = GameEventRegistry.Instance;
-			_hudRoot = new HudRoot(
-				new PlayerId( new PeerId( Constants.LOCAL_GUID ) ),
-				GetNode<HeadsUpDisplayView>( "HeadsUpDisplay" ),
-				ServiceLocator.GetService<ILocalizationService>(),
-				eventFactory
+			_pauseMenuPresenter = ScreenPresenterFactory.CreatePauseMenuPresenter(
+				GetNode<PauseMenuGodotView>( "PauseMenu" )
 			);
-		}
-
-		protected override void OnUpdate( float delta )
-		{
-			base.OnUpdate( delta );
-
-			_hudRoot.Render( delta );
 		}
 
 		protected override void OnShutdown()
 		{
 			base.OnShutdown();
 
-			_hudRoot.Dispose();
+			_pauseMenuPresenter?.Dispose();
 		}
 	};
 };

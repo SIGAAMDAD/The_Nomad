@@ -76,7 +76,7 @@ namespace Nomad.Game.Application.Gameplay
 
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_category = logger.CreateCategory( nameof( GameFlowCoordinator ), LogLevel.Info, true );
-			_gameMode = cvarSystem.GetCVarOrThrow<GameplayMode>( "game.Mode" );
+			_gameMode = cvarSystem.GetCVarOrThrow( GameplayCVarRegistry.Mode );
 		}
 
 		/*

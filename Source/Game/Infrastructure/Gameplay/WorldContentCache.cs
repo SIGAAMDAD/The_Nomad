@@ -21,8 +21,8 @@ using Nomad.Core.Logger;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.Game.Sdk.Gameplay;
-using Nomad.Game.Sdk.Inventory;
 using Nomad.Game.Infrastructure.Gameplay.Items;
+using Nomad.Save.Services;
 
 namespace Nomad.Game.Infrastructure.Gameplay
 {
@@ -34,7 +34,10 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		public IItemInstanceRepository ItemInstances => _itemInstances;
 		private readonly ItemInstanceRepository _itemInstances;
 
+		private readonly IDisposable _worldBootstrapRequested;
 		private readonly IDisposable _worldBootstrapSucceeded;
+
+		private readonly ISaveDataProvider _dataProvider;
 
 		private bool _isDisposed = false;
 
@@ -46,12 +49,15 @@ namespace Nomad.Game.Infrastructure.Gameplay
 		/// <summary>
 		///
 		/// </summary>
+		/// <param name="dataProvider"></param>
 		/// <param name="fileSystem"></param>
 		/// <param name="logger"></param>
 		/// <param name="eventFactory"></param>
-		public WorldContentCache( IFileSystem fileSystem, ILoggerService logger, IGameEventRegistryService eventFactory )
+		public WorldContentCache( ISaveDataProvider dataProvider, IFileSystem fileSystem, ILoggerService logger, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
+
+			_dataProvider = dataProvider ?? throw new ArgumentNullException( nameof( dataProvider ) );
 
 			_itemCatalog = new ItemCatalog( fileSystem, logger );
 			_itemCatalog.AddLoader( ItemType.Ammunition, AmmoDefinition.Load );
@@ -60,12 +66,19 @@ namespace Nomad.Game.Infrastructure.Gameplay
 
 			_itemInstances = new ItemInstanceRepository( logger, eventFactory, _itemCatalog );
 
-			_worldBootstrapSucceeded = eventFactory
+			_worldBootstrapRequested = eventFactory
 				.GetEvent<WorldBootstrapRequestEventArgs>(
 					WorldBootstrapRequestEventArgs.Name,
 					WorldBootstrapRequestEventArgs.NameSpace
 				)
-				.Subscribe( OnWorldBootstrapFinished );
+				.Subscribe( OnWorldBootstrapRequested );
+
+			_worldBootstrapSucceeded = eventFactory
+				.GetEvent<WorldBootstrapSucceededEventArgs>(
+					WorldBootstrapSucceededEventArgs.Name,
+					WorldBootstrapSucceededEventArgs.NameSpace
+				)
+				.Subscribe( OnWorldBootstrapSucceeded );
 		}
 
 		public void Dispose()
@@ -78,12 +91,21 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			_itemInstances.Clear();
 
 			_worldBootstrapSucceeded.Dispose();
+			_worldBootstrapRequested.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
 
-		private void OnWorldBootstrapFinished( in WorldBootstrapRequestEventArgs args )
+		private void OnWorldBootstrapSucceeded( in WorldBootstrapSucceededEventArgs args )
+		{
+			if ( args.Mode == WorldBootstrapMode.SinglePlayerLoadGame ) {
+				_dataProvider.Load( args.SaveName )
+					.ConfigureAwait( false );
+			}
+		}
+
+		private void OnWorldBootstrapRequested( in WorldBootstrapRequestEventArgs args )
 		{
 			_itemCatalog.ScanAndLoad();
 		}

@@ -25,6 +25,7 @@ using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Entities;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

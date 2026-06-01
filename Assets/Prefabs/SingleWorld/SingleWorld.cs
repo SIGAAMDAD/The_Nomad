@@ -17,10 +17,11 @@ using Nomad.Core.CVars;
 using Nomad.Core.Events;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Core.Util;
-using Nomad.Game.Application.Gameplay.World;
+using Nomad.Game.Application.Gameplay.World.Simulation;
 using System.Collections.Generic;
 using Godot;
 using Nomad.Game.Sdk.World;
+using Nomad.Game.Presentation.World;
 
 namespace Nomad.Game.Prefabs
 {
@@ -37,7 +38,7 @@ namespace Nomad.Game.Prefabs
 
 	public sealed partial class SingleWorld : WorldBase
 	{
-		private readonly SimulationCoordinator _coordinator;
+		private SimulationCoordinator _coordinator;
 
 		private readonly CalendarDefinition _calender;
 		private readonly WorldDefinition _worldDefinition;
@@ -188,7 +189,10 @@ namespace Nomad.Game.Prefabs
 					[new( new( "season.late_longwinter.id" ) )] = LateLongWinter,
 				}
 			};
+		}
 
+		protected override void OnInit()
+		{
 			var serviceLocator = ServiceLocator.Instance;
 			var eventFactory = serviceLocator.GetService<IGameEventRegistryService>();
 			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
@@ -201,7 +205,13 @@ namespace Nomad.Game.Prefabs
 				minute: 0
 			);
 
-			_coordinator = new SimulationCoordinator( eventFactory, cvarSystem, startTime, _worldDefinition );
+			_coordinator = new SimulationCoordinator(
+				eventFactory,
+				cvarSystem,
+				startTime,
+				_worldDefinition,
+				GetNode<WorldSunLightPrefab>( "SunLight" )
+			);
 		}
 	};
 };

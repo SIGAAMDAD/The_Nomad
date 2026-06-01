@@ -21,7 +21,8 @@ seamless_blend_skirt = 0.8
 z_index = -1
 texture_repeat = 2
 texture = SubResource("NoiseTexture2D_flhqy")
-polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1521, 750, 1056, -52, 802, -666)
+polygon = PackedVector2Array(-202, -408, -313, 98, -207, 594, 354, 1049, 1380, 1369, 2439, 1597, 2909, 1451, 2883, 837, 3265, 378, 1193, -1709, 367, -1421)
+vertex_colors = PackedColorArray(1, 1, 1, 1, 0.9882353, 0.101960786, 0.24705882, 1, 0.627451, 0.27058825, 0, 1, 0.6392157, 0.4, 0, 1, 0.46947557, 0.15948701, 0, 1, 0.46947557, 0.15948701, 0, 1, 0.827451, 0.30588236, 0, 1, 0.46947557, 0.15948701, 0, 1, 0.827451, 0.30588236, 0, 1, 1, 0.48867476, 0.3962947, 1, 0.46947557, 0.15948701, 0, 1)
 
 [node name="RegionAreaRoot" parent="." unique_id=1146163250 node_paths=PackedStringArray("_shape") instance=ExtResource("1_eda3t")]
 _shape = NodePath("ZoneBody")

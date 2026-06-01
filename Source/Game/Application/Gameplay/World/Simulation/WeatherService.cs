@@ -19,7 +19,7 @@ using Nomad.Core.Util;
 using Nomad.Game.Sdk.World;
 using Nomad.Game.Sdk.Events.World;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================
@@ -34,7 +34,7 @@ namespace Nomad.Game.Application.Gameplay.World
 
 	internal sealed class WeatherService : IWeatherService
 	{
-		private readonly CalendarService _calendarService;
+		private readonly ICalendarService _calendarService;
 		private readonly SeasonService _seasonService;
 
 		private long _nextWeatherChangeAtAbsoluteMinute = 0;

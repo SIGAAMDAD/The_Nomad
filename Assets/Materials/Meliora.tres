@@ -1,0 +1,10 @@
+[gd_resource type="CanvasTexture" format=3 uid="uid://b16tw3yrr3dsx"]
+
+[ext_resource type="Texture2D" uid="uid://48ly6y2xb1e6" path="res://Assets/Textures/Environment/Meliora_d.png" id="1_t38db"]
+[ext_resource type="Texture2D" uid="uid://dlg3p0rdcjlhq" path="res://Assets/Textures/Environment/Meliora_n.png" id="2_vryfy"]
+[ext_resource type="Texture2D" uid="uid://dngyr7jooiu62" path="res://Assets/Textures/Environment/Meliora_s.png" id="3_n5ieo"]
+
+[resource]
+diffuse_texture = ExtResource("1_t38db")
+normal_texture = ExtResource("2_vryfy")
+specular_texture = ExtResource("3_n5ieo")

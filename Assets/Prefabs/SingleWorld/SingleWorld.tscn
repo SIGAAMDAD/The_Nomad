@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_xaw48"]
 [ext_resource type="PackedScene" uid="uid://bktaccmkkt34m" path="res://Assets/Prefabs/Meliora/MelioraRoot.tscn" id="4_xrhpx"]
 [ext_resource type="PackedScene" uid="uid://bfemcejvjvwts" path="res://Assets/Prefabs/ItemPickup/PickupRoot.tscn" id="5_ud3ku"]
+[ext_resource type="PackedScene" uid="uid://dfpsmfg427cba" path="res://Source/Game/Presentation/World/SunLight.tscn" id="6_fek2r"]
 
 [node name="SingleWorld" type="Node2D" unique_id=1220327146]
 process_mode = 1
@@ -12,6 +13,7 @@ y_sort_enabled = true
 script = ExtResource("1_gohso")
 
 [node name="SaltWastes" parent="." unique_id=1364440601 instance=ExtResource("2_xaw48")]
+position = Vector2(-2039, 1241)
 
 [node name="PlayerSpawner" parent="SaltWastes" unique_id=654047548 instance=ExtResource("3_xaw48")]
 process_priority = 2
@@ -23,4 +25,8 @@ _id = &"CHECKPOINT_SALT_FLATS_ID"
 _displayName = &"CHECKPOINT_SALT_FLAGS_DISPLAY_NAME"
 
 [node name="PickupRoot" parent="SaltWastes" unique_id=1343848751 instance=ExtResource("5_ud3ku")]
-position = Vector2(788, -56)
+position = Vector2(555, 25)
+_exportedItemId = null
+_amount = null
+
+[node name="SunLight" parent="." unique_id=1632582276 instance=ExtResource("6_fek2r")]

@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using Nomad.Game.Sdk.Configuration;
 using Nomad.Game.Sdk.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
@@ -36,13 +37,15 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		private readonly List<IHudComponentPresenter> _components;
 		private readonly Timer _fadeTimer;
 
+		private HUDPreset _preset;
 		private bool _active = false;
 
 		private bool _isDisposed = false;
 
-		public ComponentGroup( List<IHudComponentPresenter> components, float fadeTimeout = 1.0f )
+		public ComponentGroup( HUDPreset preset, List<IHudComponentPresenter> components, float fadeTimeout = 1.0f )
 		{
-			_components = components;
+			_preset = preset;
+			_components = components ?? throw new ArgumentNullException( nameof( components ) );
 
 			_fadeTimer = new Timer() {
 				Interval = fadeTimeout,
@@ -58,20 +61,27 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 				return;
 			}
 
+			_fadeTimer.Dispose();
+
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
 		}
 
 		public void Activate()
 		{
-			if ( !_active ) {
-				_fadeTimer.Start();
+			if ( _preset == HUDPreset.Partial ) {
+				if ( !_active ) {
+					_fadeTimer.Start();
+				}
+				_active = true;
 			}
-			_active = true;
 		}
 
 		public void Render( float delta )
 		{
+			if ( _preset == HUDPreset.Hidden ) {
+				return;
+			}
 			for ( int i = 0; i < _components.Count; i++ ) {
 				_components[ i ].Render( delta );
 			}

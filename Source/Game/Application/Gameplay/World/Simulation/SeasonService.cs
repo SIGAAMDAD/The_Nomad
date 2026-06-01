@@ -22,7 +22,7 @@ using Nomad.Core.Util;
 using Nomad.Game.Sdk.World;
 using Nomad.Game.Sdk.Events.World;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================
@@ -41,7 +41,7 @@ namespace Nomad.Game.Application.Gameplay.World
 	{
 		public SeasonDefinition CurrentSeason { get; private set; }
 
-		private readonly CalendarService _calendar;
+		private readonly ICalendarService _calendar;
 		private readonly IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> _seasons;
 		private readonly IReadOnlyList<MonthDefinition> _months;
 

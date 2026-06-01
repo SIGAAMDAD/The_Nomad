@@ -55,7 +55,7 @@ namespace Nomad.Game.Presentation.Widgets.OptionCheckbox
 		[Event( nameSpace: "Nomad.Game.Sdk.Events.UI", PayloadName = "OptionCheckboxValueChangedEventArgs" )]
 		[EventPayload( "Value", typeof( bool ) )]
 		public IGameEvent<OptionCheckboxValueChangedEventArgs> Toggled => _toggled;
-		private readonly IGameEvent<OptionCheckboxValueChangedEventArgs> _toggled = default;
+		private readonly IGameEvent<OptionCheckboxValueChangedEventArgs> _toggled = null;
 
 		public OptionCheckbox()
 		{

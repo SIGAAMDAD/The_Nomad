@@ -22,13 +22,19 @@ using Nomad.Core.FileSystem;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.EngineUtils.Settings.Services;
 using Nomad.Game.Sdk.Gameplay;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Presentation.Screens.ExtrasMenu;
+using Nomad.Game.Presentation.Screens.LobbyCreationMenu;
+using Nomad.Game.Presentation.Screens.LobbyWaitingRoom;
 using Nomad.Game.Presentation.Screens.MainMenu;
+using Nomad.Game.Presentation.Screens.MultiplayerMenu;
 using Nomad.Game.Presentation.Screens.PauseMenu;
 using Nomad.Game.Presentation.Screens.SettingsMenu;
 using Nomad.Game.Presentation.Screens.LoadGameMenu;
 using Nomad.Save.Services;
 using Nomad.Game.Presentation.Screens.NewGameMenu;
+using Nomad.Networking.Session;
+using Nomad.Game.Presentation.Screens.LoadingScreen;
 
 namespace Nomad.Game.Presentation.Screens
 {
@@ -62,7 +68,7 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static MainMenuPresenter CreateMainMenuPresenter( MainMenuView view )
+		public static MainMenuPresenter CreateMainMenuPresenter( IMainMenuView view )
 		{
 			var engineService = _locator.GetService<IEngineService>();
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
@@ -84,7 +90,7 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static SettingsMenuPresenter CreateSettingsMenuPresenter( SettingsMenuView view )
+		public static SettingsMenuPresenter CreateSettingsMenuPresenter( SettingsMenuGodotView view )
 		{
 			var cvarSystem = _locator.GetService<ICVarSystemService>();
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
@@ -133,7 +139,7 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static ExtrasMenuPresenter CreateExtrasMenuPresenter( ExtrasMenuView view )
+		public static ExtrasMenuPresenter CreateExtrasMenuPresenter( IExtrasMenuView view )
 		{
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
 
@@ -153,14 +159,16 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static LoadGameMenuPresenter CreateLoadGameMenuPresenter( LoadGameMenuView view )
+		public static LoadGameMenuPresenter CreateLoadGameMenuPresenter( ILoadGameMenuView view )
 		{
 			var saveDataProvider = _locator.GetService<ISaveDataProvider>();
+			var gameSessionService = _locator.GetService<IGameSessionService>();
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
 
 			return new LoadGameMenuPresenter(
 				view,
 				saveDataProvider,
+				gameSessionService,
 				eventFactory
 			);
 		}
@@ -175,19 +183,21 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static NewGameMenuPresenter CreateNewGameMenuPresenter( NewGameMenuView view )
+		public static NewGameMenuPresenter CreateNewGameMenuPresenter( INewGameMenuView view )
 		{
+			var gameSessionService = _locator.GetService<IGameSessionService>();
 			var eventFactory = _locator.GetService<IGameEventRegistryService>();
 
 			return new NewGameMenuPresenter(
 				view,
+				gameSessionService,
 				eventFactory
 			);
 		}
 
 		/*
 		===============
-		CreatePauseMenuView
+		CreatePauseMenuPresenter
 		===============
 		*/
 		/// <summary>
@@ -195,7 +205,7 @@ namespace Nomad.Game.Presentation.Screens
 		/// </summary>
 		/// <param name="view"></param>
 		/// <returns></returns>
-		public static PauseMenuPresenter CreatePauseMenuPresenter( PauseMenuView view )
+		public static PauseMenuPresenter CreatePauseMenuPresenter( IPauseMenuView view )
 		{
 			var emitterFactory = _locator.GetService<IEmitterFactory>();
 			var engineService = _locator.GetService<IEngineService>();
@@ -210,6 +220,55 @@ namespace Nomad.Game.Presentation.Screens
 				eventFactory,
 				gameStateService,
 				pauseService
+			);
+		}
+
+		public static LobbyCreationMenuPresenter CreateLobbyCreationMenuPresenter( ILobbyCreationMenuView view )
+		{
+			var sessionService = _locator.GetService<INetworkSessionService>();
+			var eventFactory = _locator.GetService<IGameEventRegistryService>();
+
+			return new LobbyCreationMenuPresenter(
+				view,
+				new LobbyCreationMenuModel(),
+				sessionService,
+				eventFactory
+			);
+		}
+
+		public static MultiplayerMenuPresenter CreateMultiplayerMenuPresenter( IMultiplayerMenuView view )
+		{
+			var eventFactory = _locator.GetService<IGameEventRegistryService>();
+
+			return new MultiplayerMenuPresenter(
+				view,
+				new MultiplayerMenuModel(),
+				eventFactory
+			);
+		}
+
+		public static LobbyWaitingRoomPresenter CreateLobbyWaitingRoomPresenter( ILobbyWaitingRoomView view )
+		{
+			var sessionService = _locator.GetService<INetworkSessionService>();
+			var votingService = _locator.GetService<IVotingService>();
+			var waitingRoomService = _locator.GetService<ILobbyWaitingRoomService>();
+
+			return new LobbyWaitingRoomPresenter(
+				view,
+				new LobbyWaitingRoomModel( sessionService ),
+				sessionService,
+				votingService,
+				waitingRoomService
+			);
+		}
+
+		public static LoadingScreenPresenter CreateLoadingScreenPresenter( ILoadingScreenView view )
+		{
+			var eventFactory = _locator.GetService<IGameEventRegistryService>();
+
+			return new LoadingScreenPresenter(
+				view,
+				eventFactory
 			);
 		}
 	};

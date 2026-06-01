@@ -223,6 +223,10 @@ namespace Nomad.Game.Application.UI.Menus
 					SetMenuHubVisible( true );
 					TransitionToMenu( MenuState.Main );
 					break;
+				case GameState.Loading:
+					SetMenuHubVisible( true );
+					TransitionToMenu( MenuState.Loading );
+					break;
 				case GameState.Level:
 					ClearCurrentMenu( resetState: true );
 					SetMenuHubVisible( false );

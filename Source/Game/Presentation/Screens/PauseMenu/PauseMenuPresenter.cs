@@ -37,7 +37,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 
 	internal sealed class PauseMenuPresenter : IDisposable
 	{
-		private readonly PauseMenuView _view;
+		private readonly IPauseMenuView _view;
 		private readonly PauseMenuModel _model;
 
 		private readonly IGameStateService _gameStateService;
@@ -47,6 +47,8 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		private readonly IGameEvent<MenuTransitionRequestedEventArgs> _menuTransitionRequested;
 		private readonly IGameEvent<WorldBootstrapRequestEventArgs> _worldBootstrapRequested;
 		private readonly IGameEvent<KeyboardEventArgs> _keyboardEvent;
+
+		private readonly IDisposable _gameStateChanged;
 
 		private bool _isDisposed = false;
 
@@ -65,7 +67,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 		/// <param name="gameStateService"></param>
 		/// <exception cref="ArgumentNullException"></exception>
 		public PauseMenuPresenter(
-			PauseMenuView view,
+			IPauseMenuView view,
 			PauseMenuModel model,
 			IEngineService engineService,
 			IGameEventRegistryService eventFactory,
@@ -84,7 +86,7 @@ namespace Nomad.Game.Presentation.Screens.PauseMenu
 			_worldBootstrapRequested = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>( WorldBootstrapRequestEventArgs.Name, WorldBootstrapRequestEventArgs.NameSpace );
 			_keyboardEvent = eventFactory.GetEvent<KeyboardEventArgs>( KeyboardEventArgs.Name, KeyboardEventArgs.NameSpace );
 
-			_gameStateService.StateChanged.Subscribe( OnGameStateChanged );
+			_gameStateChanged = _gameStateService.StateChanged.Subscribe( OnGameStateChanged );
 
 			_view.Resume += OnResumeGame;
 			_view.LoadGame += OnLoadGame;

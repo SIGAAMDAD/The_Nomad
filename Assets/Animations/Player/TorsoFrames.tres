@@ -1,6 +1,7 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://d0t1mmjx3q6lu"]
 
 [ext_resource type="Texture2D" uid="uid://dfama5idhd08n" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.dds" id="1_jjwdi"]
+[ext_resource type="Texture2D" uid="uid://bxu8oeeswbt4p" path="res://Assets/Materials/Player.tres" id="2_o60u7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m2r6w"]
 atlas = ExtResource("1_jjwdi")
@@ -22,12 +23,12 @@ region = Rect2(0, 128, 32, 32)
 atlas = ExtResource("1_jjwdi")
 region = Rect2(32, 128, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_o60u7"]
-atlas = ExtResource("1_jjwdi")
+[sub_resource type="AtlasTexture" id="AtlasTexture_aogr0"]
+atlas = ExtResource("2_o60u7")
 region = Rect2(0, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_aogr0"]
-atlas = ExtResource("1_jjwdi")
+[sub_resource type="AtlasTexture" id="AtlasTexture_xdb6k"]
+atlas = ExtResource("2_o60u7")
 region = Rect2(0, 0, 32, 32)
 
 [resource]
@@ -65,7 +66,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_o60u7")
+"texture": SubResource("AtlasTexture_aogr0")
 }],
 "loop": 1,
 "name": &"idle",
@@ -73,7 +74,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aogr0")
+"texture": SubResource("AtlasTexture_xdb6k")
 }],
 "loop": 1,
 "name": &"move",

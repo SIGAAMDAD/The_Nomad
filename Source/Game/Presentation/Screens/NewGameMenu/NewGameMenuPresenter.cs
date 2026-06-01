@@ -32,16 +32,18 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 	///
 	/// </summary>
 
-	public sealed class NewGameMenuPresenter : IDisposable
+	internal sealed class NewGameMenuPresenter : IDisposable
 	{
-		private readonly NewGameMenuView _view;
+		private readonly INewGameMenuView _view;
+		private readonly IGameSessionService _gameSessionService;
 		private readonly IGameEventRegistryService _eventFactory;
 
 		private bool _isDisposed = false;
 
-		public NewGameMenuPresenter( NewGameMenuView view, IGameEventRegistryService eventFactory )
+		public NewGameMenuPresenter( INewGameMenuView view, IGameSessionService gameSessionService, IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+			_gameSessionService = gameSessionService ?? throw new ArgumentNullException( nameof( gameSessionService ) );
 
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_view.StartStandardMode += OnStandardModeRequested;
@@ -106,20 +108,7 @@ namespace Nomad.Game.Presentation.Screens.NewGameMenu
 
 		private void BeginGame()
 		{
-			_eventFactory
-				.GetEvent<WorldBootstrapRequestEventArgs>(
-					WorldBootstrapRequestEventArgs.Name,
-					WorldBootstrapRequestEventArgs.NameSpace
-				)
-				.Publish(
-					new WorldBootstrapRequestEventArgs(
-						requestId: Guid.NewGuid(),
-						mode: WorldBootstrapMode.SinglePlayerNewGame,
-						worldId: "world.single.default",
-						difficulty: DifficultyPreset.Standard,
-						lobbyid: null
-					)
-				);
+			_ = _gameSessionService.StartNewSinglePlayerAsync();
 		}
 	};
 };

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b2gnqlt8pqd2u"]
 
-[ext_resource type="Script" uid="uid://ch5rlnf1ehti0" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.cs" id="1_rv5q0"]
-[ext_resource type="Shader" uid="uid://bo2wdwwx7uyfh" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreen.gdshader" id="2_i25kx"]
+[ext_resource type="Script" uid="uid://fq0l51nw3lbr" path="res://Source/Game/Presentation/Screens/LoadingScreen/LoadingScreenGodotView.cs" id="1_rv5q0"]
+[ext_resource type="Shader" uid="uid://bo2wdwwx7uyfh" path="res://Assets/Shaders/LoadingScreen.gdshader" id="2_i25kx"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_mvx2s"]
 
 [sub_resource type="Gradient" id="Gradient_i25kx"]
@@ -11,9 +11,15 @@ colors = PackedColorArray(1, 0, 0, 1, 1, 0.627451, 0, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_oey1p"]
 gradient = SubResource("Gradient_i25kx")
 
+[sub_resource type="Gradient" id="Gradient_particles"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.85, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_particles"]
+gradient = SubResource("Gradient_particles")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oey1p"]
 shader = ExtResource("2_i25kx")
-shader_parameter/progress = 1.0
 shader_parameter/background_color = Color(0, 0, 0, 1)
 shader_parameter/color_gradient = SubResource("GradientTexture1D_oey1p")
 shader_parameter/mask_texture = ExtResource("2_mvx2s")
@@ -28,6 +34,7 @@ shader_parameter/particle_offset = Vector2(0, 0)
 shader_parameter/particle_start_scale = Vector2(0.02, 0.02)
 shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
 shader_parameter/particle_scale_randomness = 0.5
+shader_parameter/particle_alpha_gradient = SubResource("GradientTexture1D_particles")
 shader_parameter/particle_amount = 20
 
 [sub_resource type="Gradient" id="Gradient_oey1p"]
@@ -38,43 +45,51 @@ colors = PackedColorArray(1, 1, 1, 0.003921569)
 gradient = SubResource("Gradient_oey1p")
 width = 1
 
-[node name="LoadingScreen" type="CanvasLayer" unique_id=963186252]
+[node name="LoadingScreen" type="Control" unique_id=963186252]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_rv5q0")
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="." unique_id=375596481]
 custom_minimum_size = Vector2(0, 80)
 anchors_preset = -1
-anchor_top = 0.88900006
+anchor_top = 0.86700004
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 56.919983
+offset_top = 70.119995
 grow_horizontal = 2
 grow_vertical = 0
 text = "LOADING..."
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1355305070]
+[node name="ProgressBar" type="TextureRect" parent="." unique_id=1355305070]
 material = SubResource("ShaderMaterial_oey1p")
 anchors_preset = -1
-anchor_left = 0.8
-anchor_top = 0.90000004
-anchor_right = 1.0
+anchor_left = 0.85400003
+anchor_top = 0.9620001
+anchor_right = 1.0000001
 anchor_bottom = 1.0
-offset_left = 216.0
-offset_top = 32.0
+offset_left = -0.2000122
+offset_top = -0.20007324
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("2_mvx2s")
+expand_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="TextureRect2" type="TextureRect" parent="." unique_id=47120545]
+[node name="Background" type="TextureRect" parent="." unique_id=47120545]
 custom_minimum_size = Vector2(0, 120)
 anchors_preset = -1
-anchor_top = 0.83300006
+anchor_top = 0.8
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 120.23993
+offset_top = 140.03998
 grow_horizontal = 2
 grow_vertical = 0
 texture = SubResource("GradientTexture1D_2m0pv")
