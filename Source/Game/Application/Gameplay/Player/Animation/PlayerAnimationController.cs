@@ -47,7 +47,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 		private readonly PlayerId _playerId = PlayerId.Invalid;
 
-		private readonly Node2D _animatorRoot;
 		private readonly AnimatedSprite2D _torsoAnimator;
 		private readonly Sprite2D _headAnimator;
 		private readonly AnimatedSprite2D _legAnimator;
@@ -95,8 +94,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_playerId = playerId;
-
-			_animatorRoot = prefab.GetNode<Node2D>( "Animations" );
 
 			_headAnimator = prefab.GetNode<Sprite2D>( "Animations/HeadSprite" );
 

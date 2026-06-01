@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://bu648sm61ptaq" path="res://Assets/Prefabs/Player/PlayerPrefab.cs" id="1_07406"]
 [ext_resource type="Script" uid="uid://cnu3u01cl7ajg" path="res://Assets/Prefabs/Player/PlayerCamera2D.cs" id="1_jic80"]
 [ext_resource type="PackedScene" uid="uid://cre4jywn58wrl" path="res://Assets/Prefabs/Player/Arm.tscn" id="3_5ofd5"]
-[ext_resource type="Texture2D" uid="uid://dfama5idhd08n" path="res://Assets/Textures/Skins/TheWanderer/raio_torso.dds" id="3_qeavp"]
 [ext_resource type="SpriteFrames" uid="uid://d0t1mmjx3q6lu" path="res://Assets/Animations/Player/TorsoFrames.tres" id="3_qq8fn"]
 [ext_resource type="Script" uid="uid://ca3t1k5bdo51c" path="res://Assets/Prefabs/Player/SpritePrefab.cs" id="4_20k8i"]
 [ext_resource type="Script" uid="uid://crttf7aref0k7" path="res://Assets/Prefabs/Player/AnimatorPrefab.cs" id="5_26jrr"]
@@ -11,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://b5auo6x0mgi2j" path="res://Assets/Prefabs/Effects/JumpKitEffect/JumpKitEffect.tscn" id="6_40dfe"]
 [ext_resource type="PackedScene" uid="uid://bftw0tto4ysht" path="res://Assets/Prefabs/Effects/DustPuff/DustPuff.tscn" id="7_yip5k"]
 [ext_resource type="Texture2D" uid="uid://bfp0u5rcwv765" path="res://Assets/Textures/Generated/BeardTexture.tres" id="8_40dfe"]
+[ext_resource type="Texture2D" uid="uid://bxu8oeeswbt4p" path="res://Assets/Materials/Player.tres" id="9_yip5k"]
+[ext_resource type="PackedScene" uid="uid://c6mafucos8cwk" path="res://Assets/Prefabs/HeadsUpDisplay/HeadsUpDisplay.tscn" id="12_0vw6c"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qeavp"]
 radius = 8.0
@@ -20,7 +21,6 @@ size = Vector2(0, 0)
 
 [node name="Player" type="CharacterBody2D" unique_id=449054365]
 process_mode = 1
-y_sort_enabled = true
 collision_layer = 4
 collision_mask = 13851
 script = ExtResource("1_07406")
@@ -64,7 +64,7 @@ position = Vector2(0.99999976, 14.000001)
 [node name="HeadSprite" type="Sprite2D" parent="Animations" unique_id=1230354207]
 z_index = 1
 position = Vector2(-1, -7)
-texture = ExtResource("3_qeavp")
+texture = ExtResource("9_yip5k")
 offset = Vector2(5, -5)
 region_enabled = true
 region_rect = Rect2(64, 32, 32, 32)
@@ -160,3 +160,5 @@ offset = Vector2(-0.075, 0)
 [node name="RightArm" parent="Animations" unique_id=1622967129 instance=ExtResource("3_5ofd5")]
 z_index = 2
 position = Vector2(-1, 0)
+
+[node name="HeadsUpDisplay" parent="." unique_id=756735863 instance=ExtResource("12_0vw6c")]

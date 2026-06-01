@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://deb8m0dblgv2j"]
 
-[ext_resource type="Script" uid="uid://blbf6k3mn54c8" path="res://Source/Game/Presentation/Screens/ModMenu/ModMenuView.cs" id="1_nf6xt"]
+[ext_resource type="Script" uid="uid://blbf6k3mn54c8" path="res://Source/Game/Presentation/Screens/ModMenu/ModMenuGodotView.cs" id="1_nf6xt"]
 
 [node name="ModMenu" type="Control" unique_id=576244292]
 layout_mode = 3

@@ -15,19 +15,20 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using Nomad.Core.CVars;
 using Nomad.Core.Events;
+using Nomad.Game.Presentation.World;
 using Nomad.Game.Sdk.World;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================
-	
+
 	SimulationCoordinator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class SimulationCoordinator
@@ -35,6 +36,7 @@ namespace Nomad.Game.Application.Gameplay.World
 		private readonly CalendarService _calendarService;
 		private readonly WeatherService _weatherService;
 		private readonly SeasonService _seasonService;
+		private readonly WorldSunLightController _sunLightController;
 
 		private readonly SimulationSaveCoordinator _saveCoordinator;
 
@@ -44,13 +46,20 @@ namespace Nomad.Game.Application.Gameplay.World
 		===============
 		*/
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
 		/// <param name="cvarSystem"></param>
 		/// <param name="startDate"></param>
 		/// <param name="definition"></param>
-		public SimulationCoordinator( IGameEventRegistryService eventFactory, ICVarSystemService cvarSystem, WorldTime startDate, WorldDefinition definition )
+		/// <param name="sunLightPrefab"></param>
+		public SimulationCoordinator(
+			IGameEventRegistryService eventFactory,
+			ICVarSystemService cvarSystem,
+			WorldTime startDate,
+			WorldDefinition definition,
+			WorldSunLightPrefab sunLightPrefab
+		)
 		{
 			_calendarService = new CalendarService( eventFactory, cvarSystem, definition.Calendar );
 			_seasonService = new SeasonService( eventFactory, _calendarService, definition.Calendar.Months, definition.Seasons );
@@ -59,6 +68,8 @@ namespace Nomad.Game.Application.Gameplay.World
 			_saveCoordinator = new SimulationSaveCoordinator( _calendarService, _weatherService, eventFactory );
 
 			_calendarService.SetTime( startDate );
+
+			_sunLightController = new WorldSunLightController( _calendarService, _seasonService, sunLightPrefab );
 		}
 	};
 };

@@ -21,5 +21,6 @@ namespace Nomad.Game.Sdk.Gameplay
     public interface IWorldContentCache : IDisposable
     {
         IItemCatalog Items { get; }
+        IItemInstanceRepository ItemInstances { get; }
     }
 }

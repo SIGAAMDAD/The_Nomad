@@ -9,6 +9,9 @@ radius = 89.560036
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u81d1"]
 size = Vector2(81, 44)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_p4dx3"]
+polygon = PackedVector2Array(-4, 18, 36, 44, -3, 57, -43, 44)
+
 [node name="MelioraRoot" type="Node2D" unique_id=1146163250]
 y_sort_enabled = true
 script = ExtResource("1_p4dx3")
@@ -31,6 +34,9 @@ shape = SubResource("RectangleShape2D_u81d1")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471559592]
 position = Vector2(0, -51)
 sprite_frames = ExtResource("1_u81d1")
-animation = &"inactive"
+animation = &"active"
 autoplay = "inactive"
-frame_progress = 0.2186134
+frame_progress = 0.7493553
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=52452840]
+occluder = SubResource("OccluderPolygon2D_p4dx3")

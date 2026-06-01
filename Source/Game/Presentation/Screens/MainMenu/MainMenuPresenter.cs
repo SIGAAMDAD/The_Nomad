@@ -25,11 +25,11 @@ namespace Nomad.Game.Presentation.Screens.MainMenu
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly IEngineService _engineService;
 
-		private readonly MainMenuView _view;
+		private readonly IMainMenuView _view;
 
 		private bool _isDisposed = false;
 
-		public MainMenuPresenter( MainMenuView view, IEngineService engineService, IGameEventRegistryService eventFactory )
+		public MainMenuPresenter( IMainMenuView view, IEngineService engineService, IGameEventRegistryService eventFactory )
 		{
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
@@ -56,11 +56,11 @@ namespace Nomad.Game.Presentation.Screens.MainMenu
 				return;
 			}
 
-			_view.NewGame += OnNewGamePressed;
-			_view.LoadGame += OnLoadGamePressed;
-			_view.Extras += OnExtrasMenuPressed;
-			_view.Settings += OnSettingsMenuPressed;
-			_view.QuitGame += OnQuitGamePressed;
+			_view.NewGame -= OnNewGamePressed;
+			_view.LoadGame -= OnLoadGamePressed;
+			_view.Extras -= OnExtrasMenuPressed;
+			_view.Settings -= OnSettingsMenuPressed;
+			_view.QuitGame -= OnQuitGamePressed;
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;

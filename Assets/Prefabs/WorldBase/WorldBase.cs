@@ -14,7 +14,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Audio.Interfaces;
+using Nomad.Core.CVars;
 using Nomad.Core.Engine.SceneManagement;
+using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
@@ -52,6 +54,9 @@ namespace Nomad.Game.Prefabs
 			var logger = serviceLocator.GetService<ILoggerService>();
 
 			var gameStateService = serviceLocator.GetService<IGameStateService>();
+			var cvarSystem = serviceLocator.GetService<ICVarSystemService>();
+			var localizationService = serviceLocator.GetService<ILocalizationService>();
+			var worldContent = serviceLocator.GetService<IWorldContentCache>();
 			var spawnApplicator = new PlayerSpawnApplicator();
 			var profileResolver = new PlayerSpawnProfileResolver();
 			var audioDevice = serviceLocator.GetService<IAudioDevice>();
@@ -59,10 +64,24 @@ namespace Nomad.Game.Prefabs
 
 			audioDevice.LoadBank( "Assets/Audio/Banks/Desktop/sfx.bank" );
 
-			_playerRepository = new PlayerRepository( eventFactory, serviceRegistry, logger, gameStateService, ServiceLocator.GetService<ISceneManager>(), "Assets/Prefabs/Player/Player.tscn" );
+			_playerRepository = new PlayerRepository(
+				eventFactory,
+				serviceRegistry,
+				logger,
+				gameStateService,
+				_sceneManager,
+				worldContent,
+				localizationService,
+				cvarSystem,
+				"Assets/Prefabs/Player/Player.tscn"
+			);
 			serviceRegistry.AddSingleton<IPlayerRuntimeRegistry>( _playerRepository );
 
 			_spawnService = new PlayerSpawnService( eventFactory, _playerRepository, spawnApplicator, profileResolver, logger );
+
+			var gameOverlayScene = _sceneManager.LoadPrefab( "Source/Game/Presentation/Screens/Gameplay/GameplayScreen.tscn" );
+			_gameOverlay = gameOverlayScene.Root.CastAs<GameplayScreen>();
+			CallDeferred( MethodName.AddChild, _gameOverlay );
 		}
 
 		/*
@@ -75,11 +94,6 @@ namespace Nomad.Game.Prefabs
 		/// </summary>
 		protected override void OnInit()
 		{
-			base.OnInit();
-
-			var gameOverlayScene = _sceneManager.LoadPrefab( "Source/Game/Presentation/Screens/Gameplay/GameplayScreen.tscn" );
-			_gameOverlay = gameOverlayScene.Root.CastAs<GameplayScreen>();
-			AddChild( _gameOverlay );
 		}
 
 		protected override void OnShutdown()

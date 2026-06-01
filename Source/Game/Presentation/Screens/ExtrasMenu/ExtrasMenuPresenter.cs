@@ -30,16 +30,33 @@ namespace Nomad.Game.Presentation.Screens.ExtrasMenu
 	///
 	/// </summary>
 
-	internal sealed class ExtrasMenuPresenter
+	internal sealed class ExtrasMenuPresenter : IDisposable
 	{
+		private readonly IExtrasMenuView _view;
 		private readonly IGameEventRegistryService _eventFactory;
 
-		public ExtrasMenuPresenter( ExtrasMenuView view, IGameEventRegistryService eventFactory )
+		private bool _isDisposed = false;
+
+		public ExtrasMenuPresenter( IExtrasMenuView view, IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 
-			view.MultiplayerMenu += OnMultiplayerMenu;
-			view.Back += OnBack;
+			_view = view ?? throw new ArgumentNullException( nameof( view ) );
+			_view.MultiplayerMenu += OnMultiplayerMenu;
+			_view.Back += OnBack;
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.MultiplayerMenu -= OnMultiplayerMenu;
+			_view.Back -= OnBack;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		private void OnMultiplayerMenu()

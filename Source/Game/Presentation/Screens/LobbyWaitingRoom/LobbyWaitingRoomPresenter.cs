@@ -33,17 +33,18 @@ namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 	///
 	/// </summary>
 
-	internal sealed class LobbyWaitingRoomPresenter
+	internal sealed class LobbyWaitingRoomPresenter : IDisposable
 	{
-		private readonly LobbyWaitingRoomView _view;
+		private readonly ILobbyWaitingRoomView _view;
 		private readonly LobbyWaitingRoomModel _model;
 
 		private readonly INetworkSessionService _sessionService;
 		private readonly IVotingService _votingService;
 		private readonly ILobbyWaitingRoomService _waitingRoomService;
+		private bool _isDisposed = false;
 
 		public LobbyWaitingRoomPresenter(
-			LobbyWaitingRoomView view,
+			ILobbyWaitingRoomView view,
 			LobbyWaitingRoomModel model,
 			INetworkSessionService sessionService,
 			IVotingService votingService,
@@ -68,6 +69,24 @@ namespace Nomad.Game.Presentation.Screens.LobbyWaitingRoom
 			waitingRoomService.OpenWaitingRoom();
 
 			model.RefreshMemberList();
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.Leave -= OnLeaveLobby;
+			_view.ReadyUp -= OnReadyUp;
+			_view.StartGame -= OnStartGame;
+			_view.VoteStart -= OnVoteStart;
+
+			_model.PlayerConnected -= OnPlayerConnected;
+			_model.PlayerDisconnected -= OnPlayerDisconnected;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		public void Update()

@@ -20,6 +20,17 @@ using Nomad.Game.Sdk.HeadsUpDisplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
+	/*
+	===================================================================================
+
+	HudComponentPresenter
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
 	internal abstract class HudComponentPresenter<TView> : IHudComponentPresenter
 		where TView : IHudComponentView
 	{
@@ -56,7 +67,9 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		{
 		}
 
-		public abstract void Render( float delta );
+		public virtual void Render( float delta )
+		{
+		}
 
 		public void Show()
 		{

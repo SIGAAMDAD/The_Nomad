@@ -18,7 +18,7 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Save.Services;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================

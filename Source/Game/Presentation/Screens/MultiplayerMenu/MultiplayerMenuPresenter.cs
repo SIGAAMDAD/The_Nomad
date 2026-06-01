@@ -20,14 +20,15 @@ using Nomad.Game.Presentation.Screens.MultiplayerMenu;
 
 namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 {
-	internal sealed class MultiplayerMenuPresenter
+	internal sealed class MultiplayerMenuPresenter : IDisposable
 	{
-		private readonly MultiplayerMenuView _view;
+		private readonly IMultiplayerMenuView _view;
 		private readonly MultiplayerMenuModel _model;
 
 		private readonly IGameEventRegistryService _eventFactory;
+		private bool _isDisposed = false;
 
-		public MultiplayerMenuPresenter( MultiplayerMenuView view, MultiplayerMenuModel model, IGameEventRegistryService eventFactory )
+		public MultiplayerMenuPresenter( IMultiplayerMenuView view, MultiplayerMenuModel model, IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
@@ -36,6 +37,20 @@ namespace Nomad.Game.Presentation.Screens.MultiplayerMenu
 			view.Back += OnBack;
 			view.CreateLobby += OnCreateLobby;
 			view.LobbyBrowser += OnLobbyBrowser;
+		}
+
+		public void Dispose()
+		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_view.Back -= OnBack;
+			_view.CreateLobby -= OnCreateLobby;
+			_view.LobbyBrowser -= OnLobbyBrowser;
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		public void SyncView()

@@ -16,7 +16,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
-using Nomad.Core.OnlineServices;
 using Nomad.Networking.Session;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Sdk.Events.Gameplay;
@@ -117,23 +116,29 @@ namespace Nomad.Game.Application.Gameplay.World
 					default:
 						break;
 				}
+
 				IWorldHandle world = LoadWorld( args.WorldId );
 
-				_bootstrapSucceeded.Publish( new WorldBootstrapSucceededEventArgs(
-					args.RequestId,
-					args.Mode,
-					args.WorldId,
-					world.Id,
-					resolvedLobbyId
-				) );
+				_bootstrapSucceeded.Publish(
+					new WorldBootstrapSucceededEventArgs(
+						args.RequestId,
+						args.Mode,
+						args.WorldId,
+						world.Id,
+						args.SaveName,
+						resolvedLobbyId
+					)
+				);
 			} catch ( Exception e ) {
-				_bootstrapFailed.Publish( new WorldBootstrapFailureEventArgs(
-					args.RequestId,
-					args.Mode,
-					args.WorldId,
-					WorldBootstrapFailureReason.Unknown,
-					$"{e.Message}\n{e.StackTrace}"
-				) );
+				_bootstrapFailed.Publish(
+					new WorldBootstrapFailureEventArgs(
+						args.RequestId,
+						args.Mode,
+						args.WorldId,
+						WorldBootstrapFailureReason.Unknown,
+						$"{e.Message}\n{e.StackTrace}"
+					)
+				);
 			}
 		}
 

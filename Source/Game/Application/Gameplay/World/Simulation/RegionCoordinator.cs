@@ -21,17 +21,17 @@ using Nomad.Game.Sdk.World;
 using Nomad.Game.Sdk.Events.World;
 using Nomad.Save.Services;
 
-namespace Nomad.Game.Application.Gameplay.World
+namespace Nomad.Game.Application.Gameplay.World.Simulation
 {
 	/*
 	===================================================================================
-	
+
 	RegionCoordinator
-	
+
 	===================================================================================
 	*/
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 
 	internal sealed class RegionCoordinator

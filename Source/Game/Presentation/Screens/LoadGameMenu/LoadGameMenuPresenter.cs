@@ -15,10 +15,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
-using BenchmarkDotNet.Jobs;
-using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Sdk.Gameplay;
 using Nomad.Save.Services;
 using Nomad.Save.ValueObjects;
 
@@ -37,10 +36,12 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 
 	internal sealed class LoadGameMenuPresenter : IDisposable
 	{
-		private readonly LoadGameMenuView _view;
+		private readonly ILoadGameMenuView _view;
 
 		private readonly IGameEventRegistryService _eventFactory;
 		private readonly ISaveDataProvider _saveDataProvider;
+		private readonly IGameSessionService _gameSessionService;
+		private int _selectedSlotIndex = -1;
 
 		private bool _isDisposed = false;
 
@@ -55,10 +56,11 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		/// <param name="view"></param>
 		/// <param name="dataProvider"></param>
 		/// <param name="eventFactory"></param>
-		public LoadGameMenuPresenter( LoadGameMenuView view, ISaveDataProvider dataProvider, IGameEventRegistryService eventFactory )
+		public LoadGameMenuPresenter( ILoadGameMenuView view, ISaveDataProvider dataProvider, IGameSessionService gameSessionService, IGameEventRegistryService eventFactory )
 		{
 			_eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
 			_saveDataProvider = dataProvider ?? throw new ArgumentNullException( nameof( dataProvider ) );
+			_gameSessionService = gameSessionService ?? throw new ArgumentNullException( nameof( gameSessionService ) );
 
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_view.SlotSelected += OnSlotSelected;
@@ -101,6 +103,16 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 
 		private void OnLoadSlot()
 		{
+			if ( _selectedSlotIndex < 0 ) {
+				return;
+			}
+
+			IReadOnlyList<SaveFileMetadata> files = _saveDataProvider.ListSaveFiles();
+			if ( _selectedSlotIndex >= files.Count ) {
+				return;
+			}
+
+			_ = _gameSessionService.LoadSinglePlayerAsync( files[_selectedSlotIndex].SaveName );
 		}
 
 		/*
@@ -115,7 +127,11 @@ namespace Nomad.Game.Presentation.Screens.LoadGameMenu
 		private void OnSlotSelected( int slot )
 		{
 			IReadOnlyList<SaveFileMetadata> files = _saveDataProvider.ListSaveFiles();
+			if ( slot < 0 || slot >= files.Count ) {
+				return;
+			}
 
+			_selectedSlotIndex = slot;
 			var file = files[slot];
 			_view.SetSlotName( file.SaveName );
 			_view.SetLastAccessedTime( file.LastAccessTime.ToLongDateString() );

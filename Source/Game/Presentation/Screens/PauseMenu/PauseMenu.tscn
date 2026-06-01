@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cca2v6mecxhw3"]
 
-[ext_resource type="Script" uid="uid://cj4ewb0ypaia0" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuView.cs" id="1_03k4a"]
+[ext_resource type="Script" uid="uid://cj4ewb0ypaia0" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuGodotView.cs" id="1_03k4a"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="1_ugbl1"]
 [ext_resource type="Shader" uid="uid://bjgggkjltu32l" path="res://Source/Game/Presentation/Screens/PauseMenu/TransitionFlicker.gdshader" id="2_03k4a"]
 
@@ -55,20 +55,20 @@ metadata/_edit_use_anchors_ = true
 
 [node name="ResumeGameButton" parent="OptionsContainer" unique_id=1938011170 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "ui.pause.resume_game"
+text = "UI_PAUSE_RESUME_GAME"
 
 [node name="LoadGameButton" parent="OptionsContainer" unique_id=791109034 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "ui.load_game"
+text = "UI_LOAD_GAME"
 
 [node name="SettingsButton" parent="OptionsContainer" unique_id=374986074 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "ui.settings_menu"
+text = "UI_SETTINGS_MENU"
 
 [node name="ExitWorldButton" parent="OptionsContainer" unique_id=167440039 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "ui.pause.exit_world"
+text = "UI_PAUSE_EXIT_WORLD"
 
 [node name="QuitGameButton" parent="OptionsContainer" unique_id=2053121442 instance=ExtResource("1_ugbl1")]
 layout_mode = 2
-text = "ui.quit_game"
+text = "UI_QUIT_GAME"

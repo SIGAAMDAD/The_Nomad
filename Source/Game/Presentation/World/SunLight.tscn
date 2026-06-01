@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dfpsmfg427cba"]
+
+[ext_resource type="Script" uid="uid://bhg5vyry6gbbv" path="res://Source/Game/Presentation/World/WorldSunLightPrefab.cs" id="1_f6oha"]
+
+[node name="SunLight" type="Node2D" unique_id=35515758 node_paths=PackedStringArray("AmbientLight", "SunLight")]
+script = ExtResource("1_f6oha")
+AmbientLight = NodePath("CanvasModulate")
+SunLight = NodePath("DirectionalLight2D")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=745568933]
+shadow_enabled = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1421164924]

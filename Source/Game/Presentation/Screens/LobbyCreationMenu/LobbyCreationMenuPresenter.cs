@@ -38,14 +38,14 @@ namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu
 	internal sealed class LobbyCreationMenuPresenter : IDisposable
 	{
 		private readonly LobbyCreationMenuModel _model;
-		private readonly LobbyCreationMenuView _view;
+		private readonly ILobbyCreationMenuView _view;
 		private readonly INetworkSessionService _sessionService;
 
 		private readonly IGameEventRegistryService _eventFactory;
 
 		private bool _isDisposed = false;
 
-		public LobbyCreationMenuPresenter( LobbyCreationMenuView view, LobbyCreationMenuModel model, INetworkSessionService sessionService, IGameEventRegistryService eventFactory )
+		public LobbyCreationMenuPresenter( ILobbyCreationMenuView view, LobbyCreationMenuModel model, INetworkSessionService sessionService, IGameEventRegistryService eventFactory )
 		{
 			_model = model;
 			_view = view;

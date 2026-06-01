@@ -19,13 +19,18 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Configuration;
 using Nomad.Game.Sdk.Multiplayer;
-using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.HeadsUpDisplay;
+using Nomad.Game.Sdk.Items;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.DashKitHeatBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.InteractionMenu;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HotSlotContainer;
+using Nomad.Game.Sdk.Player.Inventory;
+using Nomad.Core.CVars;
+using Nomad.CVars;
+using Nomad.Game.Application.Gameplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {
@@ -62,14 +67,41 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		/// <param name="playerId"></param>
 		/// <param name="root"></param>
 		/// <param name="eventFactory"></param>
-		public HudRoot( PlayerId playerId, HeadsUpDisplayView root, ILocalizationService localizationService, IGameEventRegistryService eventFactory )
+		public HudRoot(
+			PlayerId playerId,
+			HeadsUpDisplayView root,
+			IWeaponSlotService slotsService,
+			IItemInstanceRepository itemRegistry,
+			ILocalizationService localizationService,
+			ICVarSystemService cvarSystem,
+			IGameEventRegistryService eventFactory
+		)
 		{
+			playerId.ThrowIfInvalid( nameof( HudRoot ) );
+
+			root = root ?? throw new ArgumentNullException( nameof( root ) );
+			slotsService = slotsService ?? throw new ArgumentNullException( nameof( slotsService ) );
+			itemRegistry = itemRegistry ?? throw new ArgumentNullException( nameof( itemRegistry ) );
+			localizationService = localizationService ?? throw new ArgumentNullException( nameof( localizationService ) );
+			cvarSystem = cvarSystem ?? throw new ArgumentNullException( nameof( cvarSystem ) );
+			eventFactory = eventFactory ?? throw new ArgumentNullException( nameof( eventFactory ) );
+
+			_preset = cvarSystem.GetCVarOrThrow( GameplayCVarRegistry.HUDPreset ).Value;
+
 			_neutralGroup = new ComponentGroup(
+				cvarSystem.GetCVarOrThrow( GameplayCVarRegistry.NeutralHUDPreset ).Value,
 				new List<IHudComponentPresenter>() {
 					new HealthBarPresenter( playerId, root.GetNode<HealthBarView>( "NeutralHUD/StatBarContainer/HealthBar" ), eventFactory ),
 					new RageBarPresenter( playerId, root.GetNode<RageBarView>( "NeutralHUD/StatBarContainer/RageBar" ), eventFactory ),
 					new DashKitHeatBarPresenter( playerId, root.GetNode<DashStatusBarView>( "NeutralHUD/StatBarContainer/DashStatusBar" ), eventFactory ),
 					new InteractionMenuPresenter( playerId, root.GetNode<InteractionMenuView>( "NeutralHUD/InteractionMenu" ), eventFactory, localizationService )
+				}
+			);
+
+			_combatGroup = new ComponentGroup(
+				cvarSystem.GetCVarOrThrow( GameplayCVarRegistry.CombatHUDPreset ).Value,
+				new List<IHudComponentPresenter> {
+					new HotSlotContainerPresenter( playerId, root.GetNode<HotSlotsContainerView>( "CombatHUD/HotSlotsContainer" ), slotsService, itemRegistry )
 				}
 			);
 		}
@@ -89,6 +121,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 			}
 
 			_neutralGroup.Dispose();
+			_combatGroup.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
@@ -106,6 +139,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 		public void Render( float delta )
 		{
 			_neutralGroup.Render( delta );
+			_combatGroup.Render( delta );
 		}
 	};
 };

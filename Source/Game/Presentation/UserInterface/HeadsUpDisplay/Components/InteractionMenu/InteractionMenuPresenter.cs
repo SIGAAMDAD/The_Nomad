@@ -70,6 +70,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Intera
 		)
 			: base( view )
 		{
+			playerId.ThrowIfInvalid( nameof( InteractionMenuPresenter ) );
+
 			_playerId = playerId;
 			_localizationService = localizationService ?? throw new ArgumentNullException( nameof( localizationService ) );
 

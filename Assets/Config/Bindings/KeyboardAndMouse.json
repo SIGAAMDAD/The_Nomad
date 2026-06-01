@@ -105,7 +105,7 @@
 		},
 		{
 			"Name": "Switch to Primary Weapon",
-			"Id": "SwitchToPrimary",
+			"Id": "SwitchToPrimaryWeapon",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -116,7 +116,7 @@
 		},
 		{
 			"Name": "Switch to Secondary Weapon",
-			"Id": "SwitchToSecondary",
+			"Id": "SwitchToSecondaryWeapon",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -127,7 +127,7 @@
 		},
 		{
 			"Name": "Switch to Heavy Primary Weapon",
-			"Id": "SwitchToHeavyPrimary",
+			"Id": "SwitchToHeavyPrimaryWeapon",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {
@@ -138,7 +138,7 @@
 		},
 		{
 			"Name": "Switch to Heavy Sidearm Weapon",
-			"Id": "SwitchToHeavySecondary",
+			"Id": "SwitchToHeavySecondaryWeapon",
 			"ValueType": "Button",
 			"Scheme": "KeyboardAndMouse",
 			"Bindings": {

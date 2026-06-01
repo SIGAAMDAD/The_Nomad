@@ -20,7 +20,6 @@ using Nomad.UI;
 using Nomad.Game.Application.Gameplay;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Logger.Globals;
-using Nomad.Game.Application.Configuration.Registries;
 using Nomad.Game.Infrastructure;
 using Nomad.Game.Application.Gameplay.World;
 using Nomad.Save.Services;
@@ -51,6 +50,7 @@ namespace Nomad.Game.Application
 		private IWorldLoader _worldLoader;
 		private ISceneManager _sceneManager;
 		private IGameStateService _gameStateService;
+		private GameSessionService _gameSessionService;
 		private SaveGameController _saveController;
 		private MultiplayerCoordinator _multiplayerCoordinator;
 		private GameplayApplicationCoordinator _gameplayCoordinator;
@@ -73,10 +73,11 @@ namespace Nomad.Game.Application
 			var cvarSystem = locator.GetService<ICVarSystemService>();
 			var logger = locator.GetService<ILoggerService>();
 
-			GameplayCVars.Register( cvarSystem );
+			GameplayCVarRegistry.RegisterCVars( cvarSystem );
 
 			_sceneManager = locator.GetService<ISceneManager>();
 			_gameStateService = new GameStateManager( eventFactory );
+			_gameSessionService = new GameSessionService( _gameStateService, ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
 			_menuManager = new MenuManager( _sceneManager, _gameStateService, eventFactory, logger );
 			_worldLoader = new SceneWorldLoader( _sceneManager );
 			_saveController = new SaveGameController( ServiceLocator.GetService<ISaveDataProvider>(), eventFactory );
@@ -88,6 +89,7 @@ namespace Nomad.Game.Application
 			_multiplayerCoordinator = MultiplayerBootstrapper.Initialize( ServiceRegistry.Instance, ServiceLocator.Instance );
 
 			ServiceRegistry.AddSingleton( _gameStateService );
+			ServiceRegistry.AddSingleton<IGameSessionService>( _gameSessionService );
 			ServiceRegistry.AddSingleton( _worldLoader );
 			ServiceRegistry.AddSingleton( _gameFlowCoordinator );
 
@@ -112,6 +114,7 @@ namespace Nomad.Game.Application
 			_gameplayCoordinator?.Dispose();
 			_menuManager?.Dispose();
 			_saveController?.Dispose();
+			_gameSessionService?.Dispose();
 			_gameStateService?.Dispose();
 		}
 	};
