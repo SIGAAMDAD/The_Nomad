@@ -6,6 +6,23 @@
 script = ExtResource("1_f6oha")
 AmbientLight = NodePath("CanvasModulate")
 SunLight = NodePath("DirectionalLight2D")
+SunOrbitCenter = null
+SunOrbitRadius = null
+ArcStartDegrees = null
+ArcEndDegrees = null
+LightRotationOffsetDegrees = null
+MinuteTweenSeconds = null
+SnapOnFirstApply = null
+DayLightEnergy = null
+TwilightLightEnergy = null
+MoonLightEnergy = null
+MinLightHeight = null
+MaxLightHeight = null
+DayLightColor = null
+DawnLightColor = null
+DuskLightColor = null
+MoonLightColor = null
+BaseShadowColor = null
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=745568933]
 shadow_enabled = true

@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bxycmi1q80n28"]
+
+[ext_resource type="Script" uid="uid://cfy1dycp0i4i8" path="res://Assets/Prefabs/HeadsUpDisplay/HudGroupView.cs" id="1_6emt0"]
+
+[node name="HudGroupView" type="Control" unique_id=2111998507]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6emt0")

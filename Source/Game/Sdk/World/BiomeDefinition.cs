@@ -14,20 +14,37 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using Nomad.Core.Util;
+using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Sdk.World
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed record BiomeDefinition
     {
-        public InternString Id { get; init; }
+        public BiomeDefinitionId Id { get; init; }
         public InternString DisplayName { get; init; }
-        public InternString JournalEntryId { get; init; }
-        public InternString WikiEntryId { get; init; }
+        public InternString JournalEntry { get; init; }
+        public InternString WikiEntry { get; init; }
 
-        public IReadOnlyList<InternString> Meliora { get; init; }
+        public IReadOnlyList<CheckpointDefinitionId> Meliora { get; init; }
+
+        public static BiomeDefinition Load(JsonElement json)
+        {
+            return new BiomeDefinition
+            {
+                Id = new BiomeDefinitionId(new InternString(JsonLoader.GetRequired<string>(json, nameof(Id)))),
+                DisplayName = new InternString(JsonLoader.GetRequired<string>(json, nameof(DisplayName))),
+                JournalEntry = new InternString(JsonLoader.GetRequired<string>(json, nameof(JournalEntry))),
+                WikiEntry = new InternString(JsonLoader.GetRequired<string>(json, nameof(WikiEntry))),
+                Meliora = JsonLoader.GetRequiredArray<string>(json, nameof(Meliora))
+                    .Select(s => new CheckpointDefinitionId(new InternString(s)))
+                    .ToArray()
+            };
+        }
     }
 }

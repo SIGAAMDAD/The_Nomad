@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://klr1xxhpuekv"]
+
+[ext_resource type="Shader" uid="uid://b7rdx103u8k5i" path="res://Assets/Shaders/HeightProxyWriter.gdshader" id="1_qim85"]
+
+[resource]
+shader = ExtResource("1_qim85")
+shader_parameter/height_max_px = 256.0
+shader_parameter/height_scale = 1.0
+shader_parameter/contact_band_uv = 0.1
+shader_parameter/top_y_uv = 0.0
+shader_parameter/foot_y_uv = 1.0
+shader_parameter/manual_sprite_height_px = 0.0

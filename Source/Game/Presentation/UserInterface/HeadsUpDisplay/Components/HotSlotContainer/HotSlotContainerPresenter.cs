@@ -60,9 +60,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HotSlo
 			_weaponSlotChanged = _slotService.WeaponSlotChanged.Subscribe( OnWeaponSlotChanged );
 
 			_hideTimer = new System.Timers.Timer() {
-				Interval = 4.25f,
-				AutoReset = false,
-				Enabled = true
+				Interval = 2500,
+				AutoReset = false
 			};
 			_hideTimer.Elapsed += OnHide;
 		}
@@ -84,6 +83,8 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HotSlo
 			base.Dispose( disposing );
 
 			_weaponSlotChanged.Dispose();
+
+			_hideTimer.Elapsed -= OnHide;
 			_hideTimer.Dispose();
 		}
 
@@ -114,9 +115,23 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HotSlo
 
 			_view.SetColor( new System.Numerics.Vector4( 1.0f, 1.0f, 1.0f, 1.0f ) );
 			_view.SetSelectedHotSlot( (int)args.CurrentSlot );
+
+			if ( _hideTimer.Enabled ) {
+				_hideTimer.Stop();
+			}
 			_hideTimer.Start();
 		}
 
+		/*
+		===============
+		OnHide
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnHide( object? sender, ElapsedEventArgs e )
 		{
 			Callable.From(() => _view.FadeOut()).CallDeferred();

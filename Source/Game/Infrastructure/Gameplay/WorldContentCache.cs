@@ -23,6 +23,7 @@ using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Save.Services;
+using Nomad.Game.Infrastructure.Gameplay.World;
 
 namespace Nomad.Game.Infrastructure.Gameplay
 {
@@ -33,6 +34,8 @@ namespace Nomad.Game.Infrastructure.Gameplay
 
 		public IItemInstanceRepository ItemInstances => _itemInstances;
 		private readonly ItemInstanceRepository _itemInstances;
+
+		private readonly BiomeCatalog _biomeCatalog;
 
 		private readonly IDisposable _worldBootstrapRequested;
 		private readonly IDisposable _worldBootstrapSucceeded;

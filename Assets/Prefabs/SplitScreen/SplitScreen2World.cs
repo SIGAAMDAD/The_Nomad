@@ -16,6 +16,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using Nomad.Events.Globals;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.SplitScreen;
+using Nomad.Input.Interfaces;
+using Nomad.Input.ValueObjects;
 
 namespace Nomad.Game.Prefabs
 {
@@ -26,6 +28,13 @@ namespace Nomad.Game.Prefabs
 		protected override void OnInit()
 		{
 			base.OnInit();
+
+			var inputSlots = ServiceLocator.GetService<IInputDeviceSlotService>();
+			inputSlots.AssignDevice( InputDeviceSlot.Keyboard, 0 );
+			inputSlots.AssignDevice( InputDeviceSlot.Mouse, 0 );
+			inputSlots.AssignDevice( InputDeviceSlot.Gamepad0, 1 );
+			inputSlots.AssignDevice( InputDeviceSlot.Gamepad1, 2 );
+			inputSlots.AssignDevice( InputDeviceSlot.Gamepad2, 3 );
 
 			_splitScreenService = new SplitScreenService( GameEventRegistry.Instance, ServiceLocator.Instance, this );
 		}

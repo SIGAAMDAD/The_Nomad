@@ -139,9 +139,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 		{
 			var composite = _sceneManager.LoadPrefab( _playerPrefab );
 			var prefab = composite.Root.CastAs<PlayerPrefab>();
-			prefab.PeerId = new PlayerId( new PeerId( Constants.LOCAL_GUID ) );
+			prefab.PeerId = ResolvePlayerId( in args );
 
-			var playerBase = new PlayerAggregate( prefab.PeerId, composite.Root.CastAs<PlayerPrefab>(), _eventFactory, _logger );
+			var playerBase = new PlayerAggregate( prefab.PeerId, composite.Root.CastAs<PlayerPrefab>(), args.Context.LocalPlayerIndex, _eventFactory, _logger );
 			_players[prefab.PeerId] = playerBase;
 
 			BindHud( prefab, playerBase );
@@ -150,6 +150,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_sceneManager.ActiveScene.Root.AddChild( prefab );
 
 			return playerBase;
+		}
+
+		private static PlayerId ResolvePlayerId( in PlayerSpawnRequestedEventArgs args )
+		{
+			if ( args.Context.RequestedPlayerId.IsValid ) {
+				return args.Context.RequestedPlayerId;
+			}
+
+			return new PlayerId( new PeerId( Constants.LOCAL_GUID ) );
 		}
 
 		private void BindHud( PlayerPrefab prefab, PlayerBase player )

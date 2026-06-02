@@ -25,6 +25,7 @@ using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Player;
 using Nomad.Input;
+using Nomad.Input.Interfaces;
 using Nomad.Input.ValueObjects;
 using Nomad.Game.Sdk.Player.Input;
 
@@ -46,6 +47,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 	{
 		public PlayerId PlayerId => _playerId;
 		private readonly PlayerId _playerId;
+		private readonly int _localSlot;
+		private readonly IInputDeviceSlotService _inputDeviceSlots;
 
 		public bool IsEnabled {
 			get => _isEnabled;
@@ -84,10 +87,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		/// </summary>
 		/// <param name="playerId"></param>
 		/// <param name="eventFactory"></param>
-		public LocalPlayerInputSource( PlayerId playerId, ICVarSystemService cvarSystem, IGameEventRegistryService eventFactory )
+		public LocalPlayerInputSource( PlayerId playerId, int localSlot, ICVarSystemService cvarSystem, IInputDeviceSlotService inputDeviceSlots, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			ArgumentGuard.ThrowIfNull( cvarSystem, nameof( cvarSystem ) );
+			ArgumentGuard.ThrowIfNull( inputDeviceSlots, nameof( inputDeviceSlots ) );
 
 			var windowSize = cvarSystem.GetCVarOrThrow<WindowResolution>( Core.Constants.CVars.EngineUtils.Display.WINDOW_RESOLUTION );
 			var size = (WindowSize)windowSize.Value;
@@ -96,6 +100,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			_windowSizeChanged = windowSize.ValueChanged.Subscribe( OnWindowSizeChanged );
 
 			_playerId = playerId;
+			_localSlot = localSlot;
+			_inputDeviceSlots = inputDeviceSlots;
 
 			_slideAction = eventFactory
 				.GetEvent<ButtonActionEventArgs>(
@@ -221,6 +227,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		/// <param name="args"></param>
 		private void OnMoveActionTriggered( in AxisActionEventArgs args )
 		{
+			if ( args.LocalSlot != _localSlot ) {
+				return;
+			}
+
 			if ( args.Phase == InputActionPhase.Started || args.Phase == InputActionPhase.Performed ) {
 				_moveInput = args.Value;
 
@@ -243,6 +253,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		/// <param name="args"></param>
 		private void OnMousePositionChanged( in MousePositionChangedEventArgs args )
 		{
+			if ( !_inputDeviceSlots.IsAssignedToLocalSlot( InputDeviceSlot.Mouse, _localSlot ) ) {
+				return;
+			}
+
 			var position = new Vector2( args.PositionX, args.PositionY );
 			_mouseDirection = position - _windowSize;
 			_mouseAngle = MathF.Atan2( _mouseDirection.Y, _mouseDirection.X );
@@ -259,6 +273,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		/// <param name="args"></param>
 		private void OnSlideActionTriggered( in ButtonActionEventArgs args )
 		{
+			if ( args.LocalSlot != _localSlot ) {
+				return;
+			}
+
 			if ( args.Phase == InputActionPhase.Started ) {
 				_buttonsDown |= PlayerInputButtons.Slide;
 				_buttonsPressed |= PlayerInputButtons.Slide;

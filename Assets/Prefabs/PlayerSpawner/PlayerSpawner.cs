@@ -17,14 +17,22 @@ using Godot;
 using Nomad.EngineUtils;
 using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
+using Nomad.Core.OnlineServices;
 using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
 using System;
+using NumericsVector2 = System.Numerics.Vector2;
 
 namespace Nomad.Game.Prefabs
 {
 	public partial class PlayerSpawner : Node2D
 	{
+		private const int MaxLocalPlayers = 4;
+
+		[Export( PropertyHint.Range, "1,4,1" )]
+		public int LocalPlayerCount { get; set; } = 1;
+
 		public override void _Ready()
 		{
 			base._Ready();
@@ -33,10 +41,34 @@ namespace Nomad.Game.Prefabs
 				.GetEvent<PlayerSpawnRequestedEventArgs>( PlayerSpawnRequestedEventArgs.Name, PlayerSpawnRequestedEventArgs.NameSpace )
 				.PublishAfter( 500 );
 
-			spawnRequest.Publish( new PlayerSpawnRequestedEventArgs(
-				Guid.NewGuid(),
-				new PlayerSpawnContext( PlayerSpawnReason.NewGame, GlobalPosition.ToSystem(), Name ) )
-			);
+			int playerCount = Math.Clamp( LocalPlayerCount, 1, MaxLocalPlayers );
+			for ( int i = 0; i < playerCount; i++ ) {
+				var requestedPlayerId = new PlayerId( new PeerId( Guid.NewGuid() ) );
+				var spawnPosition = GlobalPosition.ToSystem() + GetSpawnOffset( i );
+
+				spawnRequest.Publish(
+					new PlayerSpawnRequestedEventArgs(
+						Guid.NewGuid(),
+						new PlayerSpawnContext(
+							PlayerSpawnReason.NewGame,
+							spawnPosition,
+							$"{Name}:{i + 1}",
+							requestedPlayerId: requestedPlayerId,
+							localPlayerIndex: i
+						)
+					)
+				);
+			}
+		}
+
+		private static NumericsVector2 GetSpawnOffset( int playerIndex )
+		{
+			return playerIndex switch {
+				1 => new NumericsVector2( 48.0f, 0.0f ),
+				2 => new NumericsVector2( 0.0f, 48.0f ),
+				3 => new NumericsVector2( 48.0f, 48.0f ),
+				_ => NumericsVector2.Zero
+			};
 		}
 	};
 };

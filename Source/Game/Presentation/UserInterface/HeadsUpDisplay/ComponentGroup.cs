@@ -35,6 +35,7 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 	internal sealed class ComponentGroup : IDisposable
 	{
 		private readonly List<IHudComponentPresenter> _components;
+		private readonly IHudComponentGroupView _view;
 		private readonly Timer _fadeTimer;
 
 		private HUDPreset _preset;
@@ -49,18 +50,26 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 
 			_fadeTimer = new Timer() {
 				Interval = fadeTimeout,
-				Enabled = true,
 				AutoReset = false
 			};
 			_fadeTimer.Elapsed += OnFadeout;
 		}
 
+		/*
+		===============
+		Dispose
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
 		public void Dispose()
 		{
 			if ( _isDisposed ) {
 				return;
 			}
 
+			_fadeTimer.Elapsed -= OnFadeout;
 			_fadeTimer.Dispose();
 
 			GC.SuppressFinalize( this );

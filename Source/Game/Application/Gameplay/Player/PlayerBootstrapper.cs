@@ -31,6 +31,7 @@ using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Input.Interfaces;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -61,9 +62,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
 		/// <returns></returns>
-		public static PlayerRuntime Bootstrap( PlayerId playerId, PlayerPrefab prefab, IGameEventRegistryService eventFactory, ILoggerService logger )
+		public static PlayerRuntime Bootstrap( PlayerId playerId, PlayerPrefab prefab, int localPlayerIndex, IGameEventRegistryService eventFactory, ILoggerService logger )
 		{
 			var cvarSystem = ServiceLocator.GetService<ICVarSystemService>();
+			var inputDeviceSlots = ServiceLocator.GetService<IInputDeviceSlotService>();
 			var timeService = ServiceLocator.GetService<ITimeService>();
 
 			var aimCoordinator = new PlayerAimCoordinator( playerId, eventFactory );
@@ -87,7 +89,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				comp.StateReader = stateCoordinator;
 				comp.StateWriter = stateCoordinator;
 				comp.AimWriter = aimCoordinator;
-				comp.InputSource = new LocalPlayerInputSource( playerId, cvarSystem, eventFactory );
+				comp.InputSource = new LocalPlayerInputSource( playerId, localPlayerIndex, cvarSystem, inputDeviceSlots, eventFactory );
 			} );
 
 			var jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
