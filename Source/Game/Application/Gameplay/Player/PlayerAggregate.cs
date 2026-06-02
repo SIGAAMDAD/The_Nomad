@@ -40,8 +40,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private readonly IJournalService _journalService;
 		private readonly IValdensBookService _valdensBookService;
 
-		public PlayerAggregate( PlayerId playerId, PlayerPrefab prefab, IGameEventRegistryService eventFactory, ILoggerService logger )
-			: base( playerId, prefab, eventFactory, logger )
+		public PlayerAggregate( PlayerId playerId, PlayerPrefab prefab, int localPlayerIndex, IGameEventRegistryService eventFactory, ILoggerService logger )
+			: base( playerId, prefab, localPlayerIndex, eventFactory, logger )
 		{
 		}
 	};

@@ -66,7 +66,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// <param name="prefab"></param>
 		/// <param name="eventFactory"></param>
 		/// <param name="logger"></param>
-		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, IGameEventRegistryService eventFactory, ILoggerService logger )
+		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, int localPlayerIndex, IGameEventRegistryService eventFactory, ILoggerService logger )
 			: base( new EntityId( playerId ), InternString.Empty, InternString.Empty, EntityType.Player, EntityFlags.None )
 		{
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
@@ -74,7 +74,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				PlayerDieEventArgs.NameSpace
 			);
 
-			_runtime = PlayerBootstrapper.Bootstrap( playerId, prefab, eventFactory, logger );
+			_runtime = PlayerBootstrapper.Bootstrap( playerId, prefab, localPlayerIndex, eventFactory, logger );
 		}
 
 		/*

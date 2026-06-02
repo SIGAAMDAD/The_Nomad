@@ -29,7 +29,7 @@ namespace Nomad.Game.Prefabs
 	///
 	/// </summary>
 
-	public partial class HeadsUpDisplayView : Control
+	public partial class HeadsUpDisplayView : CanvasLayer
 	{
 		private IHudRoot _root;
 

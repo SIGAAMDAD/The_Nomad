@@ -99,7 +99,11 @@ shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
 shader_parameter/particle_scale_randomness = 0.5
 shader_parameter/particle_amount = 10
 
-[node name="HeadsUpDisplay" type="Control" unique_id=756735863]
+[node name="HeadsUpDisplay" type="CanvasLayer" unique_id=999101705]
+script = ExtResource("1_fk5k7")
+metadata/_edit_use_anchors_ = true
+
+[node name="CombatHUD" type="Control" parent="." unique_id=1259599951]
 light_mask = 2
 visibility_layer = 2
 layout_mode = 3
@@ -108,19 +112,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fk5k7")
-metadata/_edit_use_anchors_ = true
-
-[node name="CombatHUD" type="Control" parent="." unique_id=1259599951]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="HotSlotsContainer" type="VBoxContainer" parent="CombatHUD" unique_id=497008511]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.892
@@ -180,7 +175,9 @@ layout_mode = 2
 horizontal_alignment = 1
 
 [node name="ExplorationHUD" type="Control" parent="." unique_id=455022615]
-layout_mode = 1
+light_mask = 2
+visibility_layer = 2
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -202,7 +199,9 @@ size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
 
 [node name="NeutralHUD" type="Control" parent="." unique_id=2071778833]
-layout_mode = 1
+light_mask = 2
+visibility_layer = 2
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

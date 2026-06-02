@@ -39,6 +39,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 	internal sealed class PlayerAnimationController : IPlayerAnimationController
 	{
+		private static readonly StringName IdleAnimationName = "idle";
+		private static readonly StringName MoveAnimationName = "move";
+		private static readonly StringName SuddenStopAnimationName = "sudden_stop";
+		private static readonly StringName TrueIdleAnimationName = "true_idle";
+		private static readonly StringName RestingAtCheckpointAnimationName = "checkpoint_resting";
+
 		private static readonly Vector2 HEAD_OFFSET_LEFT = new Vector2( 5.0f, 5.0f );
 		private static readonly Vector2 HEAD_OFFSET_RIGHT = new Vector2( 5.0f, -5.0f );
 
@@ -151,9 +157,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			if ( flip ) {
 				_leftHandAnimator.ZIndex = 2;
+				_torsoAnimator.ZIndex = 1;
+				_legAnimator.ZIndex = 1;
+				_headAnimator.ZIndex = 1;
 				_rightHandAnimator.ZIndex = 0;
 			} else {
 				_leftHandAnimator.ZIndex = 0;
+				_torsoAnimator.ZIndex = 1;
+				_legAnimator.ZIndex = 1;
+				_headAnimator.ZIndex = 1;
 				_rightHandAnimator.ZIndex = 2;
 			}
 		}
@@ -165,11 +177,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 					break;
 
 				case PlayerLocomotionCue.HardStop:
-					_legAnimator.Play( "sudden_stop" );
+					_legAnimator.Play( SuddenStopAnimationName );
 					break;
 
 				case PlayerLocomotionCue.Reverse:
-					_legAnimator.PlayBackwards( "move" );
+					_legAnimator.PlayBackwards( MoveAnimationName );
 					break;
 			}
 		}
@@ -193,11 +205,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 		private void SetAnimationStatus( PlayerAnimationState state )
 		{
-			string animationName = state switch {
-				PlayerAnimationState.Idle => "idle",
-				PlayerAnimationState.Running => "move",
-				PlayerAnimationState.RestingAtCheckpoint => "checkpoint_resting",
-				PlayerAnimationState.TrueIdle => "true_idle",
+			StringName animationName = state switch {
+				PlayerAnimationState.Idle => IdleAnimationName,
+				PlayerAnimationState.Running => MoveAnimationName,
+				PlayerAnimationState.RestingAtCheckpoint => RestingAtCheckpointAnimationName,
+				PlayerAnimationState.TrueIdle => TrueIdleAnimationName,
 				_ => throw new ArgumentOutOfRangeException( nameof( state ) )
 			};
 

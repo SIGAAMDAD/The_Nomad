@@ -1,7 +1,33 @@
-[gd_scene format=3 uid="uid://btdyqiyrv0111"]
+[gd_scene load_steps=7 format=3 uid="uid://btdyqiyrv0111"]
 
 [ext_resource type="Script" uid="uid://ge58oddwqmkt" path="res://Assets/Prefabs/SplitScreen/SplitScreen2World.cs" id="1_7eg4w"]
+[ext_resource type="PackedScene" uid="uid://cg1t4dmstlusg" path="res://Assets/Prefabs/Regions/SaltWastes.tscn" id="2_k5wsd"]
+[ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_jyeg7"]
+[ext_resource type="PackedScene" uid="uid://bktaccmkkt34m" path="res://Assets/Prefabs/Meliora/MelioraRoot.tscn" id="4_msd2u"]
+[ext_resource type="PackedScene" uid="uid://bfemcejvjvwts" path="res://Assets/Prefabs/ItemPickup/PickupRoot.tscn" id="5_i8bjs"]
+[ext_resource type="PackedScene" uid="uid://dfpsmfg427cba" path="res://Source/Game/Presentation/World/SunLight.tscn" id="6_cm1ca"]
 
 [node name="SplitScreen2World" type="Node2D" unique_id=441724395]
 process_mode = 1
+y_sort_enabled = true
 script = ExtResource("1_7eg4w")
+
+[node name="SaltWastes" parent="." unique_id=1364440601 instance=ExtResource("2_k5wsd")]
+position = Vector2(-2039, 1241)
+
+[node name="PlayerSpawner" parent="SaltWastes" unique_id=654047548 instance=ExtResource("3_jyeg7")]
+process_priority = 2
+position = Vector2(820, 249)
+LocalPlayerCount = 2
+
+[node name="MelioraRoot" parent="SaltWastes" unique_id=1146163250 instance=ExtResource("4_msd2u")]
+position = Vector2(788, -56)
+_id = &"CHECKPOINT_SALT_FLATS_ID"
+_displayName = &"CHECKPOINT_SALT_FLAGS_DISPLAY_NAME"
+
+[node name="PickupRoot" parent="SaltWastes" unique_id=1343848751 instance=ExtResource("5_i8bjs")]
+position = Vector2(555, 25)
+_exportedItemId = null
+_amount = null
+
+[node name="SunLight" parent="." unique_id=1632582276 instance=ExtResource("6_cm1ca")]

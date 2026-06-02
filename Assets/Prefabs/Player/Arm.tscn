@@ -6,3 +6,4 @@
 script = ExtResource("1_ede1o")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1508152159]
+z_as_relative = false

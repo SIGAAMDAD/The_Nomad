@@ -58,6 +58,10 @@ project/assembly_name="TheNomad"
 
 enabled=PackedStringArray("res://addons/radial_progress/plugin.cfg")
 
+[global_group]
+
+height_shadow_caster=""
+
 [internationalization]
 
 locale/translation_remaps={}

@@ -111,7 +111,7 @@
 			"Bindings": {
 				"Kind": "Button",
 				"DeviceId": "Keyboard",
-				"ControlId": "Num1"
+				"ControlId": "Num2"
 			}
 		},
 		{
@@ -122,7 +122,7 @@
 			"Bindings": {
 				"Kind": "Button",
 				"DeviceId": "Keyboard",
-				"ControlId": "Num2"
+				"ControlId": "Num1"
 			}
 		},
 		{
@@ -133,7 +133,7 @@
 			"Bindings": {
 				"Kind": "Button",
 				"DeviceId": "Keyboard",
-				"ControlId": "Num3"
+				"ControlId": "Num4"
 			}
 		},
 		{
@@ -144,7 +144,7 @@
 			"Bindings": {
 				"Kind": "Button",
 				"DeviceId": "Keyboard",
-				"ControlId": "Num4"
+				"ControlId": "Num3"
 			}
 		}
 	]

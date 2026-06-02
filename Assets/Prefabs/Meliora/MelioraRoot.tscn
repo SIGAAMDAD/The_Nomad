@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://8j24p4qsw3n2" path="res://Assets/Prefabs/Meliora/CheckpointPrefab.cs" id="1_p4dx3"]
 [ext_resource type="SpriteFrames" uid="uid://fx2lnx6ui0rs" path="res://Assets/Animations/Environment/Meliora.tres" id="1_u81d1"]
+[ext_resource type="Script" uid="uid://dfdavcqmmtwbt" path="res://Assets/Prefabs/Meliora/visual.gd" id="3_1mo2o"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ip35x"]
 radius = 89.560036
@@ -10,10 +11,9 @@ radius = 89.560036
 size = Vector2(81, 44)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_p4dx3"]
-polygon = PackedVector2Array(-4, 18, 36, 44, -3, 57, -43, 44)
+polygon = PackedVector2Array(36, 44, -4, 56, -43, 44, -43, 44, -3, 28)
 
 [node name="MelioraRoot" type="Node2D" unique_id=1146163250]
-y_sort_enabled = true
 script = ExtResource("1_p4dx3")
 
 [node name="Zone" type="Area2D" parent="." unique_id=312689260]
@@ -31,12 +31,13 @@ collision_mask = 0
 position = Vector2(-3.5, 33)
 shape = SubResource("RectangleShape2D_u81d1")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471559592]
+[node name="Visual" type="AnimatedSprite2D" parent="." unique_id=1471559592 groups=["height_shadow_caster"]]
 position = Vector2(0, -51)
 sprite_frames = ExtResource("1_u81d1")
 animation = &"active"
 autoplay = "inactive"
 frame_progress = 0.7493553
+script = ExtResource("3_1mo2o")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=52452840]
 occluder = SubResource("OccluderPolygon2D_p4dx3")
