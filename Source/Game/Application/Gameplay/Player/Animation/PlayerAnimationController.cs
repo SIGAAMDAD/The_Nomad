@@ -100,6 +100,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_playerId = playerId;
+			/*
 
 			_headAnimator = prefab.GetNode<Sprite2D>( "Animations/HeadSprite" );
 
@@ -122,10 +123,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			_stateChanged = stateReader.StateChanged.Subscribe( OnStateChanged );
 			_locomotionCue = movementController.LocomotionCue.Subscribe( OnLocomotionCue );
 			_aimAngleChanged = aimReader.AimAngleChanged.Subscribe( OnAimAngleChanged );
+			*/
 		}
 
 		public void Dispose()
 		{
+			/*
 			if ( _isDisposed ) {
 				return;
 			}
@@ -137,8 +140,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
+			*/
 		}
 
+/*
 		private void OnAimAngleChanged( in AimAngleChangedEventArgs args )
 		{
 			bool flip = args.NewDirection.X < 0.0f;
@@ -240,5 +245,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			_activeState = state;
 		}
+		*/
 	};
 };

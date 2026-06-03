@@ -57,8 +57,7 @@ namespace Nomad.Game.Application.Gameplay.World.Simulation
 			IGameEventRegistryService eventFactory,
 			ICVarSystemService cvarSystem,
 			WorldTime startDate,
-			WorldDefinition definition,
-			WorldSunLightPrefab sunLightPrefab
+			WorldDefinition definition
 		)
 		{
 			_calendarService = new CalendarService( eventFactory, cvarSystem, definition.Calendar );
@@ -68,8 +67,6 @@ namespace Nomad.Game.Application.Gameplay.World.Simulation
 			_saveCoordinator = new SimulationSaveCoordinator( _calendarService, _weatherService, eventFactory );
 
 			_calendarService.SetTime( startDate );
-
-			_sunLightController = new WorldSunLightController( _calendarService, _seasonService, sunLightPrefab );
 		}
 	};
 };

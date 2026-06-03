@@ -25,14 +25,12 @@ using Nomad.Core.OnlineServices;
 using Nomad.Core.ServiceRegistry.Interfaces;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Sdk.Multiplayer;
-using Nomad.Game.Sdk;
 using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Player.Inventory;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Prefabs;
-using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay;
 
 namespace Nomad.Game.Application.Gameplay.Player
@@ -74,14 +72,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 		///
 		/// </summary>
 		/// <param name="eventFactory"></param>
-		/// <param name="registry"></param>
 		/// <param name="logger"></param>
 		/// <param name="gameStateService"></param>
 		/// <param name="sceneManager"></param>
 		/// <param name="playerPrefab"></param>
 		public PlayerRepository(
 			IGameEventRegistryService eventFactory,
-			IServiceRegistry registry,
 			ILoggerService logger,
 			IGameStateService gameStateService,
 			ISceneManager sceneManager,

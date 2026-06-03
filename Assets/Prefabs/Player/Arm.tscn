@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dyi22oqkvicrf" path="res://Assets/Prefabs/Player/Arm.cs" id="1_ede1o"]
 
-[node name="Arm" type="Node2D" unique_id=975599666]
+[node name="Arm" type="Node3D" unique_id=2124435797]
 script = ExtResource("1_ede1o")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1508152159]
-z_as_relative = false
+[node name="AnimatedSprite2D" type="MeshInstance3D" parent="." unique_id=391683652]

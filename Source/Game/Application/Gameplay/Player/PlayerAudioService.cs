@@ -87,9 +87,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			_prefab = Object.CastAs<PlayerPrefab>();
 
-			var legAnimator = _prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
-			legAnimator.AnimationLooped += OnLegAnimationLooped;
-
 			FlagService.FlagsChanged.Subscribe( OnFlagsChanged );
 
 			var eventFactory = GameEventRegistry.Instance;
@@ -228,7 +225,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		/// </summary>
 		private void OnLegAnimationLooped()
 		{
-			if ( _prefab.Velocity != Vector2.Zero ) {
+			if ( _prefab.Velocity != Vector3.Zero ) {
 				_walkEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
 				_walkEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFoleyPlayerWalkSand ).Path );
 			}

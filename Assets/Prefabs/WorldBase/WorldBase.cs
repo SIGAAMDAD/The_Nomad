@@ -66,7 +66,6 @@ namespace Nomad.Game.Prefabs
 
 			_playerRepository = new PlayerRepository(
 				eventFactory,
-				serviceRegistry,
 				logger,
 				gameStateService,
 				_sceneManager,

@@ -1,18 +1,16 @@
 [gd_scene format=3 uid="uid://b37b1hu3n2ci"]
 
 [ext_resource type="Script" uid="uid://cvnn1hevwg264" path="res://Assets/Prefabs/Player/BackpackUnequipped/BackpackUnequippedPrefab.cs" id="1_han30"]
-[ext_resource type="Texture2D" uid="uid://dqictsnk23726" path="res://Assets/Textures/Environment/BackpackUnequipped.png" id="1_sejf0"]
+[ext_resource type="PackedScene" uid="uid://ccvyxchm7cdqn" path="res://Assets/Models/Player/Backpack/source/raider backpack.glb" id="2_han30"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_han30"]
-size = Vector2(54, 48)
+[sub_resource type="BoxShape3D" id="BoxShape3D_0yd1l"]
 
-[node name="BackpackUnequipped" type="Node2D" unique_id=291345598]
+[node name="BackpackUnequipped" type="Node3D" unique_id=1080667443]
 script = ExtResource("1_han30")
 
-[node name="Zone" type="Area2D" parent="." unique_id=969459125]
+[node name="Zone" type="Area3D" parent="." unique_id=1626021792]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=1935319537]
-shape = SubResource("RectangleShape2D_han30")
+[node name="CollisionShape2D" type="CollisionShape3D" parent="Zone" unique_id=1279860892]
+shape = SubResource("BoxShape3D_0yd1l")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=300000469]
-texture = ExtResource("1_sejf0")
+[node name="raider backpack" parent="." unique_id=159312927 instance=ExtResource("2_han30")]

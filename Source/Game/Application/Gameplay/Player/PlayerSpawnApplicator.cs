@@ -14,9 +14,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using Godot;
 using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Player.Stats;
-using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Prefabs;
+using NumericsVector3 = System.Numerics.Vector3;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -35,6 +37,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 	{
 		public void Apply( IPlayerBase player, PlayerSpawnProfileDefinition profile, IPlayerDerivedStatService derivedStats, IPlayerResourceService resources, IPlayerFlagService flags, in PlayerSpawnContext context )
 		{
+			if ( player is PlayerBase playerBase ) {
+				ApplySpawnTransform( playerBase.Prefab, in context );
+			}
+
 			ApplyResource( profile.Health, PlayerResourceType.Health, derivedStats.GetValue( DerivedStatType.EffectiveHealthMax ), resources );
 			ApplyResource( profile.Rage, PlayerResourceType.Rage, derivedStats.GetValue( DerivedStatType.EffectiveRageMax ), resources );
 			ApplyResource( profile.Sanity, PlayerResourceType.Sanity, derivedStats.GetValue( DerivedStatType.EffectiveSanityMax ), resources );
@@ -42,6 +48,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 			foreach ( var pair in profile.FlagOverrides ) {
 				flags.SetFlag( pair.Key, pair.Value );
 			}
+		}
+
+		private static void ApplySpawnTransform( PlayerPrefab prefab, in PlayerSpawnContext context )
+		{
+			NumericsVector3 position = context.SpawnWorldPosition;
+			prefab.GlobalPosition = new Vector3( position.X, position.Y, position.Z );
+			prefab.Velocity = Vector3.Zero;
 		}
 
 		private static void ApplyResource( SpawnValueRule rule, PlayerResourceType type, float maxValue, IPlayerResourceService resources )

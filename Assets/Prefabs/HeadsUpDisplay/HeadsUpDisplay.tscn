@@ -99,7 +99,7 @@ shader_parameter/particle_end_scale = Vector2(0.01, 0.01)
 shader_parameter/particle_scale_randomness = 0.5
 shader_parameter/particle_amount = 10
 
-[node name="HeadsUpDisplay" type="CanvasLayer" unique_id=999101705]
+[node name="HeadsUpDisplay" type="CanvasLayer" unique_id=764289687]
 script = ExtResource("1_fk5k7")
 metadata/_edit_use_anchors_ = true
 

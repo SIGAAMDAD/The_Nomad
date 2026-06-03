@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Player.Stats;
@@ -24,15 +25,16 @@ namespace Nomad.Game.Prefabs
 	/*
 	===================================================================================
 
-	PlayerAggregate
+	PlayerPrefab
 
 	===================================================================================
 	*/
 	/// <summary>
-	///
+	/// Full-3D player root. Older gameplay systems still consume SDK Vector2 values,
+	/// but those values now represent the X/Z ground plane while Godot Y is vertical.
 	/// </summary>
 
-	public partial class PlayerPrefab : EngineCharacter2D
+	public partial class PlayerPrefab : EngineCharacter3D
 	{
 		public PlayerId PeerId { get; set; }
 		public PlayerInitializationDefinition Definition { get; init; }
@@ -47,7 +49,7 @@ namespace Nomad.Game.Prefabs
 						[BaseStatType.BaseMovementSpeed] = 200.0f,
 						[BaseStatType.BaseSanity] = 90.0f,
 						[BaseStatType.EncumbranceThreshold] = 100.0f,
-						[BaseStatType.BaseDashSpeed] = 8800.0f
+						[BaseStatType.BaseDashSpeed] = 520.0f
 					}
 				},
 				Resources = new PlayerSpawnResourceProfile {
@@ -56,6 +58,13 @@ namespace Nomad.Game.Prefabs
 					SanityFillPercent = 1.0f
 				}
 			};
+		}
+
+		protected override void OnInit()
+		{
+			base.OnInit();
+
+			GetTree().CurrentScene.GetNode( "PostProcessingContainer/PostProcessing/__NomadManagedSceneHost/SingleWorld/World3D/Terrain3D" ).Call( "set_camera", GetNode<Camera3D>( "Camera3D" ) );
 		}
 	};
 };

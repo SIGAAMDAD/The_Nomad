@@ -23,7 +23,7 @@ using Nomad.Game.Sdk.Interactables;
 
 namespace Nomad.Game.Prefabs
 {
-	public abstract partial class InteractableRoot : Node2D
+	public abstract partial class InteractableRoot : Node3D
 	{
 		public static event Action<InteractableRoot, PlayerId> InteractionFocusEntered;
 		public static event Action<InteractableRoot, PlayerId> InteractionFocusExited;
@@ -57,7 +57,7 @@ namespace Nomad.Game.Prefabs
 			);
 		}
 
-		private void OnBodyShapeEntered( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
+		private void OnBodyShapeEntered( Rid bodyRid, Node3D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
 				PlayerEntered?.Invoke( player.PeerId );
@@ -65,7 +65,7 @@ namespace Nomad.Game.Prefabs
 			}
 		}
 
-		private void OnBodyShapeExited( Rid bodyRid, Node2D body, long bodyShapeIndex, long localShapeIndex )
+		private void OnBodyShapeExited( Rid bodyRid, Node3D body, long bodyShapeIndex, long localShapeIndex )
 		{
 			if ( body is PlayerPrefab player ) {
 				PlayerExited?.Invoke( player.PeerId );
@@ -77,9 +77,9 @@ namespace Nomad.Game.Prefabs
 		{
 			base._Ready();
 
-			var area2D = GetNode<Area2D>( "Zone" );
-			area2D.BodyShapeEntered += OnBodyShapeEntered;
-			area2D.BodyShapeExited += OnBodyShapeExited;
+			var area = GetNode<Area3D>( "Zone" );
+			area.BodyShapeEntered += OnBodyShapeEntered;
+			area.BodyShapeExited += OnBodyShapeExited;
 		}
 	};
 };

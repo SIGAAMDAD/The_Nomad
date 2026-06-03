@@ -1,169 +1,88 @@
 [gd_scene format=3 uid="uid://ctp6hjx2ic3hn"]
 
 [ext_resource type="Script" uid="uid://cjfhepllsjf3u" path="res://Assets/Prefabs/SingleWorld/SingleWorld.cs" id="1_gohso"]
-[ext_resource type="PackedScene" uid="uid://cg1t4dmstlusg" path="res://Assets/Prefabs/Regions/SaltWastes.tscn" id="2_xaw48"]
-[ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_xaw48"]
-[ext_resource type="PackedScene" uid="uid://bktaccmkkt34m" path="res://Assets/Prefabs/Meliora/MelioraRoot.tscn" id="4_xrhpx"]
-[ext_resource type="PackedScene" uid="uid://bfemcejvjvwts" path="res://Assets/Prefabs/ItemPickup/PickupRoot.tscn" id="5_ud3ku"]
-[ext_resource type="Script" uid="uid://bhg5vyry6gbbv" path="res://Source/Game/Presentation/World/WorldSunLightPrefab.cs" id="6_rqj1v"]
-[ext_resource type="Script" uid="uid://7nklp0bbno40" path="res://Assets/Prefabs/SingleWorld/HeightMapRenderer2D.gd" id="7_lqotn"]
-[ext_resource type="Script" uid="uid://bawiomnnvvjll" path="res://Assets/Prefabs/SingleWorld/ShadowOverlay.cs" id="8_rqj1v"]
-[ext_resource type="Shader" uid="uid://oyvjqmdu32av" path="res://Assets/Shaders/Weather.gdshader" id="9_8fwey"]
-[ext_resource type="Shader" uid="uid://efs54yhkhkpe" path="res://Assets/Shaders/PostProcess.gdshader" id="9_lqotn"]
+[ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_fek2r"]
+[ext_resource type="Terrain3DAssets" uid="uid://bfsqp1v0o83iy" path="res://Assets/Terrain/new_terrain_3d_assets.tres" id="3_xaw48"]
+[ext_resource type="Environment" uid="uid://hadlmr477pu7" path="res://Assets/Prefabs/SingleWorld/SinglePlayerWorldEnvironment.tres" id="3_xrhpx"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_8fwey"]
-viewport_path = NodePath("HeightViewport")
+[sub_resource type="Gradient" id="Gradient_xrhpx"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rqj1v"]
-resource_local_to_scene = true
-shader = ExtResource("9_lqotn")
-shader_parameter/height_texture = SubResource("ViewportTexture_8fwey")
-shader_parameter/shadow_color = Color(0, 0, 0, 1)
-shader_parameter/shadow_opacity = 0.38
-shader_parameter/vignette_strength = 0.18
-shader_parameter/vignette_inner = 0.45
-shader_parameter/vignette_outer = 1.15
-shader_parameter/fog_color = Color(0.62, 0.68, 0.78, 1)
-shader_parameter/fog_strength = 0.12
-shader_parameter/fog_start_y = 0.15
-shader_parameter/fog_end_y = 1.0
-shader_parameter/exposure = 1.0
-shader_parameter/contrast = 1.06
-shader_parameter/saturation = 1.04
-shader_parameter/gamma_value = 1.0
-shader_parameter/grade_tint = Color(1, 1, 1, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ud3ku"]
+noise_type = 3
+frequency = 0.6026
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8fwey"]
-shader = ExtResource("9_8fwey")
-shader_parameter/enable_wind = true
-shader_parameter/enable_rain = false
-shader_parameter/enable_snow = true
-shader_parameter/enable_mud = false
-shader_parameter/weather_opacity = 1.0
-shader_parameter/wind_direction = Vector2(-3.068, 0.15)
-shader_parameter/wind_speed_px = 420.0
-shader_parameter/viewport_size = Vector2(800, 600)
-shader_parameter/camera_world_center = Vector2(0, 0)
-shader_parameter/camera_zoom = Vector2(1, 1)
-shader_parameter/wind_color = Color(0.82, 0.55, 0.34, 1)
-shader_parameter/wind_intensity = 0.35
-shader_parameter/wind_density = 0.33
-shader_parameter/wind_streak_length_px = 280.0
-shader_parameter/wind_band_height_px = 30.0
-shader_parameter/wind_thickness = 0.055
-shader_parameter/wind_horizon_bias = 0.35
-shader_parameter/rain_color = Color(0.62, 0.72, 0.82, 1)
-shader_parameter/rain_intensity = 0.75
-shader_parameter/rain_density = 0.45
-shader_parameter/rain_speed_px = 1050.0
-shader_parameter/rain_cell_width_px = 22.0
-shader_parameter/rain_cell_height_px = 92.0
-shader_parameter/rain_streak_length = 0.55
-shader_parameter/rain_streak_width = 0.035
-shader_parameter/snow_color = Color(0.9, 0.94, 1, 1)
-shader_parameter/snow_intensity = 0.65
-shader_parameter/snow_density = 0.38
-shader_parameter/snow_speed_px = 110.0
-shader_parameter/snow_cell_px = 42.0
-shader_parameter/snow_size_px = 2.0
-shader_parameter/snow_wobble_px = 13.0
-shader_parameter/mud_color = Color(0.16, 0.08, 0.035, 1)
-shader_parameter/mud_highlight_color = Color(0.42, 0.23, 0.1, 1)
-shader_parameter/mud_intensity = 0.35
-shader_parameter/mud_splatter_density = 0.22
-shader_parameter/mud_cell_px = 52.0
-shader_parameter/mud_spot_radius_px = 8.0
-shader_parameter/mud_bottom_bias = 1.5
-shader_parameter/pixel_snap = true
-shader_parameter/virtual_pixel_size = 1.0
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fek2r"]
+noise = SubResource("FastNoiseLite_ud3ku")
+color_ramp = SubResource("Gradient_xrhpx")
+seamless = true
 
-[node name="SingleWorld" type="Node2D" unique_id=1220327146]
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_2lkg4"]
+_shader_parameters = {
+&"bias_distance": 512.0,
+&"blend_sharpness": 0.5,
+&"depth_blur": 0.0,
+&"enable_macro_variation": true,
+&"enable_projection": true,
+&"flat_terrain_normals": false,
+&"macro_variation1": Color(1, 0.48235294, 0, 1),
+&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise_texture": SubResource("NoiseTexture2D_fek2r"),
+&"projection_threshold": 0.8
+}
+world_background = 0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qeavp"]
+
+[node name="SingleWorld" type="Node3D" unique_id=1175813247]
 process_mode = 1
-y_sort_enabled = true
 script = ExtResource("1_gohso")
 
-[node name="WorldRoot2D" type="Node2D" parent="." unique_id=1306205670]
+[node name="World3D" type="Node3D" parent="." unique_id=965019172]
 
-[node name="SaltWastes" parent="WorldRoot2D" unique_id=1364440601 instance=ExtResource("2_xaw48")]
-position = Vector2(-2039, 1241)
+[node name="PlayerSpawner" parent="World3D" unique_id=654047548 instance=ExtResource("3_fek2r")]
+transform = Transform3D(0.9997798, 0.020983763, 0, -0.020983763, 0.9997798, 0, 0, 0, 1, -1.5468025, 28.13454, -8.527462)
 
-[node name="PlayerSpawner" parent="WorldRoot2D/SaltWastes" unique_id=654047548 instance=ExtResource("3_xaw48")]
-process_priority = 2
-position = Vector2(820, 249)
-LocalPlayerCount = null
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World3D" unique_id=200871579]
+environment = ExtResource("3_xrhpx")
 
-[node name="MelioraRoot" parent="WorldRoot2D/SaltWastes" unique_id=1146163250 instance=ExtResource("4_xrhpx")]
-position = Vector2(788, -56)
-_id = &"CHECKPOINT_SALT_FLATS_ID"
-_displayName = &"CHECKPOINT_SALT_FLAGS_DISPLAY_NAME"
+[node name="Terrain3D" type="Terrain3D" parent="World3D" unique_id=1644093809]
+debug_level = 2
+data_directory = "res://Assets/Terrain"
+material = SubResource("Terrain3DMaterial_2lkg4")
+assets = ExtResource("3_xaw48")
+collision_mode = 4
+collision_layer = 255
+collision_mask = 255
+physics_material = SubResource("PhysicsMaterial_qeavp")
+top_level = true
+metadata/_edit_lock_ = true
 
-[node name="PickupRoot" parent="WorldRoot2D/SaltWastes" unique_id=1343848751 instance=ExtResource("5_ud3ku")]
-position = Vector2(555, 25)
-_exportedItemId = null
-_amount = null
+[node name="CSGBox3D" type="CSGBox3D" parent="World3D/Terrain3D" unique_id=309353126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -108.21701, 36.455612, 66.78403)
+size = Vector3(8.522949, 70.867645, 212.82236)
 
-[node name="SunLight" type="Node2D" parent="." unique_id=1632582276 node_paths=PackedStringArray("AmbientLight", "SunLight")]
-script = ExtResource("6_rqj1v")
-SunOrbitCenter = null
-SunOrbitRadius = null
-ArcStartDegrees = null
-ArcEndDegrees = null
-LightRotationOffsetDegrees = null
-MinuteTweenSeconds = null
-SnapOnFirstApply = null
-DayLightEnergy = null
-TwilightLightEnergy = null
-MoonLightEnergy = null
-MinLightHeight = null
-MaxLightHeight = null
-DayLightColor = null
-DawnLightColor = null
-DuskLightColor = null
-MoonLightColor = null
-BaseShadowColor = null
-AmbientLight = NodePath("CanvasModulate")
-SunLight = NodePath("DirectionalLight2D")
-
-[node name="DirectionalLight2D" type="DirectionalLight2D" parent="SunLight" unique_id=745568933]
-range_z_min = -1
-range_z_max = 1
+[node name="SpotLight3D" type="DirectionalLight3D" parent="World3D" unique_id=1537175786]
+transform = Transform3D(0.5735546, 0.80399776, 0.15691666, -0.073645696, -0.14017114, 0.9873847, 0.81585014, -0.5778752, -0.021184823, 20.201782, 144.0997, 0)
+light_energy = 0.024
 shadow_enabled = true
-shadow_filter_smooth = 7.3
+directional_shadow_mode = 0
+directional_shadow_max_distance = 9569.3
 
-[node name="CanvasModulate" type="CanvasModulate" parent="SunLight" unique_id=1421164924]
-
-[node name="HeightViewport" type="SubViewport" parent="." unique_id=1312508370]
-disable_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(800, 600)
-render_target_update_mode = 4
-
-[node name="Camera2D" type="Camera2D" parent="HeightViewport" unique_id=1387202119]
-
-[node name="Node2D" type="Node2D" parent="HeightViewport" unique_id=426708182 node_paths=PackedStringArray("source_root")]
-script = ExtResource("7_lqotn")
-source_root = NodePath("../../WorldRoot2D")
-
-[node name="PostFXLayer" type="CanvasLayer" parent="." unique_id=1911106546]
-
-[node name="WorldFXOverlay" type="ColorRect" parent="PostFXLayer" unique_id=1467818966]
-material = SubResource("ShaderMaterial_rqj1v")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_rqj1v")
-metadata/_edit_use_anchors_ = true
-
-[node name="WeatherLayer" type="CanvasLayer" parent="." unique_id=2064693436]
-
-[node name="ColorRect" type="ColorRect" parent="WeatherLayer" unique_id=919528989]
-material = SubResource("ShaderMaterial_8fwey")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+[node name="LightmapGI" type="LightmapGI" parent="World3D" unique_id=114664882]
+supersampling = true

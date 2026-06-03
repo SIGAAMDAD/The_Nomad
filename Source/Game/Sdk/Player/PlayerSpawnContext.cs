@@ -22,6 +22,7 @@ namespace Nomad.Game.Sdk.Player
     {
         public PlayerSpawnReason Reason { get; }
         public Vector2 SpawnPosition { get; }
+        public Vector3 SpawnWorldPosition { get; }
         public string? SpawnPointId { get; }
         public string? ProfileOverrideId { get; }
         public PlayerId RequestedPlayerId { get; }
@@ -33,11 +34,13 @@ namespace Nomad.Game.Sdk.Player
             string? spawnPointId = null,
             string? profileOverrideId = null,
             PlayerId requestedPlayerId = default,
-            int localPlayerIndex = 0
+            int localPlayerIndex = 0,
+            Vector3? spawnWorldPosition = null
         )
         {
             Reason = reason;
             SpawnPosition = spawnPosition;
+            SpawnWorldPosition = spawnWorldPosition ?? new Vector3( spawnPosition.X, 0.0f, spawnPosition.Y );
             SpawnPointId = spawnPointId;
             ProfileOverrideId = profileOverrideId;
             RequestedPlayerId = requestedPlayerId;

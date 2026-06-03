@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
-using Nomad.EngineUtils;
 using Nomad.Events.Extensions;
 using Nomad.Events.Globals;
 using Nomad.Core.OnlineServices;
@@ -23,10 +22,11 @@ using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
 using System;
 using NumericsVector2 = System.Numerics.Vector2;
+using NumericsVector3 = System.Numerics.Vector3;
 
 namespace Nomad.Game.Prefabs
 {
-	public partial class PlayerSpawner : Node2D
+	public partial class PlayerSpawner : Node3D
 	{
 		private const int MaxLocalPlayers = 4;
 
@@ -38,13 +38,17 @@ namespace Nomad.Game.Prefabs
 			base._Ready();
 
 			var spawnRequest = GameEventRegistry
-				.GetEvent<PlayerSpawnRequestedEventArgs>( PlayerSpawnRequestedEventArgs.Name, PlayerSpawnRequestedEventArgs.NameSpace )
+				.GetEvent<PlayerSpawnRequestedEventArgs>(
+					PlayerSpawnRequestedEventArgs.Name,
+					PlayerSpawnRequestedEventArgs.NameSpace
+				)
 				.PublishAfter( 500 );
 
 			int playerCount = Math.Clamp( LocalPlayerCount, 1, MaxLocalPlayers );
 			for ( int i = 0; i < playerCount; i++ ) {
 				var requestedPlayerId = new PlayerId( new PeerId( Guid.NewGuid() ) );
-				var spawnPosition = GlobalPosition.ToSystem() + GetSpawnOffset( i );
+				NumericsVector2 spawnOffset = GetSpawnOffset( i );
+				var spawnPosition = new NumericsVector2( GlobalPosition.X, GlobalPosition.Z ) + spawnOffset;
 
 				spawnRequest.Publish(
 					new PlayerSpawnRequestedEventArgs(
@@ -70,5 +74,5 @@ namespace Nomad.Game.Prefabs
 				_ => NumericsVector2.Zero
 			};
 		}
-	};
-};
+	}
+}

@@ -1,8 +1,5 @@
 [gd_scene format=3 uid="uid://b5auo6x0mgi2j"]
 
-[ext_resource type="Texture2D" uid="uid://c6p3dqucwxybi" path="res://Assets/Textures/Environment/PointLight.dds" id="1_40cnk"]
-[ext_resource type="Script" uid="uid://dxnolyqjaoo0t" path="res://Assets/Prefabs/Effects/JumpKitEffect/PointLight2d.cs" id="2_385py"]
-
 [sub_resource type="Gradient" id="Gradient_s48sx"]
 offsets = PackedFloat32Array(0, 0.36214, 0.530864, 1)
 colors = PackedColorArray(0.712692, 2.93598e-06, 5.77569e-07, 1, 0.686275, 0.454902, 0.0470588, 1, 0.796078, 0.670588, 0.180392, 1, 0.890196, 0.819608, 0.556863, 0)
@@ -29,19 +26,17 @@ scale_max = 2.0
 scale_curve = SubResource("CurveTexture_dx3gf")
 color_ramp = SubResource("GradientTexture1D_m4qlm")
 
-[node name="JumpKitEffect" type="GPUParticles2D" unique_id=443619981]
+[sub_resource type="BoxMesh" id="BoxMesh_0yd1l"]
+
+[node name="JumpKitEffect" type="GPUParticles3D" unique_id=807237713]
 emitting = false
 amount = 2000
 lifetime = 0.9
 fixed_fps = 0
-draw_order = 0
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_rvfub")
+draw_pass_1 = SubResource("BoxMesh_0yd1l")
 
-[node name="PointLight2D" type="PointLight2D" parent="." unique_id=535342438]
+[node name="PointLight2D" type="OmniLight3D" parent="." unique_id=179899592]
 visible = false
-color = Color(0.905269, 2.38247e-06, 1.92523e-07, 1)
-energy = 1.8
 shadow_enabled = true
-texture = ExtResource("1_40cnk")
-texture_scale = 3.5
-script = ExtResource("2_385py")

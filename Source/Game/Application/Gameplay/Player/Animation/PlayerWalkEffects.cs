@@ -137,7 +137,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 			_dustPuff.Emitting = true;
 
-			Vector2 position = _prefab.GlobalPosition;
+			Vector3 position = _prefab.GlobalPosition;
 			Transform2D transform = new Transform2D(
 				rotation: 0.0f,
 				origin: new Vector2( position.X, position.Y + 24.0f )

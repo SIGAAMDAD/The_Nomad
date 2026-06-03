@@ -209,8 +209,7 @@ namespace Nomad.Game.Prefabs
 				eventFactory,
 				cvarSystem,
 				startTime,
-				_worldDefinition,
-				GetNode<WorldSunLightPrefab>( "SunLight" )
+				_worldDefinition
 			);
 		}
 	};

@@ -234,9 +234,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			if ( args.Phase == InputActionPhase.Started || args.Phase == InputActionPhase.Performed ) {
 				_moveInput = args.Value;
 
-				// Preserve the existing controller behavior: input Y is inverted
-				// for the 2D gameplay plane.
-				_moveInput.Y = -_moveInput.Y;
+				// Preserve the existing input convention: positive Y means forward in
+				// gameplay space. The 3D movement controller projects this onto the
+				// camera-relative XZ ground plane.
+
+				if ( _moveInput.LengthSquared() > 1.0f ) {
+					_moveInput = Vector2.Normalize( _moveInput );
+				}
+
 				return;
 			}
 			_moveInput = Vector2.Zero;
@@ -300,7 +305,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		private void OnWindowSizeChanged( in CVarValueChangedEventArgs<WindowResolution> args )
 		{
 			var size = (WindowSize)args.NewValue;
-			_windowSize = new Vector2( size.Width, size.Height );
+			_windowSize = new Vector2( size.Width, size.Height ) * 0.5f;
 		}
 	};
 };

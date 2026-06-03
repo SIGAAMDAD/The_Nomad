@@ -115,8 +115,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 
 			_prefab = Object.CastAs<PlayerPrefab>();
 
-			_light = _prefab.FindChild<EngineLight2D>( "JumpKitEffect/PointLight2D" );
-			_particles = _prefab.GetNode<GpuParticles2D>( "JumpKitEffect" );
+//			_light = _prefab.FindChild<EngineLight2D>( "JumpKitEffect/PointLight2D" );
+//			_particles = _prefab.GetNode<GpuParticles2D>( "JumpKitEffect" );
 
 			var eventFactory = GameEventRegistry.Instance;
 
@@ -155,6 +155,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		///
 		/// </summary>
 		/// <param name="delta"></param>
+		/*
 		public override void OnUpdate( float delta )
 		{
 			base.OnUpdate( delta );
@@ -178,6 +179,7 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 				OnBurnoutAmountChanged( result );
 			}
 		}
+		*/
 
 		/*
 		===============

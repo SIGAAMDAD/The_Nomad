@@ -50,6 +50,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		private readonly PlayerRuntime _runtime;
 		internal PlayerRuntime Runtime => _runtime;
+		internal PlayerPrefab Prefab { get; }
 
 		public IGameEvent<PlayerDieEventArgs> Die => _die;
 		private readonly IGameEvent<PlayerDieEventArgs> _die;
@@ -69,6 +70,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerBase( PlayerId playerId, PlayerPrefab prefab, int localPlayerIndex, IGameEventRegistryService eventFactory, ILoggerService logger )
 			: base( new EntityId( playerId ), InternString.Empty, InternString.Empty, EntityType.Player, EntityFlags.None )
 		{
+			Prefab = prefab;
+
 			_die = eventFactory.GetEvent<PlayerDieEventArgs>(
 				PlayerDieEventArgs.Name,
 				PlayerDieEventArgs.NameSpace
