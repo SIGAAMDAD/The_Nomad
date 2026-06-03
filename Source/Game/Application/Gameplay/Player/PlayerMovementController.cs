@@ -279,7 +279,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private Vector3 CalculateHorizontalVelocity( float delta, Vector3 wishDirection )
 		{
 			Vector3 targetVelocity;
-			float acceleration = Sdk.Player.Constants.MOVEMENT_ACCELERATION;
+			float acceleration = 100;
 
 			if ( Flags.GetFlags( PlayerFlags.Dashing ) ) {
 				targetVelocity = _dashDirection * GetDashSpeed();

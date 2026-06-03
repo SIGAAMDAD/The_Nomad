@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://b8s8jxbhuga4a"]
+
+[ext_resource type="Terrain3DAssets" uid="uid://blgxbdw840o18" path="res://Assets/Terrain/Settlements/Galakas/galakas_terrain.tres" id="1_ovyrv"]
+
+[sub_resource type="Gradient" id="Gradient_7y3cl"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ovyrv"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1d2vf"]
+noise = SubResource("FastNoiseLite_ovyrv")
+color_ramp = SubResource("Gradient_7y3cl")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_mphb5"]
+_shader_parameters = {
+&"bias_distance": null,
+&"blend_sharpness": null,
+&"depth_blur": null,
+&"enable_macro_variation": null,
+&"enable_projection": null,
+&"flat_terrain_normals": null,
+&"macro_variation1": null,
+&"macro_variation2": null,
+&"macro_variation_slope": null,
+&"mipmap_bias": null,
+&"noise1_angle": null,
+&"noise1_offset": null,
+&"noise1_scale": null,
+&"noise2_scale": null,
+&"noise_texture": SubResource("NoiseTexture2D_1d2vf"),
+&"projection_threshold": null
+}
+
+[node name="Galakas" type="Node3D" unique_id=163957063]
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=1819792133]
+debug_level = 2
+data_directory = "res://Assets/Terrain/Settlements/Galakas"
+material = SubResource("Terrain3DMaterial_mphb5")
+assets = ExtResource("1_ovyrv")
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="UnderCity" type="Node3D" parent="." unique_id=458356723]
+
+[node name="MidCity" type="Node3D" parent="." unique_id=1797376555]
+
+[node name="ImperiumCity" type="Node3D" parent="." unique_id=1097681467]

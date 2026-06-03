@@ -36,6 +36,9 @@ namespace Nomad.Game.Prefabs
 
 	public partial class PlayerPrefab : EngineCharacter3D
 	{
+		[Export]
+		private Camera3D _camera;
+
 		public PlayerId PeerId { get; set; }
 		public PlayerInitializationDefinition Definition { get; init; }
 
@@ -64,7 +67,8 @@ namespace Nomad.Game.Prefabs
 		{
 			base.OnInit();
 
-			GetTree().CurrentScene.GetNode( "PostProcessingContainer/PostProcessing/__NomadManagedSceneHost/SingleWorld/World3D/Terrain3D" ).Call( "set_camera", GetNode<Camera3D>( "Camera3D" ) );
+			var terrainInstances = GetTree().GetNodesInGroup( "TerrainInstance" );
+			terrainInstances[0].Call( "set_camera", _camera );
 		}
 	};
 };

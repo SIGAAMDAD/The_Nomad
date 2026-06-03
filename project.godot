@@ -64,7 +64,8 @@ import/blender/enabled=false
 
 [global_group]
 
-height_shadow_caster=""
+Camera=""
+TerrainInstance=""
 
 [internationalization]
 

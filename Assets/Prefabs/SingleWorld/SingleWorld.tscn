@@ -49,6 +49,9 @@ world_background = 0
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qeavp"]
 
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ud3ku"]
+data = PackedVector3Array(-4.2614746, -35.433823, 106.41118, -4.2614746, -35.433823, -106.41118, -4.2614746, 35.433823, -106.41118, 4.2614746, -35.433823, -106.41118, -4.2614746, -35.433823, -106.41118, -4.2614746, -35.433823, 106.41118, -4.2614746, 35.433823, -106.41118, -4.2614746, -35.433823, -106.41118, 4.2614746, -35.433823, -106.41118, -4.2614746, 35.433823, -106.41118, -4.2614746, 35.433823, 106.41118, -4.2614746, -35.433823, 106.41118, -4.2614746, -35.433823, 106.41118, -4.2614746, 35.433823, 106.41118, 4.2614746, 35.433823, 106.41118, 4.2614746, 35.433823, 106.41118, -4.2614746, 35.433823, 106.41118, -4.2614746, 35.433823, -106.41118, -4.2614746, -35.433823, 106.41118, 4.2614746, -35.433823, 106.41118, 4.2614746, -35.433823, -106.41118, 4.2614746, 35.433823, 106.41118, 4.2614746, -35.433823, 106.41118, -4.2614746, -35.433823, 106.41118, 4.2614746, -35.433823, -106.41118, 4.2614746, -35.433823, 106.41118, 4.2614746, 35.433823, 106.41118, 4.2614746, -35.433823, -106.41118, 4.2614746, 35.433823, -106.41118, -4.2614746, 35.433823, -106.41118, -4.2614746, 35.433823, -106.41118, 4.2614746, 35.433823, -106.41118, 4.2614746, 35.433823, 106.41118, 4.2614746, 35.433823, 106.41118, 4.2614746, 35.433823, -106.41118, 4.2614746, -35.433823, -106.41118)
+
 [node name="SingleWorld" type="Node3D" unique_id=1175813247]
 process_mode = 1
 script = ExtResource("1_gohso")
@@ -57,11 +60,12 @@ script = ExtResource("1_gohso")
 
 [node name="PlayerSpawner" parent="World3D" unique_id=654047548 instance=ExtResource("3_fek2r")]
 transform = Transform3D(0.9997798, 0.020983763, 0, -0.020983763, 0.9997798, 0, 0, 0, 1, -1.5468025, 28.13454, -8.527462)
+LocalPlayerCount = null
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World3D" unique_id=200871579]
 environment = ExtResource("3_xrhpx")
 
-[node name="Terrain3D" type="Terrain3D" parent="World3D" unique_id=1644093809]
+[node name="Terrain3D" type="Terrain3D" parent="World3D" unique_id=1644093809 groups=["TerrainInstance"]]
 debug_level = 2
 data_directory = "res://Assets/Terrain"
 material = SubResource("Terrain3DMaterial_2lkg4")
@@ -73,9 +77,15 @@ physics_material = SubResource("PhysicsMaterial_qeavp")
 top_level = true
 metadata/_edit_lock_ = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="World3D/Terrain3D" unique_id=309353126]
+[node name="CSGBox3D" type="CSGBox3D" parent="World3D" unique_id=309353126]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -108.21701, 36.455612, 66.78403)
 size = Vector3(8.522949, 70.867645, 212.82236)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World3D/CSGBox3D" unique_id=1259882978]
+collision_layer = 8671
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="World3D/CSGBox3D/StaticBody3D" unique_id=882406673]
+shape = SubResource("ConcavePolygonShape3D_ud3ku")
 
 [node name="SpotLight3D" type="DirectionalLight3D" parent="World3D" unique_id=1537175786]
 transform = Transform3D(0.5735546, 0.80399776, 0.15691666, -0.073645696, -0.14017114, 0.9873847, 0.81585014, -0.5778752, -0.021184823, 20.201782, 144.0997, 0)
