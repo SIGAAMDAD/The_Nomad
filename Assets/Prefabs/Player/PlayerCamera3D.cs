@@ -2,7 +2,6 @@ using System;
 using Godot;
 using Nomad.Core.Input;
 using Nomad.Core.Numerics;
-using Nomad.Core.Events;
 using Nomad.Events.Globals;
 
 public partial class PlayerCamera3D : Node3D
@@ -26,7 +25,7 @@ public partial class PlayerCamera3D : Node3D
 	[Export] public string MouseToggleAction { get; set; } = "ui_cancel";
 
 	[ExportCategory( "Smoothing" )]
-	[Export] public float FollowSharpness { get; set; } = 18f;
+	[Export] private float _followSharpness { get; set; } = 18.0f;
 
 	[ExportCategory( "Node Paths" )]
 	[Export] public NodePath YawPivotPath { get; set; } = "YawPivot";
@@ -37,7 +36,7 @@ public partial class PlayerCamera3D : Node3D
 	private Node3D _yawPivot;
 	private SpringArm3D _springArm;
 	private Camera3D _camera;
-	private IGameEvent<MouseMotionEventArgs> _mouseMotionEvent;
+	private IDisposable _mouseMotion;
 
 	private float _yaw;
 	private float _pitch;
@@ -80,22 +79,28 @@ public partial class PlayerCamera3D : Node3D
 			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
 
-		_mouseMotionEvent = GameEventRegistry.GetEvent<MouseMotionEventArgs>(
-			MouseMotionEventArgs.Name,
-			MouseMotionEventArgs.NameSpace
-		);
-		_mouseMotionEvent.Subscribe( OnMouseMove );
+		_mouseMotion = GameEventRegistry
+			.GetEvent<MouseMotionEventArgs>(
+				MouseMotionEventArgs.Name,
+				MouseMotionEventArgs.NameSpace
+			)
+			.Subscribe( OnMouseMove );
+	}
+
+	public override void _ExitTree()
+	{
+		_mouseMotion?.Dispose();
 	}
 
 	public override void _Process( double delta )
 	{
 		Vector3 desiredPosition = _target.GlobalPosition + TargetOffset;
-		if ( FollowSharpness <= 0.0f ) {
+		if ( _followSharpness <= 0.0f ) {
 			GlobalPosition = desiredPosition;
 			return;
 		}
 
-		float t = 1.0f - MathF.Exp( -FollowSharpness * (float)delta );
+		float t = 1.0f - MathF.Exp( -_followSharpness * (float)delta );
 		GlobalPosition = GlobalPosition.Lerp( desiredPosition, t );
 	}
 
@@ -106,11 +111,6 @@ public partial class PlayerCamera3D : Node3D
 				? Input.MouseModeEnum.Visible
 				: Input.MouseModeEnum.Captured;
 		}
-	}
-
-	public override void _ExitTree()
-	{
-		_mouseMotionEvent?.Unsubscribe( OnMouseMove );
 	}
 
 	private void OnMouseMove( in MouseMotionEventArgs args )

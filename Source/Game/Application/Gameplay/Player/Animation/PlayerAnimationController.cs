@@ -39,9 +39,17 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 	internal sealed class PlayerAnimationController : IPlayerAnimationController
 	{
-		private static readonly StringName IdleAnimationName = "idle";
-		private static readonly StringName MoveAnimationName = "move";
-		private static readonly StringName SuddenStopAnimationName = "sudden_stop";
+		private static readonly StringName IdleAnimationName = "Idle";
+		private static readonly StringName RunAnimationName = "Run";
+		private static readonly StringName BackpedalAnimationName = "Backpedal";
+		private static readonly StringName StrafeLeftRunAnimationName = "StrafeLeftRun";
+		private static readonly StringName StrafeRightRunAnimationName = "StrafeRightRun";
+		private static readonly StringName SuddenStopAnimationName = "SuddenStop";
+
+		private static readonly StringName LandSoftAnimationName = "LandSoft";
+		private static readonly StringName LandHardAnimationName = "LandHard";
+		private static readonly StringName JumpAnimationName = "Jump";
+
 		private static readonly StringName TrueIdleAnimationName = "true_idle";
 		private static readonly StringName RestingAtCheckpointAnimationName = "checkpoint_resting";
 
@@ -53,17 +61,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 
 		private readonly PlayerId _playerId = PlayerId.Invalid;
 
-		private readonly AnimatedSprite2D _torsoAnimator;
-		private readonly Sprite2D _headAnimator;
-		private readonly AnimatedSprite2D _legAnimator;
-		private readonly PlayerWalkEffects _walkEffects;
-
-		private readonly AnimatedSprite2D _leftHandAnimator;
-		private readonly AnimatedSprite2D _rightHandAnimator;
+		private readonly AnimationNodeStateMachinePlayback _playback;
+		private readonly AnimationNodeStateMachine _stateMachine;
+		private StringName _activeLocomotionAnimation = IdleAnimationName;
 
 		private readonly IDisposable _stateChanged;
-		private readonly IDisposable _aimAngleChanged;
 		private readonly IDisposable _locomotionCue;
+		private readonly IDisposable _directionalLocomotion;
 
 		private bool _isDisposed = false;
 
@@ -100,79 +104,46 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
 			_playerId = playerId;
-			/*
 
-			_headAnimator = prefab.GetNode<Sprite2D>( "Animations/HeadSprite" );
+			var animationTree = prefab.GetNode<AnimationTree>( "AnimationTree" );
+			_stateMachine = animationTree.TreeRoot as AnimationNodeStateMachine;
+			_playback = (AnimationNodeStateMachinePlayback)animationTree.Get( "parameters/playback" );
+			_playback.Travel( IdleAnimationName );
 
-			_legAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/LegAnimator" );
+			_stateChanged = eventFactory
+				.GetEvent<PlayerStateChangedEventArgs>(
+					PlayerStateChangedEventArgs.Name,
+					PlayerStateChangedEventArgs.NameSpace
+				)
+				.Subscribe( OnStateChanged );
 
-			_torsoAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/TorsoAnimator" );
-			_walkEffects = new PlayerWalkEffects( prefab, stateReader );
+			_locomotionCue = eventFactory
+				.GetEvent<PlayerLocomotionCueEventArgs>(
+					PlayerLocomotionCueEventArgs.Name,
+					PlayerLocomotionCueEventArgs.NameSpace
+				)
+				.Subscribe( OnLocomotionCue );
 
-			_leftHandAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/LeftArm/AnimatedSprite2D" );
-			_leftHandAnimator.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/LeftArmFrames.tres" );
-
-			_rightHandAnimator = prefab.GetNode<AnimatedSprite2D>( "Animations/RightArm/AnimatedSprite2D" );
-			_rightHandAnimator.SpriteFrames = ResourceLoader.Load<SpriteFrames>( "res://Assets/Animations/Player/RightArmFrames.tres" );
-
-			_animationStateChanged = eventFactory.GetEvent<PlayerAnimationStateChangedEventArgs>(
-				PlayerAnimationStateChangedEventArgs.Name,
-				PlayerAnimationStateChangedEventArgs.NameSpace
-			);
-
-			_stateChanged = stateReader.StateChanged.Subscribe( OnStateChanged );
-			_locomotionCue = movementController.LocomotionCue.Subscribe( OnLocomotionCue );
-			_aimAngleChanged = aimReader.AimAngleChanged.Subscribe( OnAimAngleChanged );
-			*/
+			_directionalLocomotion = eventFactory
+				.GetEvent<PlayerDirectionalLocomotionEventArgs>(
+					PlayerDirectionalLocomotionEventArgs.Name,
+					PlayerDirectionalLocomotionEventArgs.NameSpace
+				)
+				.Subscribe( OnDirectionalLocomotion );
 		}
 
 		public void Dispose()
 		{
-			/*
 			if ( _isDisposed ) {
 				return;
 			}
 
-			_walkEffects.Dispose();
 			_stateChanged.Dispose();
 			_locomotionCue.Dispose();
-			_aimAngleChanged.Dispose();
+			_directionalLocomotion.Dispose();
 
 			GC.SuppressFinalize( this );
 			_isDisposed = true;
-			*/
-		}
-
-/*
-		private void OnAimAngleChanged( in AimAngleChangedEventArgs args )
-		{
-			bool flip = args.NewDirection.X < 0.0f;
-
-			_headAnimator.FlipV = flip;
-			_torsoAnimator.FlipH = flip;
-			_legAnimator.FlipH = flip;
-			_leftHandAnimator.FlipV = flip;
-			_rightHandAnimator.FlipV = flip;
-
-			_headAnimator.Rotation = args.NewAngle;
-			_headAnimator.Offset = flip ? HEAD_OFFSET_LEFT : HEAD_OFFSET_RIGHT;
-
-			_leftHandAnimator.Rotation = args.NewAngle;
-			_rightHandAnimator.Rotation = args.NewAngle;
-
-			if ( flip ) {
-				_leftHandAnimator.ZIndex = 2;
-				_torsoAnimator.ZIndex = 1;
-				_legAnimator.ZIndex = 1;
-				_headAnimator.ZIndex = 1;
-				_rightHandAnimator.ZIndex = 0;
-			} else {
-				_leftHandAnimator.ZIndex = 0;
-				_torsoAnimator.ZIndex = 1;
-				_legAnimator.ZIndex = 1;
-				_headAnimator.ZIndex = 1;
-				_rightHandAnimator.ZIndex = 2;
-			}
 		}
 
 		private void OnLocomotionCue( in PlayerLocomotionCueEventArgs args )
@@ -182,13 +153,28 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 					break;
 
 				case PlayerLocomotionCue.HardStop:
-					_legAnimator.Play( SuddenStopAnimationName );
+					_playback.Travel( SuddenStopAnimationName );
 					break;
 
 				case PlayerLocomotionCue.Reverse:
-					_legAnimator.PlayBackwards( MoveAnimationName );
 					break;
 			}
+		}
+
+		private void OnDirectionalLocomotion( in PlayerDirectionalLocomotionEventArgs args )
+		{
+			if ( !args.IsMoving ) {
+				return;
+			}
+
+			StringName desiredAnimation = args.Direction switch {
+				PlayerLocomotionDirection.Backward => BackpedalAnimationName,
+				PlayerLocomotionDirection.StrafeLeft => StrafeLeftRunAnimationName,
+				PlayerLocomotionDirection.StrafeRight => StrafeRightRunAnimationName,
+				_ => RunAnimationName
+			};
+
+			TravelLocomotion( desiredAnimation );
 		}
 
 		private void OnStateChanged( in PlayerStateChangedEventArgs args )
@@ -212,39 +198,36 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		{
 			StringName animationName = state switch {
 				PlayerAnimationState.Idle => IdleAnimationName,
-				PlayerAnimationState.Running => MoveAnimationName,
+				PlayerAnimationState.Running => RunAnimationName,
 				PlayerAnimationState.RestingAtCheckpoint => RestingAtCheckpointAnimationName,
 				PlayerAnimationState.TrueIdle => TrueIdleAnimationName,
 				_ => throw new ArgumentOutOfRangeException( nameof( state ) )
 			};
 
-			if (
-				state == PlayerAnimationState.RestingAtCheckpoint ||
-				state == PlayerAnimationState.TrueIdle ||
-				state == PlayerAnimationState.Dying
-			) {
-				_torsoAnimator.Play( animationName );
-
-				_legAnimator.Hide();
-				_leftHandAnimator.Hide();
-				_rightHandAnimator.Hide();
-				_headAnimator.Hide();
-
-				return;
-			}
-
-			_legAnimator.Show();
-			_leftHandAnimator.Show();
-			_rightHandAnimator.Show();
-			_headAnimator.Show();
-
-			_torsoAnimator.Play( animationName );
-			_legAnimator.Play( animationName );
-			_leftHandAnimator.Play( animationName );
-			_rightHandAnimator.Play( animationName );
+			_playback.Travel( animationName );
+			_activeLocomotionAnimation = animationName;
 
 			_activeState = state;
 		}
-		*/
+
+		private void TravelLocomotion( StringName animationName )
+		{
+			StringName resolvedAnimation = CanTravelTo( animationName )
+				? animationName
+				: RunAnimationName;
+
+			if ( !CanTravelTo( resolvedAnimation ) || _activeLocomotionAnimation == resolvedAnimation ) {
+				return;
+			}
+
+			_playback.Travel( resolvedAnimation );
+			_activeLocomotionAnimation = resolvedAnimation;
+			_activeState = PlayerAnimationState.Running;
+		}
+
+		private bool CanTravelTo( StringName animationName )
+		{
+			return _stateMachine == null || _stateMachine.HasNode( animationName );
+		}
 	};
 };

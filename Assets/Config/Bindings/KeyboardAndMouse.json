@@ -14,6 +14,17 @@
 			}
 		},
 		{
+			"Name": "Crouch",
+			"Id": "Crouch",
+			"ValueType": "Button",
+			"Scheme": "KeyboardAndMouse",
+			"Bindings": {
+				"Kind": "Button",
+				"DeviceId": "Keyboard",
+				"ControlId": "Ctrl"
+			}
+		},
+		{
 			"Name": "Look",
 			"Id": "Look",
 			"ValueType": "Vector2",

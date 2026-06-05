@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Sdk.Player
 {
@@ -32,5 +33,16 @@ namespace Nomad.Game.Sdk.Player
         [EventPayload("MoveInput", typeof(Vector2), Order = 5)]
         [EventPayload("ServerTick", typeof(uint), Order = 6)]
         IGameEvent<PlayerLocomotionCueEventArgs> LocomotionCue { get; }
+
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerDirectionalLocomotionEventArgs")]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("Direction", typeof(PlayerLocomotionDirection), Order = 2)]
+        [EventPayload("MoveDirection", typeof(Vector2), Order = 3)]
+        [EventPayload("FacingDirection", typeof(Vector2), Order = 4)]
+        [EventPayload("ForwardAmount", typeof(float), Order = 5)]
+        [EventPayload("RightAmount", typeof(float), Order = 6)]
+        [EventPayload("IsMoving", typeof(bool), Order = 7)]
+        [EventPayload("ServerTick", typeof(uint), Order = 8)]
+        IGameEvent<PlayerDirectionalLocomotionEventArgs> DirectionalLocomotion { get; }
     }
 }

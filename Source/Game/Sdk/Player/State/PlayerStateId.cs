@@ -31,6 +31,11 @@ namespace Nomad.Game.Sdk.Player.State
         Moving,
 
         /// <summary>
+        /// The specific crouch/stealth state.
+        /// </summary>
+        Sneaking,
+
+        /// <summary>
         /// Duh.
         /// </summary>
         Dead,

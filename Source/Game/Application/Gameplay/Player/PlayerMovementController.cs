@@ -52,20 +52,23 @@ namespace Nomad.Game.Application.Gameplay.Player
 	{
 		private const float EPSILON = 0.0001f;
 		private const float MOVING_THRESHOLD = 0.001f;
-		private const float HARD_START_THRESHOLD = 64.0f;
-		private const float HARD_STOP_THRESHOLD = 64.0f;
+		private const float GAMEPLAY_UNITS_PER_WORLD_UNIT = 32.0f;
+		private const float HARD_START_THRESHOLD = 64.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT;
+		private const float HARD_STOP_THRESHOLD = 64.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT;
+		private const float FACING_VELOCITY_THRESHOLD_SQUARED = (16.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT) * (16.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT);
 
 		// Pixel-era project units are still used here. When the world is rescaled to
 		// meters, divide these values by the same pixels-per-meter constant.
-		private const float GRAVITY = 1800.0f;
-		private const float GROUND_STICK_VELOCITY = -32.0f;
+		private const float GRAVITY = 1800.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT;
+		private const float GROUND_STICK_VELOCITY = -32.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT;
 		private const float AIR_CONTROL_MULTIPLIER = 0.35f;
 		private const float DASH_SPEED_FALLBACK_MULTIPLIER = 2.60f;
 		private const float SLIDE_SPEED_MULTIPLIER = 1.65f;
 		private const float SLIDE_FRICTION_MULTIPLIER = 0.45f;
 		private const float TURN_SPEED = 14.0f;
-		private const float FLOOR_SNAP_LENGTH = 12.0f;
+		private const float FLOOR_SNAP_LENGTH = 12.0f / GAMEPLAY_UNITS_PER_WORLD_UNIT;
 		private const float FLOOR_MAX_ANGLE_DEGREES = 46.0f;
+		private const string VISUAL_ROOT_PATH = "VisualRoot";
 
 		public PlayerId Id { get; set; }
 		public IPlayerDerivedStatService Stats { get; set; }
@@ -89,11 +92,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		private PlayerPrefab _prefab;
 		private Camera3D _camera;
+		private Node3D _visualRoot;
+		private float _visualYawOffset;
 
 		private readonly Godot.Timer _slideTimer;
 
 		public IGameEvent<PlayerLocomotionCueEventArgs> LocomotionCue => _locomotionCue;
 		private IGameEvent<PlayerLocomotionCueEventArgs> _locomotionCue = null;
+		public IGameEvent<PlayerDirectionalLocomotionEventArgs> DirectionalLocomotion => _directionalLocomotion;
+		private IGameEvent<PlayerDirectionalLocomotionEventArgs> _directionalLocomotion = null;
 
 		/*
 		===============
@@ -119,6 +126,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 			base.OnInit();
 
 			_prefab = Object.CastAs<PlayerPrefab>();
+			_visualRoot = _prefab.GetNodeOrNull<Node3D>( VISUAL_ROOT_PATH ) ?? _prefab;
+			_visualYawOffset = _visualRoot.Rotation.Y;
 			_prefab.AddChild( _slideTimer );
 
 			_prefab.UpDirection = Vector3.Up;
@@ -160,6 +169,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 					PlayerLocomotionCueEventArgs.NameSpace,
 					EventFlags.NoLock
 				);
+
+			_directionalLocomotion = eventFactory
+				.GetEvent<PlayerDirectionalLocomotionEventArgs>(
+					PlayerDirectionalLocomotionEventArgs.Name,
+					PlayerDirectionalLocomotionEventArgs.NameSpace,
+					EventFlags.NoLock
+				);
 		}
 
 		/*
@@ -198,6 +214,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_slideTimer.Dispose();
 
 			_locomotionCue.Dispose();
+			_directionalLocomotion.Dispose();
 		}
 
 		/*
@@ -230,10 +247,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 				StartSlide( wishDirection );
 			}
 
+			Vector3 facingDirection = GetLookFacingDirection( wishDirection );
 			_horizontalVelocity = CalculateHorizontalVelocity( delta, wishDirection );
 			ApplyVelocityToBody( delta );
-			UpdateFacing( delta, wishDirection );
+			UpdateFacing( delta, facingDirection );
 			UpdateLocomotionState();
+			PublishDirectionalLocomotion( wishDirection, facingDirection, input.Tick );
 			PublishLocomotionCue( previousHorizontalVelocity, input.Tick );
 		}
 
@@ -279,7 +298,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private Vector3 CalculateHorizontalVelocity( float delta, Vector3 wishDirection )
 		{
 			Vector3 targetVelocity;
-			float acceleration = 100;
+			float acceleration = GameplayUnitsToWorldUnits( Sdk.Player.Constants.MOVEMENT_ACCELERATION );
 
 			if ( Flags.GetFlags( PlayerFlags.Dashing ) ) {
 				targetVelocity = _dashDirection * GetDashSpeed();
@@ -288,10 +307,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 				targetVelocity = _slideDirection * GetSlideSpeed();
 				acceleration *= SLIDE_FRICTION_MULTIPLIER;
 			} else if ( wishDirection.LengthSquared() > EPSILON ) {
-				targetVelocity = wishDirection * _effectiveMovementSpeed;
+				targetVelocity = wishDirection * GetMovementSpeed();
 			} else {
 				targetVelocity = Vector3.Zero;
-				acceleration = Sdk.Player.Constants.MOVEMENT_FRICTION;
+				acceleration = GameplayUnitsToWorldUnits( Sdk.Player.Constants.MOVEMENT_FRICTION );
 			}
 
 			if ( !_prefab.IsOnFloor() ) {
@@ -339,7 +358,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 			if ( wishDirection.LengthSquared() > EPSILON ) {
 				facingDirection = wishDirection;
-			} else if ( _horizontalVelocity.LengthSquared() > 16.0f ) {
+			} else if ( _horizontalVelocity.LengthSquared() > FACING_VELOCITY_THRESHOLD_SQUARED ) {
 				facingDirection = _horizontalVelocity.Normalized();
 			}
 
@@ -347,10 +366,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 				return;
 			}
 
-			float desiredYaw = MathF.Atan2( facingDirection.X, -facingDirection.Z );
-			System.Numerics.Vector3 rotation = _prefab.Rotation;
+			float desiredYaw = MathF.Atan2( -facingDirection.X, -facingDirection.Z );
+			desiredYaw += _visualYawOffset;
+
+			Vector3 rotation = _visualRoot.Rotation;
 			rotation.Y = LerpAngle( rotation.Y, desiredYaw, MathF.Min( 1.0f, TURN_SPEED * delta ) );
-			_prefab.Rotation = rotation;
+			_visualRoot.Rotation = rotation;
 		}
 
 		/*
@@ -387,6 +408,40 @@ namespace Nomad.Game.Application.Gameplay.Player
 					ToPlanar2D( _horizontalVelocity ),
 					_horizontalVelocity.LengthSquared() > MOVING_THRESHOLD,
 					_moveInput,
+					tick
+				)
+			);
+		}
+
+		/*
+		===============
+		PublishDirectionalLocomotion
+		===============
+		*/
+		private void PublishDirectionalLocomotion( Vector3 moveDirection, Vector3 facingDirection, uint tick )
+		{
+			bool isMoving = moveDirection.LengthSquared() > EPSILON;
+			Vector3 normalizedMove = isMoving ? moveDirection.Normalized() : Vector3.Zero;
+			Vector3 normalizedFacing = NormalizePlanarOrDefault( facingDirection, new Vector3( 0.0f, 0.0f, -1.0f ) );
+			Vector3 facingRight = GetPlanarRight( normalizedFacing );
+
+			float forwardAmount = isMoving ? normalizedFacing.Dot( normalizedMove ) : 0.0f;
+			float rightAmount = isMoving ? facingRight.Dot( normalizedMove ) : 0.0f;
+			PlayerLocomotionDirection direction = ClassifyDirectionalLocomotion(
+				forwardAmount,
+				rightAmount,
+				isMoving
+			);
+
+			_directionalLocomotion.Publish(
+				new PlayerDirectionalLocomotionEventArgs(
+					Id,
+					direction,
+					ToPlanarDirection2D( normalizedMove ),
+					ToPlanarDirection2D( normalizedFacing ),
+					forwardAmount,
+					rightAmount,
+					isMoving,
 					tick
 				)
 			);
@@ -516,6 +571,25 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		/*
 		===============
+		GetLookFacingDirection
+		===============
+		*/
+		private Vector3 GetLookFacingDirection( Vector3 fallbackDirection )
+		{
+			Vector3 forward = GetCameraPlanarForward();
+			if ( forward.LengthSquared() > EPSILON ) {
+				return forward;
+			}
+
+			if ( fallbackDirection.LengthSquared() > EPSILON ) {
+				return fallbackDirection.Normalized();
+			}
+
+			return ResolveActionDirection( Vector3.Zero );
+		}
+
+		/*
+		===============
 		GetCameraPlanarForward
 		===============
 		*/
@@ -580,9 +654,66 @@ namespace Nomad.Game.Application.Gameplay.Player
 				return _lastPlanarWishDirection.Normalized();
 			}
 
-			Vector3 forward = -_prefab.GlobalTransform.Basis.Z;
+			Node3D facingRoot = _visualRoot != null && GodotObject.IsInstanceValid( _visualRoot )
+				? _visualRoot
+				: _prefab;
+			Vector3 forward = -facingRoot.GlobalTransform.Basis.Z;
 			forward.Y = 0.0f;
 			return forward.LengthSquared() > EPSILON ? forward.Normalized() : new Vector3( 0.0f, 0.0f, -1.0f );
+		}
+
+		/*
+		===============
+		ClassifyDirectionalLocomotion
+		===============
+		*/
+		private static PlayerLocomotionDirection ClassifyDirectionalLocomotion(
+			float forwardAmount,
+			float rightAmount,
+			bool isMoving
+		)
+		{
+			if ( !isMoving ) {
+				return PlayerLocomotionDirection.Idle;
+			}
+
+			if ( MathF.Abs( rightAmount ) > MathF.Abs( forwardAmount ) ) {
+				return rightAmount < 0.0f
+					? PlayerLocomotionDirection.StrafeLeft
+					: PlayerLocomotionDirection.StrafeRight;
+			}
+
+			return forwardAmount < 0.0f
+				? PlayerLocomotionDirection.Backward
+				: PlayerLocomotionDirection.Forward;
+		}
+
+		/*
+		===============
+		NormalizePlanarOrDefault
+		===============
+		*/
+		private static Vector3 NormalizePlanarOrDefault( Vector3 value, Vector3 fallback )
+		{
+			value.Y = 0.0f;
+			if ( value.LengthSquared() > EPSILON ) {
+				return value.Normalized();
+			}
+
+			fallback.Y = 0.0f;
+			return fallback.LengthSquared() > EPSILON
+				? fallback.Normalized()
+				: new Vector3( 0.0f, 0.0f, -1.0f );
+		}
+
+		/*
+		===============
+		GetPlanarRight
+		===============
+		*/
+		private static Vector3 GetPlanarRight( Vector3 forward )
+		{
+			return new Vector3( -forward.Z, 0.0f, forward.X ).Normalized();
 		}
 
 		/*
@@ -593,8 +724,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float GetDashSpeed()
 		{
-			float fallback = _effectiveMovementSpeed * DASH_SPEED_FALLBACK_MULTIPLIER;
-			return MathF.Max( fallback, _effectiveDashSpeed );
+			float fallback = GetMovementSpeed() * DASH_SPEED_FALLBACK_MULTIPLIER;
+			return MathF.Max( fallback, GameplayUnitsToWorldUnits( _effectiveDashSpeed ) );
 		}
 
 		/*
@@ -605,7 +736,40 @@ namespace Nomad.Game.Application.Gameplay.Player
 		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private float GetSlideSpeed()
 		{
-			return _effectiveMovementSpeed * SLIDE_SPEED_MULTIPLIER;
+			return GetMovementSpeed() * SLIDE_SPEED_MULTIPLIER;
+		}
+
+		/*
+		===============
+		GetMovementSpeed
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private float GetMovementSpeed()
+		{
+			return GameplayUnitsToWorldUnits( _effectiveMovementSpeed );
+		}
+
+		/*
+		===============
+		GameplayUnitsToWorldUnits
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static float GameplayUnitsToWorldUnits( float value )
+		{
+			return value / GAMEPLAY_UNITS_PER_WORLD_UNIT;
+		}
+
+		/*
+		===============
+		WorldUnitsToGameplayUnits
+		===============
+		*/
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static float WorldUnitsToGameplayUnits( float value )
+		{
+			return value * GAMEPLAY_UNITS_PER_WORLD_UNIT;
 		}
 
 		/*
@@ -643,6 +807,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 		===============
 		*/
 		private static NumericsVector2 ToPlanar2D( Vector3 value )
+		{
+			return new NumericsVector2(
+				WorldUnitsToGameplayUnits( value.X ),
+				WorldUnitsToGameplayUnits( value.Z )
+			);
+		}
+
+		/*
+		===============
+		ToPlanarDirection2D
+		===============
+		*/
+		private static NumericsVector2 ToPlanarDirection2D( Vector3 value )
 		{
 			return new NumericsVector2( value.X, value.Z );
 		}
