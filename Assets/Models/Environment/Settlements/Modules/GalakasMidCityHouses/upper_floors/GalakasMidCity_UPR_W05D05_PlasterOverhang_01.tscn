@@ -1,0 +1,199 @@
+[gd_scene format=3 uid="uid://ex7eptg4vo75"]
+
+[node name="GalakasMidCity_UPR_W05D05_PlasterOverhang_01" type="CSGCombiner3D" unique_id=656411519]
+use_collision = true
+metadata/module_version = "v16_taller_upper_floor"
+metadata/height_meters = 4.4
+metadata/clearance_policy = "Taller upper floor: more wall space, higher windows, exterior/interior CSGCombiner split."
+
+[node name="Exterior" type="CSGCombiner3D" parent="." unique_id=518828755]
+use_collision = true
+
+[node name="Mat_PlasterWall_BackPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=640550850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5)
+use_collision = true
+size = Vector3(10.4, 4.4, 0.25)
+
+[node name="Mat_PlasterWall_LeftPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=1751695097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.075, 2.2, 0)
+use_collision = true
+size = Vector3(0.25, 4.4, 10.25)
+
+[node name="Mat_PlasterWall_RightPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=1478664666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.075, 2.2, 0)
+use_collision = true
+size = Vector3(0.25, 4.4, 10.25)
+
+[node name="Mat_PlasterWall_FrontPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=692536711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -5)
+use_collision = true
+size = Vector3(10.4, 4.4, 0.25)
+
+[node name="Mat_WoodBeam_Upper_FrontVertical_0_Taller" type="CSGBox3D" parent="Exterior" unique_id=175727227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.24, 2.2, -5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackVertical_0_Taller" type="CSGBox3D" parent="Exterior" unique_id=1344839676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.24, 2.2, 5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_FrontVertical_1_Taller" type="CSGBox3D" parent="Exterior" unique_id=1331731332]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackVertical_1_Taller" type="CSGBox3D" parent="Exterior" unique_id=46711732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_FrontVertical_2_Taller" type="CSGBox3D" parent="Exterior" unique_id=2017083447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.24, 2.2, -5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackVertical_2_Taller" type="CSGBox3D" parent="Exterior" unique_id=1900185356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.24, 2.2, 5.165)
+use_collision = true
+size = Vector3(0.18, 4.4, 0.18)
+
+[node name="Mat_WoodBeam_Upper_FrontHorizontal_Base" type="CSGBox3D" parent="Exterior" unique_id=1728351219]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackHorizontal_Base" type="CSGBox3D" parent="Exterior" unique_id=82501901]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_LeftHorizontal_Base" type="CSGBox3D" parent="Exterior" unique_id=18196885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 0.12, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodBeam_Upper_RightHorizontal_Base" type="CSGBox3D" parent="Exterior" unique_id=1706042009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 0.12, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodBeam_Upper_FrontHorizontal_Middle" type="CSGBox3D" parent="Exterior" unique_id=1158295520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.12, -5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackHorizontal_Middle" type="CSGBox3D" parent="Exterior" unique_id=122892857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.12, 5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_LeftHorizontal_Middle" type="CSGBox3D" parent="Exterior" unique_id=1305931018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 2.12, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodBeam_Upper_RightHorizontal_Middle" type="CSGBox3D" parent="Exterior" unique_id=899421364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 2.12, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodBeam_Upper_FrontHorizontal_Top" type="CSGBox3D" parent="Exterior" unique_id=907150668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.32, -5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_BackHorizontal_Top" type="CSGBox3D" parent="Exterior" unique_id=1088282390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.32, 5.175)
+use_collision = true
+size = Vector3(10.58, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_Upper_LeftHorizontal_Top" type="CSGBox3D" parent="Exterior" unique_id=1410990513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.25, 4.32, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodBeam_Upper_RightHorizontal_Top" type="CSGBox3D" parent="Exterior" unique_id=1722603326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, 4.32, 0)
+use_collision = true
+size = Vector3(0.18, 0.16, 10.43)
+
+[node name="Mat_WoodShutter_Window_Upper_Front_1_FrameRaised" type="CSGBox3D" parent="Exterior" unique_id=304833929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.38, -5.2)
+size = Vector3(1.22, 1.22, 0.055)
+
+[node name="Mat_GlassDirty_Window_Upper_Front_1_PaneRaised" type="CSGBox3D" parent="Exterior" unique_id=1942973053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.38, -5.23)
+size = Vector3(1, 1, 0.045)
+
+[node name="Mat_WoodBeam_Window_Upper_Front_1_RoundMullionV" type="CSGCylinder3D" parent="Exterior" unique_id=1982653892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.38, -5.26)
+radius = 0.027
+height = 1.12
+sides = 10
+
+[node name="Mat_WoodBeam_Window_Upper_Front_1_RoundMullionH" type="CSGCylinder3D" parent="Exterior" unique_id=2118533989]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -2.6, 2.38, -5.27)
+radius = 0.027
+height = 1.12
+sides = 10
+
+[node name="Mat_WoodShutter_Window_Upper_Front_2_FrameRaised" type="CSGBox3D" parent="Exterior" unique_id=1577438942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.38, -5.2)
+size = Vector3(1.22, 1.22, 0.055)
+
+[node name="Mat_GlassDirty_Window_Upper_Front_2_PaneRaised" type="CSGBox3D" parent="Exterior" unique_id=542328426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.38, -5.23)
+size = Vector3(1, 1, 0.045)
+
+[node name="Mat_WoodBeam_Window_Upper_Front_2_RoundMullionV" type="CSGCylinder3D" parent="Exterior" unique_id=612198782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.38, -5.26)
+radius = 0.027
+height = 1.12
+sides = 10
+
+[node name="Mat_WoodBeam_Window_Upper_Front_2_RoundMullionH" type="CSGCylinder3D" parent="Exterior" unique_id=40163181]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 2.6, 2.38, -5.27)
+radius = 0.027
+height = 1.12
+sides = 10
+
+[node name="Mat_GlassDirty_Window_Upper_Back_1_PaneRaised" type="CSGBox3D" parent="Exterior" unique_id=1079139754]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.6, 2.38, 5.23)
+size = Vector3(1, 1, 0.045)
+
+[node name="Mat_GlassDirty_Window_Upper_Back_2_PaneRaised" type="CSGBox3D" parent="Exterior" unique_id=1811700261]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.6, 2.38, 5.23)
+size = Vector3(1, 1, 0.045)
+
+[node name="Mat_PlasterChip_RoundedSurfaceBreakup_V16_01" type="CSGSphere3D" parent="Exterior" unique_id=1519944499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.1, -5.245)
+radius = 0.045
+radial_segments = 8
+rings = 4
+
+[node name="Mat_PlasterChip_RoundedSurfaceBreakup_V16_02" type="CSGSphere3D" parent="Exterior" unique_id=1608563319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 3.1, -5.245)
+radius = 0.035
+radial_segments = 8
+rings = 4
+
+[node name="Mat_PlasterChip_RoundedSurfaceBreakup_V16_03" type="CSGSphere3D" parent="Exterior" unique_id=356367710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 5.245)
+radius = 0.04
+radial_segments = 8
+rings = 4
+
+[node name="Interior" type="CSGCombiner3D" parent="." unique_id=1479313736]
+use_collision = true
+
+[node name="Mat_WoodFloor_Upper_RaisedInteriorPlankSlab" type="CSGBox3D" parent="Interior" unique_id=2084838725]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+use_collision = true
+size = Vector3(10.15, 0.14, 10)
+
+[node name="Mat_WoodCeiling_Upper_TallerJoistSlab" type="CSGBox3D" parent="Interior" unique_id=1761817908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.32, 0)
+use_collision = true
+size = Vector3(10.2, 0.12, 10.05)

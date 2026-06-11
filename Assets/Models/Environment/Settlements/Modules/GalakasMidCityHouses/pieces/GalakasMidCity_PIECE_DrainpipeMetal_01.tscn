@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://cockqm1wn72p"]
+
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="1_4fq0l"]
+
+[node name="GalakasMidCity_PIECE_DrainpipeMetal_01" type="CSGCombiner3D" unique_id=793156983]
+material_override = ExtResource("1_4fq0l")
+use_collision = true
+metadata/category = "piece/pipe"
+
+[node name="Mat_MetalDrainpipe_MainRoundPipe" type="CSGCylinder3D" parent="." unique_id=848038745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+radius = 0.055
+height = 3.1
+sides = 16
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_RoundBand_035" type="CSGCylinder3D" parent="." unique_id=1420803905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+radius = 0.065
+height = 0.045
+sides = 16
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_BackStrap_035" type="CSGBox3D" parent="." unique_id=1363806998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0.065)
+size = Vector3(0.18, 0.035, 0.035)
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_RoundBand_155" type="CSGCylinder3D" parent="." unique_id=2139153949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+radius = 0.065
+height = 0.045
+sides = 16
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_BackStrap_155" type="CSGBox3D" parent="." unique_id=588051485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0.065)
+size = Vector3(0.18, 0.035, 0.035)
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_RoundBand_275" type="CSGCylinder3D" parent="." unique_id=339237215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+radius = 0.065
+height = 0.045
+sides = 16
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_WallBracket_BackStrap_275" type="CSGBox3D" parent="." unique_id=120419373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0.065)
+size = Vector3(0.18, 0.035, 0.035)
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_ElbowBulge_Top" type="CSGSphere3D" parent="." unique_id=1994665297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.12, 0)
+radius = 0.075
+material = ExtResource("1_4fq0l")
+
+[node name="Mat_MetalDrainpipe_ElbowBulge_Bottom" type="CSGSphere3D" parent="." unique_id=1790307089]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
+radius = 0.075
+material = ExtResource("1_4fq0l")

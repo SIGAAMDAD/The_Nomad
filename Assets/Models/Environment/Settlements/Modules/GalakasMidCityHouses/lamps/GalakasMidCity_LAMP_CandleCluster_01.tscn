@@ -1,0 +1,70 @@
+[gd_scene load_steps=1 format=3 uid="uid://v17103664f"]
+
+[node name="GalakasMidCity_LAMP_CandleCluster_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "lamp"
+metadata/material_note = "geometry only; assign emissive/glass/metal materials later."
+use_collision = true
+
+[node name="Mat_WaxCandle_Body_0" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.280
+sides = 10
+position = Vector3(-0.100, 0.140, -0.050)
+
+[node name="Mat_FlameHint_Small_0" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(-0.100, 0.325, -0.050)
+
+[node name="Mat_WaxCandle_Body_1" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.220
+sides = 10
+position = Vector3(0.050, 0.110, 0.040)
+
+[node name="Mat_FlameHint_Small_1" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(0.050, 0.265, 0.040)
+
+[node name="Mat_WaxCandle_Body_2" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.340
+sides = 10
+position = Vector3(0.160, 0.170, -0.020)
+
+[node name="Mat_FlameHint_Small_2" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(0.160, 0.385, -0.020)
+
+[node name="Mat_WaxCandle_Body_3" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.180
+sides = 10
+position = Vector3(-0.200, 0.090, 0.100)
+
+[node name="Mat_FlameHint_Small_3" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(-0.200, 0.225, 0.100)
+
+[node name="Mat_MetalCandleTray" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.300
+height = 0.040
+sides = 16
+position = Vector3(0.000, 0.020, 0.000)

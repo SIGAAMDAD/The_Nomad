@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cnc5g7imqn5s2"]
+
+[ext_resource type="PackedScene" uid="uid://dvouffdk4q1lm" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/organic_pieces/GalakasMidCity_ORG_Barrel_Rounded_01.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://b0p1n6kukl2al" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/organic_pieces/GalakasMidCity_ORG_CeramicJug_Rounded_01.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://jwnnplqb5noh" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/organic_pieces/GalakasMidCity_ORG_RopeCoil_01.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://qddmxiqm2f5e" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/organic_pieces/GalakasMidCity_ORG_HangingSign_Rounded_01.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cyaie734qbs2c" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/organic_pieces/GalakasMidCity_ORG_ClothRoll_Draped_01.tscn" id="5"]
+
+[node name="GalakasMidCity_ORG_Sampler_RoundedPieces_01" type="Node3D" unique_id=1855340509]
+
+[node name="GalakasMidCity_ORG_Barrel_Rounded_01" parent="." unique_id=1932659245 instance=ExtResource("1")]
+
+[node name="GalakasMidCity_ORG_CeramicJug_Rounded_01" parent="." unique_id=1209202825 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="GalakasMidCity_ORG_RopeCoil_01" parent="." unique_id=866681018 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+
+[node name="GalakasMidCity_ORG_HangingSign_Rounded_01" parent="." unique_id=141954958 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="GalakasMidCity_ORG_ClothRoll_Draped_01" parent="." unique_id=1206338062 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)

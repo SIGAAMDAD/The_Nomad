@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://b1khayqd2x7d8"]
+
+[ext_resource type="Material" uid="uid://irpeviim482n" path="res://Assets/Textures/Environment/Surfaces/WeatheredWood/WeatheredWood_Material.res" id="1_6fo1f"]
+[ext_resource type="Material" uid="uid://c74qov3rreqmb" path="res://Assets/Textures/Environment/Surfaces/DirtyGlass/DirtyGlass_Material.res" id="1_lyqd5"]
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="1_v7vwp"]
+[ext_resource type="Material" uid="uid://8vob6sbo6x44" path="res://Assets/Textures/Environment/Surfaces/WeatheredBrownWoodPlank/WeatheredBrownWoodPlank_Material.tres" id="2_ln11u"]
+
+[node name="GalakasMidCity_PIECE_WindowDirty_Wide_01" type="CSGCombiner3D" unique_id=207809062]
+use_collision = true
+metadata/category = "piece/window"
+metadata/v13_note = "Rounded CSG pass: cylinder mullions, hinge pins, rivets, sphere nail heads."
+
+[node name="Mat_GlassDirty_WindowPane_SingleFlatInset" type="CSGBox3D" parent="." unique_id=404286267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0.057)
+size = Vector3(1.55, 1.05, 0.045)
+material = ExtResource("1_lyqd5")
+
+[node name="Mat_WoodBeam_WindowMullion_RoundVertical" type="CSGCylinder3D" parent="." unique_id=1554074417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0.065)
+radius = 0.035
+height = 1.21
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodBeam_WindowMullion_RoundHorizontal" type="CSGCylinder3D" parent="." unique_id=1263602868]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.525, 0.07)
+radius = 0.035
+height = 1.71
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodShutter_WindowFrame_BackPlate" type="CSGBox3D" parent="." unique_id=265245346]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0.04)
+size = Vector3(1.77, 1.27, 0.06)
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodBeam_WindowSideFrame_Round_-0.85" type="CSGCylinder3D" parent="." unique_id=598929819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.855, 0.525, 0.085)
+radius = 0.045
+height = 1.31
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodBeam_WindowSideFrame_Round_+0.85" type="CSGCylinder3D" parent="." unique_id=1318652505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.855, 0.525, 0.085)
+radius = 0.045
+height = 1.31
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodBeam_WindowTopBottomFrame_Round_-0.08" type="CSGCylinder3D" parent="." unique_id=628863239]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, -0.08, 0.09)
+radius = 0.045
+height = 1.81
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodBeam_WindowTopBottomFrame_Round_+1.13" type="CSGCylinder3D" parent="." unique_id=386566575]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1.13, 0.09)
+radius = 0.045
+height = 1.81
+sides = 10
+material = ExtResource("2_ln11u")
+
+[node name="Mat_WoodShutter_Left_UnevenBoardPanel" type="CSGBox3D" parent="." unique_id=2037882651]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.101, 0.525, 0.064)
+size = Vector3(0.36, 1.23, 0.06)
+material = ExtResource("1_6fo1f")
+
+[node name="Mat_MetalHinge_WindowShutter_Left_TopRoundPin" type="CSGCylinder3D" parent="." unique_id=984504843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.905, 0.756, 0.095)
+radius = 0.027
+height = 0.22
+sides = 10
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalHinge_WindowShutter_Left_BottomRoundPin" type="CSGCylinder3D" parent="." unique_id=1835543982]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.905, 0.294, 0.095)
+radius = 0.027
+height = 0.22
+sides = 10
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalRivet_WindowShutter_Left_026" type="CSGSphere3D" parent="." unique_id=2077320503]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.995, 0.2625, 0.11)
+radius = 0.026
+radial_segments = 8
+rings = 4
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalRivet_WindowShutter_Left_078" type="CSGSphere3D" parent="." unique_id=812092780]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.995, 0.7875, 0.11)
+radius = 0.026
+radial_segments = 8
+rings = 4
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_WoodShutter_Right_UnevenBoardPanel" type="CSGBox3D" parent="." unique_id=2058660499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.097, 0.525, 0.074)
+size = Vector3(0.36, 1.23, 0.06)
+material = ExtResource("1_6fo1f")
+
+[node name="Mat_MetalHinge_WindowShutter_Right_TopRoundPin" type="CSGCylinder3D" parent="." unique_id=1605942742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.905, 0.756, 0.095)
+radius = 0.027
+height = 0.22
+sides = 10
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalHinge_WindowShutter_Right_BottomRoundPin" type="CSGCylinder3D" parent="." unique_id=18541147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.905, 0.294, 0.095)
+radius = 0.027
+height = 0.22
+sides = 10
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalRivet_WindowShutter_Right_026" type="CSGSphere3D" parent="." unique_id=149417223]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.995, 0.2625, 0.11)
+radius = 0.026
+radial_segments = 8
+rings = 4
+material = ExtResource("1_v7vwp")
+
+[node name="Mat_MetalRivet_WindowShutter_Right_078" type="CSGSphere3D" parent="." unique_id=874444679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.995, 0.7875, 0.11)
+radius = 0.026
+radial_segments = 8
+rings = 4
+material = ExtResource("1_v7vwp")

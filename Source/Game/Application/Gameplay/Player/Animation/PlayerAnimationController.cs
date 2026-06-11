@@ -44,6 +44,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		private static readonly StringName BackpedalAnimationName = "Backpedal";
 		private static readonly StringName StrafeLeftRunAnimationName = "StrafeLeftRun";
 		private static readonly StringName StrafeRightRunAnimationName = "StrafeRightRun";
+		private static readonly StringName Running180AnimationName = "Running180";
 		private static readonly StringName SuddenStopAnimationName = "SuddenStop";
 
 		private static readonly StringName LandSoftAnimationName = "LandSoft";
@@ -157,6 +158,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 					break;
 
 				case PlayerLocomotionCue.Reverse:
+					TravelOneShotLocomotion( Running180AnimationName );
 					break;
 			}
 		}
@@ -164,6 +166,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		private void OnDirectionalLocomotion( in PlayerDirectionalLocomotionEventArgs args )
 		{
 			if ( !args.IsMoving ) {
+				return;
+			}
+
+			if ( IsOneShotLocomotionActive() ) {
 				return;
 			}
 
@@ -185,7 +191,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 					break;
 
 				case PlayerStateId.Moving:
-					SetAnimationStatus( PlayerAnimationState.Running );
+					if ( _activeState != PlayerAnimationState.Running ) {
+						SetAnimationStatus( PlayerAnimationState.Running );
+					}
 					break;
 
 				case PlayerStateId.RestingAtCheckpoint:
@@ -223,6 +231,23 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			_playback.Travel( resolvedAnimation );
 			_activeLocomotionAnimation = resolvedAnimation;
 			_activeState = PlayerAnimationState.Running;
+		}
+
+		private void TravelOneShotLocomotion( StringName animationName )
+		{
+			if ( !CanTravelTo( animationName ) ) {
+				return;
+			}
+
+			_playback.Travel( animationName );
+			_activeLocomotionAnimation = animationName;
+			_activeState = PlayerAnimationState.Running;
+		}
+
+		private bool IsOneShotLocomotionActive()
+		{
+			StringName currentNode = _playback.GetCurrentNode();
+			return currentNode == Running180AnimationName || currentNode == SuddenStopAnimationName;
 		}
 
 		private bool CanTravelTo( StringName animationName )

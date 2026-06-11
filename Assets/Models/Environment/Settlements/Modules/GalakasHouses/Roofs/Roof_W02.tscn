@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://cuyb8aw62moi6"]
+
+[ext_resource type="Material" uid="uid://c75xja64vflxi" path="res://Assets/Textures/Environment/Surfaces/RoofTiles/RoofTiles_Material.res" id="1_apce6"]
+[ext_resource type="Material" uid="uid://dmc0aswcr13fp" path="res://Assets/Textures/Environment/Surfaces/MetalPlate/MetalPlate_Material.res" id="2_yxagp"]
+
+[node name="Roof0" type="Node3D" unique_id=1116911360]
+
+[node name="Roof" type="CSGCombiner3D" parent="." unique_id=1872643209]
+
+[node name="TileBox0" type="CSGBox3D" parent="Roof" unique_id=234684745]
+transform = Transform3D(-4.3711385e-08, -0.7071067, -0.7071067, 0, 0.7071067, -0.7071067, 0.9999999, -3.0908616e-08, -3.0908616e-08, -2.532268, 3.4284317, -3.7424374)
+size = Vector3(19.824, 12.753, 0.079)
+material = ExtResource("1_apce6")
+
+[node name="TileBox1" type="CSGBox3D" parent="Roof" unique_id=322006334]
+transform = Transform3D(-4.3711385e-08, 0.7071066, -0.7071066, 0, 0.7071066, 0.7071066, 0.9999999, 3.0908613e-08, -3.0908613e-08, -16.810587, 3.3472688, -4.410738)
+size = Vector3(21.21, 12.376, 0.079)
+material = ExtResource("1_apce6")
+
+[node name="TileBox2" type="CSGBox3D" parent="Roof" unique_id=973662770]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.7071067, 0.7071067, 0, -0.7071067, 0.7071067, -9.640538, 3.1644995, 0.8324952)
+size = Vector3(25.392, 11.978, 0.079)
+material = ExtResource("1_apce6")
+
+[node name="TileBox3" type="CSGBox3D" parent="Roof" unique_id=510937415]
+transform = Transform3D(-4.3711385e-08, -0.9999999, 0, 0.7071067, -3.0908616e-08, -0.7071067, 0.7071067, -3.0908616e-08, 0.7071067, -9.771345, 3.3637033, -8.187851)
+size = Vector3(12.476074, 25.738651, 0.07861328)
+material = ExtResource("1_apce6")
+
+[node name="Cutout0" type="CSGBox3D" parent="Roof" unique_id=472734272]
+transform = Transform3D(0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0, 1, 1.1227684, 5.6798086, -4.446295)
+operation = 2
+size = Vector3(14.245964, 8.243256, 21.76587)
+material = ExtResource("1_apce6")
+
+[node name="Cutout1" type="CSGBox3D" parent="Roof" unique_id=1314165913]
+transform = Transform3D(0.7071067, -0.7071067, 0, 0.7071067, 0.7071067, 0, 0, 0, 1, -20.518126, 5.9253006, -4.533148)
+operation = 2
+size = Vector3(13.9758, 8.703461, 21.592163)
+material = ExtResource("1_apce6")
+
+[node name="Cutout2" type="CSGBox3D" parent="Roof" unique_id=1769604415]
+transform = Transform3D(-3.0908616e-08, -3.0908616e-08, -1, -0.7071067, 0.7071067, 0, 0.7071067, 0.7071067, -4.371139e-08, -8.49756, 5.6632967, 4.1780415)
+operation = 2
+size = Vector3(14.009262, 8.118835, 27.660446)
+material = ExtResource("1_apce6")
+
+[node name="Cutout3" type="CSGBox3D" parent="Roof" unique_id=1318497028]
+transform = Transform3D(-3.0908616e-08, 3.0908616e-08, -1, 0.7071067, 0.7071067, 0, 0.7071067, -0.7071067, -4.371139e-08, -9.3821, 5.1346745, -12.229886)
+operation = 2
+size = Vector3(15.533066, 8.10907, 29.429527)
+material = ExtResource("1_apce6")
+
+[node name="Chimney" type="CSGCylinder3D" parent="Roof" unique_id=368468584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.26456, 6.0206566, -1.2090049)
+height = 7.4156494
+material = ExtResource("2_yxagp")
+
+[node name="SubShaft" type="CSGCylinder3D" parent="Roof/Chimney" unique_id=1713806832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.725647, 0)
+radius = 0.814
+height = 3.89563
+material = ExtResource("2_yxagp")
+
+[node name="Chimney2" type="CSGCylinder3D" parent="Roof" unique_id=1528273692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.546104, 5.973961, -1.25502)
+height = 7.479126
+material = ExtResource("2_yxagp")
+
+[node name="SubShaft" type="CSGCylinder3D" parent="Roof/Chimney2" unique_id=351435563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.725647, 0)
+radius = 0.814
+height = 3.89563
+material = ExtResource("2_yxagp")

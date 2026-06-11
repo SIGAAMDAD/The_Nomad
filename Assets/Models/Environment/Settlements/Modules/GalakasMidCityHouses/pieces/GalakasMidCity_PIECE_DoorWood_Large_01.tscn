@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://co0t37sevkjkf"]
+
+[node name="GalakasMidCity_PIECE_DoorWood_Large_01" type="CSGCombiner3D" unique_id=724472457]
+use_collision = true
+
+[node name="Mat_WoodDoor_LargeDoorPanel_NoCollision" type="CSGBox3D" parent="." unique_id=12888283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.325, 0)
+size = Vector3(1.45, 2.65, 0.09)
+
+[node name="Mat_MetalLatch_DoorHandle_NoCollision" type="CSGBox3D" parent="." unique_id=39182921]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.25, -0.08)
+size = Vector3(0.22, 0.08, 0.08)
+
+[node name="Mat_MetalLatch_DoorHingeTop_NoCollision" type="CSGBox3D" parent="." unique_id=1876986137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67, 2.05, -0.08)
+size = Vector3(0.08, 0.28, 0.08)
+
+[node name="Mat_MetalLatch_DoorHingeBottom_NoCollision" type="CSGBox3D" parent="." unique_id=1192673133]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.67, 0.65, -0.08)
+size = Vector3(0.08, 0.28, 0.08)

@@ -1,0 +1,65 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_TRAV_Balcony_LongService_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v22_traversal_prop = "Long rear/side service balcony or catwalk lip. Default outward direction is local -Z."
+metadata/root_policy = "Reusable prop root is CSGCombiner3D."
+
+[node name="Mat_WoodBalcony_LongFloorPlankSlab" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(4.400, 0.160, 0.920)
+position = Vector3(0.000, 0.000, -0.520)
+[node name="Mat_WoodBeam_BackLedger_AttachesToWall" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(4.650, 0.220, 0.160)
+position = Vector3(0.000, 0.080, -0.040)
+[node name="Mat_WoodBeam_FrontRail_Horizontal" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(4.550, 0.140, 0.120)
+position = Vector3(0.000, 0.900, -1.000)
+[node name="Mat_WoodBeam_LeftEndRail" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.120, 0.140, 0.850)
+position = Vector3(-2.220, 0.900, -0.520)
+[node name="Mat_WoodBeam_RightEndRail" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.120, 0.140, 0.850)
+position = Vector3(2.220, 0.900, -0.520)
+[node name="Mat_WoodPost_LeftFront_Rounded" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 0.950
+sides = 10
+position = Vector3(-2.080, 0.480, -0.980)
+[node name="Mat_WoodPost_CenterFront_Rounded" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 0.950
+sides = 10
+position = Vector3(0.000, 0.480, -0.980)
+[node name="Mat_WoodPost_RightFront_Rounded" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 0.950
+sides = 10
+position = Vector3(2.080, 0.480, -0.980)
+[node name="Mat_MetalBracket_LeftDiagonal" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.100, 0.100, 1.000)
+position = Vector3(-1.500, -0.280, -0.500)
+rotation = Vector3(0.640000, 0.000000, 0.180000)
+[node name="Mat_MetalBracket_RightDiagonal" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.100, 0.100, 1.000)
+position = Vector3(1.500, -0.280, -0.500)
+rotation = Vector3(0.640000, 0.000000, -0.180000)
+[node name="Mat_WoodPlank_UnevenPatch_01" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.880, 0.050, 0.840)
+position = Vector3(-1.350, 0.110, -0.530)
+rotation = Vector3(0.000000, 0.030000, 0.000000)
+[node name="Mat_WoodPlank_UnevenPatch_02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(1.050, 0.050, 0.840)
+position = Vector3(1.100, 0.115, -0.530)
+rotation = Vector3(0.000000, -0.050000, 0.000000)

@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Doors/GalakasMidCity_DOOR_WoodDouble_Shopfront_JoinedFrame_CompleteClosedBoxes_UVReady.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodDoor/DoubleDoor_LeafPanel_UVClosedBox.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodBeam/DoubleDoor_CenterAstragal_UVClosedBox.gltf" id="mesh_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/Metal/DoubleDoor_HingePinVertical_UVClosedCylinderY.gltf" id="mesh_4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodKnob/DoubleDoor_RoundKnob_UVClosedSphere.gltf" id="mesh_5"]
+
+[node name="GalakasMidCity_DOOR_WoodDouble_Shopfront_CompleteFaces_UVReady_01" type="Node3D"]
+
+[node name="DoorFrame" type="Node3D" parent="."]
+
+[node name="DoorPanels" type="Node3D" parent="."]
+
+[node name="Hardware" type="Node3D" parent="."]
+
+[node name="Hinges" type="Node3D" parent="."]
+
+[node name="Mat_WoodBeam_JoinedDoorFrame_UShape_CompleteMesh_UVReady" parent="DoorFrame" instance=ExtResource("mesh_1")]
+
+[node name="Mat_WoodDoor_LeftLeaf_CompleteBox_UVReady" parent="DoorPanels" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.740000, 1.760000, -0.100000)
+
+[node name="Mat_WoodDoor_RightLeaf_CompleteBox_UVReady" parent="DoorPanels" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.740000, 1.760000, -0.100000)
+
+[node name="Mat_WoodBeam_CenterAstragal_CompleteBox_UVReady" parent="DoorFrame" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 1.780000, -0.220000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_LeftDoorPair_0_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -1.580000, 1.100000, -0.250000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_LeftDoorPair_1_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -1.580000, 2.880000, -0.250000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_RightDoorPair_0_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.580000, 1.100000, -0.250000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_RightDoorPair_1_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.580000, 2.880000, -0.250000)
+
+[node name="Mat_WoodKnob_LeftLeafRoundHandle_CompleteSphere_UVReady" parent="Hardware" instance=ExtResource("mesh_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.180000, 1.780000, -0.250000)
+
+[node name="Mat_WoodKnob_RightLeafRoundHandle_CompleteSphere_UVReady" parent="Hardware" instance=ExtResource("mesh_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.180000, 1.780000, -0.250000)

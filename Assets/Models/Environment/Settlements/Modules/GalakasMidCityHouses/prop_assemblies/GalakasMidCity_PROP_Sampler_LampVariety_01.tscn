@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://v17103665a" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_TableOil_01.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://v17103664a" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_WallSconce_Caged_01.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://v17103664b" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_HangingChain_01.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://v17103664c" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_StreetPost_Single_01.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://v17103664d" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_StreetPost_Double_01.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://v17103664e" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_UnderAwning_01.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://v17103664f" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_CandleCluster_01.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://v171036650" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_Brazier_CoalBucket_01.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://v171036651" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/lamps/GalakasMidCity_LAMP_WindowLantern_01.tscn" id="9"]
+
+[node name="GalakasMidCity_PROP_Sampler_LampVariety_01" type="Node3D"]
+metadata/category = "sampler"
+metadata/note = "Preview layout for lamp variants only; lamps are CSG geometry, no light nodes assigned."
+
+[node name="LampVariant_01" parent="." instance=ExtResource("1")]
+position = Vector3(-2.325, 0.000, 0.000)
+
+[node name="LampVariant_02" parent="." instance=ExtResource("2")]
+position = Vector3(-0.775, 0.000, 0.000)
+
+[node name="LampVariant_03" parent="." instance=ExtResource("3")]
+position = Vector3(0.775, 0.000, 0.000)
+
+[node name="LampVariant_04" parent="." instance=ExtResource("4")]
+position = Vector3(2.325, 0.000, 0.000)
+
+[node name="LampVariant_05" parent="." instance=ExtResource("5")]
+position = Vector3(-2.325, 0.000, 1.550)
+
+[node name="LampVariant_06" parent="." instance=ExtResource("6")]
+position = Vector3(-0.775, 0.000, 1.550)
+
+[node name="LampVariant_07" parent="." instance=ExtResource("7")]
+position = Vector3(0.775, 0.000, 1.550)
+
+[node name="LampVariant_08" parent="." instance=ExtResource("8")]
+position = Vector3(2.325, 0.000, 1.550)
+
+[node name="LampVariant_09" parent="." instance=ExtResource("9")]
+position = Vector3(-2.325, 0.000, 3.100)

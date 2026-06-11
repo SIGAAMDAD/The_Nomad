@@ -1,0 +1,62 @@
+[gd_scene load_steps=1 format=3 uid="uid://v17103664a"]
+
+[node name="GalakasMidCity_LAMP_WallSconce_Caged_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "lamp"
+metadata/material_note = "geometry only; assign emissive/glass/metal materials later."
+use_collision = true
+
+[node name="Mat_MetalSconce_WallPlate" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.160, 0.500, 0.050)
+position = Vector3(0.000, 1.250, 0.020)
+
+[node name="Mat_MetalSconce_Arm" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.440
+sides = 8
+position = Vector3(0.000, 1.270, -0.220)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_MetalSconce_ArmKnuckle" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.055
+radial_segments = 10
+rings = 6
+position = Vector3(0.000, 1.270, -0.430)
+
+[node name="Mat_GlassDirty_LanternBody" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.150
+height = 0.340
+sides = 12
+position = Vector3(0.000, 1.150, -0.480)
+
+[node name="Mat_MetalLamp_CagedTop" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.170
+height = 0.040
+sides = 12
+position = Vector3(0.000, 1.340, -0.480)
+
+[node name="Mat_MetalLamp_CagedBottom" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.170
+height = 0.040
+sides = 12
+position = Vector3(0.000, 0.960, -0.480)
+
+[node name="Mat_MetalLamp_CageVertical_-0.11" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.012
+height = 0.340
+sides = 6
+position = Vector3(-0.110, 1.150, -0.480)
+
+[node name="Mat_MetalLamp_CageVertical_+0.11" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.012
+height = 0.340
+sides = 6
+position = Vector3(0.110, 1.150, -0.480)

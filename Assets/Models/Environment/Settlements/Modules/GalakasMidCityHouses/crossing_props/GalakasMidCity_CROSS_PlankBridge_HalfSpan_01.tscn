@@ -1,0 +1,81 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_CROSS_PlankBridge_HalfSpan_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v21_traversal = "Building-to-building half-span plank bridge. Default attaches to wall at local Z=0 and projects along local -Z toward a neighbor."
+metadata/category = "cross_building_traversal"
+metadata/climbable = "true"
+metadata/requires_neighbor_context = "true"
+
+[node name="Mat_WoodBridge_WallLedger" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(2.500, 0.220, 0.180)
+position = Vector3(0.000, 0.000, 0.040)
+
+[node name="Mat_WoodBridge_Plank_00" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.420, 0.120, 3.600)
+position = Vector3(-0.840, -0.040, -1.800)
+
+[node name="Mat_WoodBridge_Plank_01" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.420, 0.120, 3.600)
+position = Vector3(-0.280, -0.020, -1.800)
+rotation = Vector3(0.000, 0.010, 0.000)
+
+[node name="Mat_WoodBridge_Plank_02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.420, 0.120, 3.600)
+position = Vector3(0.280, -0.060, -1.800)
+rotation = Vector3(0.000, -0.016, 0.000)
+
+[node name="Mat_WoodBridge_Plank_03" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.420, 0.120, 3.600)
+position = Vector3(0.840, -0.030, -1.800)
+
+[node name="Mat_WoodBridge_Crossbrace_Near" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 2.400
+sides = 10
+position = Vector3(0.000, 0.120, -0.450)
+rotation = Vector3(0.000, 0.000, 1.571)
+
+[node name="Mat_WoodBridge_Crossbrace_Far" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 2.400
+sides = 10
+position = Vector3(0.000, 0.080, -3.150)
+rotation = Vector3(0.000, 0.000, 1.571)
+
+[node name="Mat_RopeSideGuide_Left" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 3.600
+sides = 8
+position = Vector3(-1.250, 0.520, -1.800)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_RopeSideGuide_Right" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 3.600
+sides = 8
+position = Vector3(1.250, 0.520, -1.800)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_WoodBridge_SidePeg_LeftNear" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.060
+height = 0.550
+sides = 10
+position = Vector3(-1.250, 0.340, -0.300)
+
+[node name="Mat_WoodBridge_SidePeg_RightNear" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.060
+height = 0.550
+sides = 10
+position = Vector3(1.250, 0.340, -0.300)

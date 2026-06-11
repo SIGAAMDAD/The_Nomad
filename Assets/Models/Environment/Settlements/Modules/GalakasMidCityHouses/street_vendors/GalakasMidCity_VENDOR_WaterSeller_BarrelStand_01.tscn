@@ -1,0 +1,104 @@
+[gd_scene format=3 uid="uid://i2j1hyqdu1w"]
+
+[node name="GalakasMidCity_VENDOR_WaterSeller_BarrelStand_01" type="CSGCombiner3D" unique_id=253476960]
+use_collision = true
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "street_vendor"
+
+[node name="Mat_WoodStand_WaterSeller_Base" type="CSGBox3D" parent="." unique_id=517492832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
+size = Vector3(1.8, 0.25, 0.8)
+
+[node name="Mat_WoodBarrel_LargeWaterBarrel_Center_Body" type="CSGCylinder3D" parent="." unique_id=866102161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+radius = 0.42
+height = 0.9
+sides = 16
+
+[node name="Mat_MetalBand_LargeWaterBarrel_Center_TopHoop" type="CSGCylinder3D" parent="." unique_id=375682244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.988, 0)
+radius = 0.435
+height = 0.04
+sides = 16
+
+[node name="Mat_MetalBand_LargeWaterBarrel_Center_BottomHoop" type="CSGCylinder3D" parent="." unique_id=2003717872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.448, 0)
+radius = 0.435
+height = 0.04
+sides = 16
+
+[node name="Mat_WoodBarrel_SmallWaterBarrel_Left_Body" type="CSGCylinder3D" parent="." unique_id=1444650098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.56, 0.05)
+radius = 0.28
+height = 0.62
+sides = 16
+
+[node name="Mat_MetalBand_SmallWaterBarrel_Left_TopHoop" type="CSGCylinder3D" parent="." unique_id=701557902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.7584, 0.05)
+radius = 0.295
+height = 0.04
+sides = 16
+
+[node name="Mat_MetalBand_SmallWaterBarrel_Left_BottomHoop" type="CSGCylinder3D" parent="." unique_id=1318531649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.3864, 0.05)
+radius = 0.295
+height = 0.04
+sides = 16
+
+[node name="Mat_WoodBarrel_SmallWaterBarrel_Right_Body" type="CSGCylinder3D" parent="." unique_id=1016573520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.56, 0.05)
+radius = 0.28
+height = 0.62
+sides = 16
+
+[node name="Mat_MetalBand_SmallWaterBarrel_Right_TopHoop" type="CSGCylinder3D" parent="." unique_id=1992614244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.7584, 0.05)
+radius = 0.295
+height = 0.04
+sides = 16
+
+[node name="Mat_MetalBand_SmallWaterBarrel_Right_BottomHoop" type="CSGCylinder3D" parent="." unique_id=1683288938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.3864, 0.05)
+radius = 0.295
+height = 0.04
+sides = 16
+
+[node name="Mat_MetalBucket_HangingBucket_Left" type="CSGCylinder3D" parent="." unique_id=431430544]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.45, -0.35)
+radius = 0.18
+height = 0.25
+sides = 12
+
+[node name="Mat_MetalBucket_HangingBucket_Right" type="CSGCylinder3D" parent="." unique_id=37063524]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.45, -0.35)
+radius = 0.18
+height = 0.25
+sides = 12
+
+[node name="Mat_WoodSign_WaterSeller_SmallBoard" type="CSGBox3D" parent="." unique_id=246432561]
+transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, 0, 1.45, -0.45)
+size = Vector3(1, 0.08, 0.35)
+
+[node name="Mat_WoodBarrel_RoundedWaterBarrel_Main" type="CSGCylinder3D" parent="." unique_id=1986350985]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
+radius = 0.42
+height = 0.9
+sides = 18
+
+[node name="Mat_MetalBand_WaterBarrel_TopHoop" type="CSGCylinder3D" parent="." unique_id=1717627250]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+radius = 0.435
+height = 0.04
+sides = 18
+
+[node name="Mat_MetalBand_WaterBarrel_BottomHoop" type="CSGCylinder3D" parent="." unique_id=1154724270]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31, 0)
+radius = 0.435
+height = 0.04
+sides = 18
+
+[node name="Mat_MetalTap_RoundSpout" type="CSGCylinder3D" parent="." unique_id=1022197042]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.43, 0.55, 0)
+radius = 0.035
+height = 0.36
+sides = 10

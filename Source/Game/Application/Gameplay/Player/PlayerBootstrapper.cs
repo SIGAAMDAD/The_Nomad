@@ -32,6 +32,7 @@ using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Input.Interfaces;
+using Nomad.Game.Application.Gameplay.Player.Movement;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

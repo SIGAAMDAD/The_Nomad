@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" uid="uid://cxsyf7ucf01ld" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/midcity_low_hedge.obj" id="1_mesh"]
+
+[node name="midcity_low_hedge" type="MeshInstance3D"]
+mesh = ExtResource("1_mesh")
+cast_shadow = 1

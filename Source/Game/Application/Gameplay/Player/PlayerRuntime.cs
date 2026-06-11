@@ -20,7 +20,7 @@ using Nomad.Game.Application.Gameplay.Player.Inventory;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Application.Gameplay.Player.Stats;
-using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Application.Gameplay.Player.Movement;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {

@@ -1,0 +1,51 @@
+[gd_scene load_steps=1 format=3 uid="uid://be0744d22107cf28cfa3"]
+
+[node name="GalakasMidCity_INT_Bench_Long_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodBench_Seat" type="CSGBox3D" parent="."]
+size = Vector3(2.2, 0.15, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+
+[node name="Mat_WoodBench_Leg_-0.95_A" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.55, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.275, -0.12)
+
+[node name="Mat_WoodBench_Leg_-0.95_B" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.55, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.275, 0.12)
+
+[node name="Mat_WoodBench_Leg_0.95_A" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.55, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.275, -0.12)
+
+[node name="Mat_WoodBench_Leg_0.95_B" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.55, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.275, 0.12)
+
+
+[node name="Mat_WoodFurniture_RoundLeg_-0.32_-0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.21, -0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_+0.32_-0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.21, -0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_-0.32_+0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.21, 0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_+0.32_+0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.21, 0.22)

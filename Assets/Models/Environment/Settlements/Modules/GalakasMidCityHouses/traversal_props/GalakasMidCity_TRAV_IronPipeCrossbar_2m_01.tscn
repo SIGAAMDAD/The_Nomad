@@ -1,0 +1,32 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_TRAV_IronPipeCrossbar_2m_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v22_traversal_prop = "Climbable horizontal pipe/rail, useful as side-wall grip or balcony-to-window crossing. Default lies along local X on the wall plane."
+metadata/root_policy = "Reusable prop root is CSGCombiner3D."
+
+[node name="Mat_MetalPipe_HorizontalGrip_2m" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 2.050
+sides = 12
+position = Vector3(0.000, 0.000, -0.060)
+rotation = Vector3(0.000000, 0.000000, 1.570796)
+[node name="Mat_MetalMount_Left" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.200, 0.200, 0.100)
+position = Vector3(-1.040, 0.000, -0.015)
+[node name="Mat_MetalMount_Right" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.200, 0.200, 0.100)
+position = Vector3(1.040, 0.000, -0.015)
+[node name="Mat_MetalRivet_Left" type="CSGSphere3D" parent="."]
+radius = 0.040
+radial_segments = 8
+rings = 4
+position = Vector3(-1.040, 0.080, -0.080)
+[node name="Mat_MetalRivet_Right" type="CSGSphere3D" parent="."]
+radius = 0.040
+radial_segments = 8
+rings = 4
+position = Vector3(1.040, 0.080, -0.080)

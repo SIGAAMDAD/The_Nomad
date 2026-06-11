@@ -1,0 +1,97 @@
+# Galakas MidCity generated MTL
+newmtl Mat_BrickWall
+Kd 0.46 0.20 0.13
+Ks 0.02 0.02 0.02
+Ns 8
+
+newmtl Mat_SootyBrick
+Kd 0.27 0.14 0.11
+Ks 0.01 0.01 0.01
+Ns 4
+
+newmtl Mat_PlasterWall
+Kd 0.66 0.61 0.52
+Ks 0.02 0.02 0.02
+Ns 10
+
+newmtl Mat_WornPlaster
+Kd 0.55 0.52 0.46
+Ks 0.01 0.01 0.01
+Ns 6
+
+newmtl Mat_WoodDark
+Kd 0.22 0.13 0.08
+Ks 0.03 0.02 0.01
+Ns 12
+
+newmtl Mat_WoodWeathered
+Kd 0.37 0.27 0.18
+Ks 0.02 0.02 0.02
+Ns 9
+
+newmtl Mat_RoofTileDirty
+Kd 0.33 0.29 0.23
+Ks 0.02 0.02 0.02
+Ns 8
+
+newmtl Mat_StoneFoundation
+Kd 0.44 0.42 0.38
+Ks 0.04 0.04 0.04
+Ns 16
+
+newmtl Mat_GlassDirty
+Kd 0.08 0.11 0.14
+Ks 0.35 0.35 0.35
+Ns 40
+d 0.70
+
+newmtl Mat_MetalDark
+Kd 0.10 0.10 0.11
+Ks 0.25 0.24 0.22
+Ns 45
+
+newmtl Mat_MetalRust
+Kd 0.25 0.11 0.06
+Ks 0.12 0.10 0.08
+Ns 18
+
+newmtl Mat_ClothCanvas
+Kd 0.51 0.43 0.31
+Ks 0.01 0.01 0.01
+Ns 5
+
+newmtl Mat_ClothWashed
+Kd 0.63 0.57 0.48
+Ks 0.01 0.01 0.01
+Ns 4
+
+newmtl Mat_ClothDark
+Kd 0.22 0.22 0.26
+Ks 0.01 0.01 0.01
+Ns 5
+
+newmtl Mat_Leather
+Kd 0.20 0.11 0.06
+Ks 0.05 0.04 0.03
+Ns 18
+
+newmtl Mat_Paper
+Kd 0.75 0.67 0.48
+Ks 0.00 0.00 0.00
+Ns 2
+
+newmtl Mat_Ceramic
+Kd 0.55 0.47 0.38
+Ks 0.12 0.10 0.09
+Ns 25
+
+newmtl Mat_Produce
+Kd 0.37 0.33 0.12
+Ks 0.02 0.02 0.01
+Ns 8
+
+newmtl Mat_CutoutGuide
+Kd 0.12 0.20 0.30
+Ks 0.00 0.00 0.00
+Ns 2
+d 0.25

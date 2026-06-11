@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://b4candbg78loc"]
+
+[node name="GalakasMidCity_VENDOR_ButcherFishTable_01" type="CSGCombiner3D" unique_id=1646320461]
+use_collision = true
+metadata/category = "street_vendor"
+
+[node name="Mat_WoodCounter_ButcherFishTable_Top" type="CSGBox3D" parent="." unique_id=1960052328]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0)
+size = Vector3(2.3, 0.12, 0.9)
+
+[node name="Mat_WoodBeam_ButcherFishTable_Leg_-1_-1" type="CSGBox3D" parent="." unique_id=2122756011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.97, 0.43, -0.27)
+size = Vector3(0.16, 0.86, 0.16)
+
+[node name="Mat_WoodBeam_ButcherFishTable_Leg_-1_1" type="CSGBox3D" parent="." unique_id=1950586098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.97, 0.43, 0.27)
+size = Vector3(0.16, 0.86, 0.16)
+
+[node name="Mat_WoodBeam_ButcherFishTable_Leg_1_-1" type="CSGBox3D" parent="." unique_id=360364326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.97, 0.43, -0.27)
+size = Vector3(0.16, 0.86, 0.16)
+
+[node name="Mat_WoodBeam_ButcherFishTable_Leg_1_1" type="CSGBox3D" parent="." unique_id=1072336636]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.97, 0.43, 0.27)
+size = Vector3(0.16, 0.86, 0.16)
+
+[node name="Mat_WoodBeam_ButcherFishTable_FrontBrace" type="CSGBox3D" parent="." unique_id=292150860]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.37)
+size = Vector3(2.3, 0.12, 0.12)
+
+[node name="Mat_WoodBeam_ButcherFishTable_BackBrace" type="CSGBox3D" parent="." unique_id=466337442]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.37)
+size = Vector3(2.3, 0.12, 0.12)
+
+[node name="Mat_StoneSlab_ButcherTop" type="CSGBox3D" parent="." unique_id=747201302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98, 0)
+size = Vector3(2.1, 0.08, 0.75)
+
+[node name="Mat_FishMeat_DisplayProxy_1" type="CSGBox3D" parent="." unique_id=1521955382]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 1.07, -0.08)
+size = Vector3(0.36, 0.08, 0.16)
+
+[node name="Mat_FishMeat_DisplayProxy_2" type="CSGBox3D" parent="." unique_id=1593452892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.07, -0.08)
+size = Vector3(0.36, 0.08, 0.16)
+
+[node name="Mat_FishMeat_DisplayProxy_3" type="CSGBox3D" parent="." unique_id=78208666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.07, -0.08)
+size = Vector3(0.36, 0.08, 0.16)
+
+[node name="Mat_FishMeat_DisplayProxy_4" type="CSGBox3D" parent="." unique_id=1047070767]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1.07, -0.08)
+size = Vector3(0.36, 0.08, 0.16)
+
+[node name="Mat_MetalHookRack_Backbar" type="CSGBox3D" parent="." unique_id=677395573]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0.35)
+size = Vector3(2.1, 0.08, 0.08)
+
+[node name="Mat_MetalHook_HangingHook_1" type="CSGBox3D" parent="." unique_id=1185552675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 1.48, 0.35)
+size = Vector3(0.04, 0.28, 0.04)
+
+[node name="Mat_MetalHook_HangingHook_2" type="CSGBox3D" parent="." unique_id=2121077896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.48, 0.35)
+size = Vector3(0.04, 0.28, 0.04)
+
+[node name="Mat_MetalHook_HangingHook_3" type="CSGBox3D" parent="." unique_id=1443696303]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1.48, 0.35)
+size = Vector3(0.04, 0.28, 0.04)
+
+[node name="Mat_MetalHook_HangingHook_4" type="CSGBox3D" parent="." unique_id=1500708675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.48, 0.35)
+size = Vector3(0.04, 0.28, 0.04)
+
+[node name="Mat_MetalHook_HangingHook_5" type="CSGBox3D" parent="." unique_id=1671793405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 1.48, 0.35)
+size = Vector3(0.04, 0.28, 0.04)

@@ -1,0 +1,45 @@
+[gd_scene load_steps=1 format=3 uid="uid://v171036657"]
+
+[node name="GalakasMidCity_CLIMB_WindowLedge_Deep_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "climbing_prop"
+metadata/climbable = "true"
+metadata/placement_note = "Place against building exterior wall. Default forward/depth faces are tuned for front facades."
+use_collision = true
+
+[node name="Mat_StoneClimbLedge_MainDeepSill" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(1.450, 0.160, 0.340)
+position = Vector3(0.000, 0.080, 0.000)
+
+[node name="Mat_StoneClimbLedge_RoundedFrontLip" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 1.450
+sides = 12
+position = Vector3(0.000, 0.170, -0.180)
+rotation = Vector3(0.000, 0.000, 1.571)
+
+[node name="Mat_StoneClimbLedge_LeftCorbel" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.180, 0.320, 0.280)
+position = Vector3(-0.550, -0.160, 0.000)
+
+[node name="Mat_StoneClimbLedge_RightCorbel" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.180, 0.320, 0.280)
+position = Vector3(0.550, -0.160, 0.000)
+
+[node name="Mat_StoneClimbLedge_WornLeftCorner" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.080
+radial_segments = 8
+rings = 6
+position = Vector3(-0.720, 0.160, -0.180)
+
+[node name="Mat_StoneClimbLedge_WornRightCorner" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.080
+radial_segments = 8
+rings = 6
+position = Vector3(0.720, 0.160, -0.180)

@@ -1,0 +1,70 @@
+[gd_scene load_steps=1 format=3 uid="uid://v171036650"]
+
+[node name="GalakasMidCity_LAMP_Brazier_CoalBucket_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "lamp"
+metadata/material_note = "geometry only; assign emissive/glass/metal materials later."
+use_collision = true
+
+[node name="Mat_MetalBrazier_Bowl" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.380
+height = 0.320
+sides = 16
+position = Vector3(0.000, 0.450, 0.000)
+
+[node name="Mat_MetalBrazier_Rim" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.420
+height = 0.050
+sides = 16
+position = Vector3(0.000, 0.640, 0.000)
+
+[node name="Mat_MetalBrazier_Leg_-0.22_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.450
+sides = 8
+position = Vector3(-0.220, 0.225, -0.220)
+
+[node name="Mat_MetalBrazier_Leg_+0.22_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.450
+sides = 8
+position = Vector3(0.220, 0.225, -0.220)
+
+[node name="Mat_MetalBrazier_Leg_-0.22_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.450
+sides = 8
+position = Vector3(-0.220, 0.225, 0.220)
+
+[node name="Mat_MetalBrazier_Leg_+0.22_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.450
+sides = 8
+position = Vector3(0.220, 0.225, 0.220)
+
+[node name="Mat_CoalGlowHint_RoundedCoal_0" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.080
+radial_segments = 8
+rings = 4
+position = Vector3(-0.080, 0.680, 0.040)
+
+[node name="Mat_CoalGlowHint_RoundedCoal_1" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.080
+radial_segments = 8
+rings = 4
+position = Vector3(0.080, 0.680, -0.030)
+
+[node name="Mat_CoalGlowHint_RoundedCoal_2" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.080
+radial_segments = 8
+rings = 4
+position = Vector3(0.000, 0.680, 0.120)

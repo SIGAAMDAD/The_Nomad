@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://c6sq2pdx1t1rq"]
+
+[ext_resource type="Material" uid="uid://cv4kj0sljkyro" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Material.res" id="1_c70ww"]
+[ext_resource type="Material" uid="uid://belsdm713ps62" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Material.tres" id="2_1737j"]
+
+[node name="WallSegmentLeft" type="Node3D" unique_id=1057079440]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1930150606]
+material_override = ExtResource("1_c70ww")
+
+[node name="Body" type="CSGBox3D" parent="CSGCombiner3D" unique_id=166790619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 19.493752)
+size = Vector3(100, 100, 40)
+material = ExtResource("2_1737j")
+
+[node name="Joint" type="CSGBox3D" parent="CSGCombiner3D" unique_id=126844841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.68403, 27.406845, 41.451607)
+size = Vector3(20, 66.11298, 75.26639)
+material = ExtResource("2_1737j")
+
+[node name="Slant" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1435963854]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, -50.688805, 69.01715, 48.086792)
+size = Vector3(20, 31.86668, 55.671516)
+material = ExtResource("2_1737j")
+
+[node name="Ramp" type="CSGBox3D" parent="CSGCombiner3D" unique_id=752573251]
+transform = Transform3D(1, 0, 0, 0, 0.6712297, 0.74124944, 0, -0.74124944, 0.6712297, -0.10070419, 3.416985, 31.075739)
+size = Vector3(99.87292, 40.00273, 19.681057)
+material = ExtResource("2_1737j")
+
+[node name="Railing" type="CSGBox3D" parent="CSGCombiner3D" unique_id=337058809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07822609, 101.34896, 38.976196)
+size = Vector3(100, 3, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar0" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1898425998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.01834, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar1" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1725173274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.829926, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1550351239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.2425, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar3" type="CSGBox3D" parent="CSGCombiner3D" unique_id=970072373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.6156, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar4" type="CSGBox3D" parent="CSGCombiner3D" unique_id=318241515]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.948124, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar5" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2093636381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.019772, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar6" type="CSGBox3D" parent="CSGCombiner3D" unique_id=829879576]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.796988, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar7" type="CSGBox3D" parent="CSGCombiner3D" unique_id=968598421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8728199, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar8" type="CSGBox3D" parent="CSGCombiner3D" unique_id=557072557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.286807, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar9" type="CSGBox3D" parent="CSGCombiner3D" unique_id=654056542]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.575552, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar10" type="CSGBox3D" parent="CSGCombiner3D" unique_id=142789669]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.07591, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar11" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1888620489]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.054983, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar12" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1106837401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.356243, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar13" type="CSGBox3D" parent="CSGCombiner3D" unique_id=308435750]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.754128, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")
+
+[node name="Pillar14" type="CSGBox3D" parent="CSGCombiner3D" unique_id=910003743]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.0013, 103.30678, 38.991905)
+size = Vector3(2, 1, 1)
+material = ExtResource("2_1737j")

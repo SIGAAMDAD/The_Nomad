@@ -1,0 +1,30 @@
+[gd_scene load_steps=1 format=3 uid="uid://b3681ad42af73c977abd"]
+
+[node name="GalakasMidCity_INT_Rug_Rectangular_01" type="CSGCombiner3D"]
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_FabricRug_RectangularRug_Main" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(2.4, 0.035, 1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+
+[node name="Mat_FabricRug_BorderFront" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(2.45, 0.04, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.66)
+
+[node name="Mat_FabricRug_BorderBack" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(2.45, 0.04, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.66)
+
+[node name="Mat_FabricRug_BorderLeft" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.08, 0.04, 1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18, 0.05, 0)
+
+[node name="Mat_FabricRug_BorderRight" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.08, 0.04, 1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.18, 0.05, 0)

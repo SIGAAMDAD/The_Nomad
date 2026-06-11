@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cvdrp44wfomdv"]
+
+[node name="GalakasMidCity_BEAM_Vertical_3p6m_01" type="CSGCombiner3D" unique_id=556027496]
+use_collision = true
+
+[node name="Mat_WoodBeam_Vertical_3p6m_01" type="CSGBox3D" parent="." unique_id=1003824321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+use_collision = true
+size = Vector3(0.18, 3.6, 0.18)

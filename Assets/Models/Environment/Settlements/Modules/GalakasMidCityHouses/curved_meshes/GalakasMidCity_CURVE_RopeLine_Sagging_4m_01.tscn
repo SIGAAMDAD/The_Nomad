@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[sub_resource type="Curve3D" id="Curve3D_1"]
+bake_interval = 0.120
+up_vector_enabled = true
+_data = {
+"points": PackedVector3Array(0.000, 0.000, 0.000, 0.750, -0.100, 0.000, -2.000, 0.000, 0.000, -0.650, 0.080, 0.000, 0.650, 0.080, 0.000, 0.000, -0.300, 0.000, -0.750, -0.100, 0.000, 0.000, 0.000, 0.000, 2.000, 0.000, 0.000),
+"tilts": PackedFloat32Array(0.000, 0.000, 0.000)
+}
+
+[node name="GalakasMidCity_CURVE_RopeLine_Sagging_4m_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v18_curved_mesh = "CSGPolygon3D MODE_PATH + Path3D. Separate reusable curve mesh scene for details that should render as actual curved geometry."
+metadata/placement_note = "Sagging rope line/market cord; lower-poly path for exterior repetition."
+
+[node name="Path3D_1" type="Path3D" parent="."]
+curve = SubResource("Curve3D_1")
+
+[node name="Mat_Rope_CSGPolygonPath_SaggingClothesLine" type="CSGPolygon3D" parent="."]
+use_collision = false
+mode = 2
+path_node = NodePath("../Path3D_1")
+path_interval = 0.100
+path_interval_type = 0
+path_rotation = 2
+path_rotation_accurate = true
+path_simplify_angle = 2.000
+polygon = PackedVector2Array(0.026, 0.000, 0.016, 0.020, -0.006, 0.025, -0.023, 0.011, -0.023, -0.011, -0.006, -0.025, 0.016, -0.020)

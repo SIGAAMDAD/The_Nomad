@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://v171036652" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_Ladder_Wood_3p6m_01.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://v171036653" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_Ladder_Wood_5m_01.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://v171036654" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_Drainpipe_Metal_4p8m_01.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://v171036655" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_Drainpipe_Metal_BentCorner_01.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://v171036656" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_WallHandholds_BrickChips_01.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://v171036657" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_WindowLedge_Deep_01.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://v171036658" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_TimberBeam_HorizontalRail_4m_01.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://v17103666a" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_SignBracket_Overhang_01.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://v17103665a" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_RopeLine_Knotted_4m_01.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://v17103665b" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_BalconyEdge_GripRail_01.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://v17103665c" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_AwningFrame_Climbable_01.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://v17103665d" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/climbing_props/GalakasMidCity_CLIMB_ChimneyGripStraps_01.tscn" id="12"]
+
+[node name="GalakasMidCity_PROP_Sampler_ClimbingProps_01" type="Node3D"]
+metadata/category = "sampler"
+metadata/note = "Preview layout for building climbing props."
+
+[node name="ClimbProp_01" parent="." instance=ExtResource("1")]
+position = Vector3(-3.150, 0.000, 0.000)
+
+[node name="ClimbProp_02" parent="." instance=ExtResource("2")]
+position = Vector3(-1.050, 0.000, 0.000)
+
+[node name="ClimbProp_03" parent="." instance=ExtResource("3")]
+position = Vector3(1.050, 0.000, 0.000)
+
+[node name="ClimbProp_04" parent="." instance=ExtResource("4")]
+position = Vector3(3.150, 0.000, 0.000)
+
+[node name="ClimbProp_05" parent="." instance=ExtResource("5")]
+position = Vector3(-3.150, 0.000, 1.250)
+
+[node name="ClimbProp_06" parent="." instance=ExtResource("6")]
+position = Vector3(-1.050, 0.000, 1.250)
+
+[node name="ClimbProp_07" parent="." instance=ExtResource("7")]
+position = Vector3(1.050, 0.000, 1.250)
+
+[node name="ClimbProp_08" parent="." instance=ExtResource("8")]
+position = Vector3(3.150, 0.000, 1.250)
+
+[node name="ClimbProp_09" parent="." instance=ExtResource("9")]
+position = Vector3(-3.150, 0.000, 2.500)
+
+[node name="ClimbProp_10" parent="." instance=ExtResource("10")]
+position = Vector3(-1.050, 0.000, 2.500)
+
+[node name="ClimbProp_11" parent="." instance=ExtResource("11")]
+position = Vector3(1.050, 0.000, 2.500)
+
+[node name="ClimbProp_12" parent="." instance=ExtResource("12")]
+position = Vector3(3.150, 0.000, 2.500)

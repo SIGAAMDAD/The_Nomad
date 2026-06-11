@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://du8tgx7wpn0ct"]
+
+[ext_resource type="Material" uid="uid://cgumdpf0t4qr0" path="res://Assets/Materials/OldWood.tres" id="1_ykith"]
+
+[node name="BarStool" type="Node3D" unique_id=695131626]
+
+[node name="Seat" type="CSGCylinder3D" parent="." unique_id=2132624516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2528538, 3.5968423, 0)
+radius = 0.7944336
+height = 0.17492676
+sides = 16
+material = ExtResource("1_ykith")
+
+[node name="Leg0" type="CSGCylinder3D" parent="Seat" unique_id=2037507149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2528538, -1.8207247, -0.3849178)
+radius = 0.10205078
+height = 3.5532227
+sides = 4
+material = ExtResource("1_ykith")
+
+[node name="Leg1" type="CSGCylinder3D" parent="Seat" unique_id=1387255361]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2528538, -1.8256075, 0.42947948)
+radius = 0.10205078
+height = 3.543457
+sides = 4
+material = ExtResource("1_ykith")
+
+[node name="Leg2" type="CSGCylinder3D" parent="Seat" unique_id=8393675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5102528, -1.8112032, 0.018468618)
+radius = 0.10205078
+height = 3.5722656
+sides = 4
+material = ExtResource("1_ykith")
+
+[node name="Ring" type="CSGTorus3D" parent="Seat" unique_id=1573746194]
+transform = Transform3D(1.1708652, 0, 0, 0, 1, 0, 0, 0, 1.0438057, 0, -0.8785949, 0)
+outer_radius = 0.62
+sides = 12
+ring_sides = 5
+material = ExtResource("1_ykith")

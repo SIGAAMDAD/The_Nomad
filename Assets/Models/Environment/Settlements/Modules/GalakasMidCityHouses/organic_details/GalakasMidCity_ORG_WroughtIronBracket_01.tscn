@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bg30pd0rryc0r"]
+
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="1_511h3"]
+
+[node name="GalakasMidCity_ORG_WroughtIronBracket_01" type="CSGCombiner3D" unique_id=97482838]
+use_collision = true
+metadata/category = "organic_detail/hardware"
+
+[node name="Mat_MetalBracket_BackVerticalRod" type="CSGCylinder3D" parent="." unique_id=296125212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+radius = 0.035
+height = 0.85
+sides = 10
+material = ExtResource("1_511h3")
+
+[node name="Mat_MetalBracket_TopHorizontalRod" type="CSGCylinder3D" parent="." unique_id=668412750]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.82, 0)
+radius = 0.035
+height = 0.65
+sides = 10
+material = ExtResource("1_511h3")
+
+[node name="Mat_MetalBracket_DiagonalFlatBrace" type="CSGBox3D" parent="." unique_id=155335200]
+transform = Transform3D(0.707, 0.707, 0, -0.707, 0.707, 0, 0, 0, 1, 0.26, 0.55, 0)
+size = Vector3(0.68, 0.055, 0.055)
+material = ExtResource("1_511h3")
+
+[node name="Mat_MetalRivet_BracketWallRivet_16" type="CSGSphere3D" parent="." unique_id=2023404640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, -0.04)
+radius = 0.045
+radial_segments = 10
+rings = 5
+material = ExtResource("1_511h3")
+
+[node name="Mat_MetalRivet_BracketWallRivet_74" type="CSGSphere3D" parent="." unique_id=1044792730]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -0.04)
+radius = 0.045
+radial_segments = 10
+rings = 5
+material = ExtResource("1_511h3")

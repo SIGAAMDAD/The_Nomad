@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" uid="uid://fjj4m6tnypxv" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/grass_dry_tuft_a.obj" id="1_mesh"]
+
+[node name="grass_dry_tuft_a" type="MeshInstance3D"]
+mesh = ExtResource("1_mesh")
+cast_shadow = 1

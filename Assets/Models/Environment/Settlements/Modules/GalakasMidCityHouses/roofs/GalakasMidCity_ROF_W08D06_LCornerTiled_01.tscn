@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://ddsfm14eaa4mf"]
+
+[node name="GalakasMidCity_ROF_W08D06_LCornerTiled_01" type="CSGCombiner3D" unique_id=220859397]
+use_collision = true
+metadata/roof_type = "l_corner_tiled_v10_same_rotation_cutout_slabs"
+metadata/size_code = "W08D06"
+metadata/construction = "Roof tile slabs are flat CSGBox3D panels with broad X/Z faces and thin Y thickness. Subtractive CSGBox3D cutters use operation = 2 and have exactly the same rotation as the roof tile slab they trim. Cutters are thin slabs placed just above/intersecting the roof plane, then offset along the plane to shave excess. No random yawed cutters. No triangular CSG primitives."
+metadata/material_policy = "No materials assigned. CSG node names specify intended material target: Mat_RoofTile, Mat_WoodBeam, Mat_Metal, etc."
+metadata/cutout_policy = "Every Cutout_* node has the same Euler rotation as its target Mat_RoofTile_CSGBox_* node. The only differences are size and position. This matches the prototype workflow where roof boxes are trimmed by boxes sitting directly over the roof plane."
+
+[node name="Roof" type="CSGCombiner3D" parent="." unique_id=1387101353]
+use_collision = true
+
+[node name="Mat_RoofTile_CSGBox_MainWing_FrontSlope_XNeg45" type="CSGBox3D" parent="Roof" unique_id=1943257903]
+transform = Transform3D(1, 0, 0, 0, 0.7071069, 0.70710665, 0, -0.70710665, 0.7071069, 0, 1.875, -4.635)
+use_collision = true
+size = Vector3(16.9, 0.14, 5.503301)
+
+[node name="Mat_RoofTile_CSGBox_MainWing_BackSlope_XPos45" type="CSGBox3D" parent="Roof" unique_id=1461655246]
+transform = Transform3D(1, 0, 0, 0, 0.7071069, -0.70710665, 0, 0.70710665, 0.7071069, 0, 1.875, -0.885)
+use_collision = true
+size = Vector3(16.9, 0.14, 5.503301)
+
+[node name="Cutout_MainWingFront_InternalCornerValleyTrim_SameRotation_AbovePlane" type="CSGBox3D" parent="Roof" unique_id=787234111]
+transform = Transform3D(1, 0, 0, 0, 0.7071069, 0.70710665, 0, -0.70710665, 0.7071069, 3.52, 1.91, -3.135)
+operation = 2
+use_collision = true
+size = Vector3(4.48, 0.3, 3.026815)
+
+[node name="Cutout_MainWingBack_InternalCornerValleyTrim_SameRotation_AbovePlane" type="CSGBox3D" parent="Roof" unique_id=1092930567]
+transform = Transform3D(1, 0, 0, 0, 0.7071069, -0.70710665, 0, 0.70710665, 0.7071069, 3.52, 1.91, -2.385)
+operation = 2
+use_collision = true
+size = Vector3(4.48, 0.3, 3.026815)
+
+[node name="Mat_RoofTile_CSGBox_RightWing_LeftSlope_ZPos45" type="CSGBox3D" parent="Roof" unique_id=2078982815]
+transform = Transform3D(0.7071069, -0.70710665, 0, 0.70710665, 0.7071069, 0, 0, 0, 1, 2.255, 2.225, 0)
+use_collision = true
+size = Vector3(6.49325, 0.14, 12.9)
+
+[node name="Mat_RoofTile_CSGBox_RightWing_RightSlope_ZNeg45" type="CSGBox3D" parent="Roof" unique_id=107467662]
+transform = Transform3D(0.7071069, 0.70710665, 0, -0.70710665, 0.7071069, 0, 0, 0, 1, 6.705, 2.225, 0)
+use_collision = true
+size = Vector3(6.49325, 0.14, 12.9)
+
+[node name="Cutout_RightWingLeft_InternalCornerValleyTrim_SameRotation_AbovePlane" type="CSGBox3D" parent="Roof" unique_id=3693110]
+transform = Transform3D(0.7071069, -0.70710665, 0, 0.70710665, 0.7071069, 0, 0, 0, 1, 4.035, 2.26, -2.4)
+operation = 2
+use_collision = true
+size = Vector3(3.571288, 0.3, 3.36)
+
+[node name="Cutout_RightWingRight_InternalCornerValleyTrim_SameRotation_AbovePlane" type="CSGBox3D" parent="Roof" unique_id=1588603419]
+transform = Transform3D(0.7071069, 0.70710665, 0, -0.70710665, 0.7071069, 0, 0, 0, 1, 4.925, 2.26, -2.4)
+operation = 2
+use_collision = true
+size = Vector3(3.571288, 0.3, 3.36)
+
+[node name="RoofTrim" type="CSGCombiner3D" parent="." unique_id=227838817]
+use_collision = true
+
+[node name="Mat_WoodBeam_MainWing_RidgeCap_FlatBox" type="CSGBox3D" parent="RoofTrim" unique_id=1993647735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, -2.76)
+use_collision = true
+size = Vector3(17.02, 0.18, 0.18)
+
+[node name="Mat_WoodBeam_RightWing_RidgeCap_FlatBox" type="CSGBox3D" parent="RoofTrim" unique_id=1133307556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.48, 4.5, 0)
+use_collision = true
+size = Vector3(0.18, 0.18, 13.02)
+
+[node name="Mat_WoodBeam_EaveTrim_MainFront" type="CSGBox3D" parent="RoofTrim" unique_id=328719749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -6.51)
+use_collision = true
+size = Vector3(17.08, 0.16, 0.16)
+
+[node name="Mat_WoodBeam_EaveTrim_MainBack" type="CSGBox3D" parent="RoofTrim" unique_id=883128232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.99)
+use_collision = true
+size = Vector3(17.08, 0.16, 0.16)
+
+[node name="Mat_WoodBeam_EaveTrim_RightWing_Left" type="CSGBox3D" parent="RoofTrim" unique_id=1780012568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03, 0.05, 0)
+use_collision = true
+size = Vector3(0.16, 0.16, 13.08)
+
+[node name="Mat_WoodBeam_EaveTrim_RightWing_Right" type="CSGBox3D" parent="RoofTrim" unique_id=1296904104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.93, 0.05, 0)
+use_collision = true
+size = Vector3(0.16, 0.16, 13.08)

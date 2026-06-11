@@ -1,0 +1,45 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_TRAV_WallHookPair_RopeAnchor_01" type="CSGCombiner3D"]
+use_collision = false
+metadata/v22_traversal_prop = "Small rope/line anchor pair for visualizing where clotheslines and handlines attach. Default faces wall at local z=0."
+metadata/root_policy = "Reusable prop root is CSGCombiner3D."
+
+[node name="Mat_MetalPlate_RopeAnchor_Left" type="CSGBox3D" parent="."]
+size = Vector3(0.220, 0.160, 0.055)
+position = Vector3(-0.220, 0.000, -0.015)
+[node name="Mat_MetalPlate_RopeAnchor_Right" type="CSGBox3D" parent="."]
+size = Vector3(0.220, 0.160, 0.055)
+position = Vector3(0.220, 0.000, -0.015)
+[node name="Mat_MetalHook_Left_CurvedApproxBase" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.300
+sides = 10
+position = Vector3(-0.220, -0.050, -0.130)
+rotation = Vector3(1.570796, 0.000000, 0.000000)
+[node name="Mat_MetalHook_Right_CurvedApproxBase" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.300
+sides = 10
+position = Vector3(0.220, -0.050, -0.130)
+rotation = Vector3(1.570796, 0.000000, 0.000000)
+[node name="Mat_MetalRivet_LeftTop" type="CSGSphere3D" parent="."]
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(-0.220, 0.060, -0.052)
+[node name="Mat_MetalRivet_LeftBottom" type="CSGSphere3D" parent="."]
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(-0.220, -0.060, -0.052)
+[node name="Mat_MetalRivet_RightTop" type="CSGSphere3D" parent="."]
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(0.220, 0.060, -0.052)
+[node name="Mat_MetalRivet_RightBottom" type="CSGSphere3D" parent="."]
+radius = 0.035
+radial_segments = 8
+rings = 4
+position = Vector3(0.220, -0.060, -0.052)

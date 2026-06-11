@@ -1,0 +1,49 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_TRAV_DropLadder_Folded_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v22_traversal_prop = "Folded/drop ladder mounted under balcony edges or upper walls. Default attaches to wall at local z=0."
+metadata/root_policy = "Reusable prop root is CSGCombiner3D."
+
+[node name="Mat_WoodLadder_LeftRail_Folded" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.040
+height = 1.800
+sides = 8
+position = Vector3(-0.280, -0.720, -0.100)
+[node name="Mat_WoodLadder_RightRail_Folded" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.040
+height = 1.800
+sides = 8
+position = Vector3(0.280, -0.720, -0.100)
+[node name="Mat_WoodLadder_Rung_01" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.720, 0.080, 0.080)
+position = Vector3(0.000, -0.080, -0.100)
+[node name="Mat_WoodLadder_Rung_02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.720, 0.080, 0.080)
+position = Vector3(0.000, -0.480, -0.100)
+[node name="Mat_WoodLadder_Rung_03" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.720, 0.080, 0.080)
+position = Vector3(0.000, -0.880, -0.100)
+[node name="Mat_WoodLadder_Rung_04" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.720, 0.080, 0.080)
+position = Vector3(0.000, -1.280, -0.100)
+[node name="Mat_MetalHingeBar_Top" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.860, 0.100, 0.100)
+position = Vector3(0.000, 0.180, -0.060)
+[node name="Mat_MetalBolt_Left" type="CSGSphere3D" parent="."]
+radius = 0.045
+radial_segments = 8
+rings = 4
+position = Vector3(-0.360, 0.190, -0.110)
+[node name="Mat_MetalBolt_Right" type="CSGSphere3D" parent="."]
+radius = 0.045
+radial_segments = 8
+rings = 4
+position = Vector3(0.360, 0.190, -0.110)

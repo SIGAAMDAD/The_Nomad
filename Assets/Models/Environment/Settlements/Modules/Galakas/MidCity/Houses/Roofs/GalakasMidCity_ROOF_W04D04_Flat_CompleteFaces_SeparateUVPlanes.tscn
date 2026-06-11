@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/RoofTile/W04D04_FlatRoofSlab_UVClosedBox.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/StoneFoundation/StoneFoundation_Box_9x0p55x0p25_e122770190.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/StoneFoundation/StoneFoundation_Box_9x0p55x0p25_e122770190.gltf" id="mesh_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/StoneFoundation/StoneFoundation_Box_0p25x0p55x9_86fc830529.gltf" id="mesh_4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/StoneFoundation/StoneFoundation_Box_0p25x0p55x9_86fc830529.gltf" id="mesh_5"]
+
+[node name="GalakasMidCity_ROOF_W04D04_Flat_CompleteFaces_SeparateUVPlanes" type="Node3D"]
+
+[node name="RoofPlanes" type="Node3D" parent="."]
+
+[node name="RoofTrim" type="Node3D" parent="."]
+
+[node name="Mat_RoofTile_FlatRoofMain_CompleteBox_UVReady" parent="RoofPlanes" instance=ExtResource("mesh_1")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.150000, 0.000000)
+
+[node name="Mat_StoneFoundation_FlatRoofParapetFront_CompleteBox_UVReady" parent="RoofTrim" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.550000, -4.520000)
+
+[node name="Mat_StoneFoundation_FlatRoofParapetBack_CompleteBox_UVReady" parent="RoofTrim" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.550000, 4.520000)
+
+[node name="Mat_StoneFoundation_FlatRoofParapetLeft_CompleteBox_UVReady" parent="RoofTrim" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -4.520000, 0.550000, 0.000000)
+
+[node name="Mat_StoneFoundation_FlatRoofParapetRight_CompleteBox_UVReady" parent="RoofTrim" instance=ExtResource("mesh_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 4.520000, 0.550000, 0.000000)

@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Material" path="../Materials/VineLeafMaterial.tres" id="vine"]
+
+[sub_resource type="QuadMesh" id="Quad"]
+size = Vector2(1, 1)
+
+[node name="Vine_HangingLong" type="Node3D"]
+
+[node name="HangingVine_01" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.197908, 0, 0.149526, 0, 1.8, 0, -0.0299289, 0, 0.988758, -0.0335863, -0.9, 0.0181548)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+
+[node name="HangingVine_02" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.228532, 0, 0.152042, 0, 1.8, 0, -0.0351553, 0, 0.988374, 0.102994, -0.9, 0.00234196)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+
+[node name="HangingVine_03" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.232695, 0, 0.0374785, 0, 1.8, 0, -0.00872719, 0, 0.999297, -0.0190618, -0.9, -0.000857592)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+
+[node name="HangingVine_04" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.226002, 0, 0.0362896, 0, 1.8, 0, -0.00820692, 0, 0.999341, 0.0339739, -0.9, -0.0200894)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+
+[node name="HangingVine_05" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.172347, 0, 0.0239859, 0, 1.8, 0, -0.00413509, 0, 0.999712, -0.134054, -0.9, 0.025552)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+
+[node name="HangingVine_06" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.158311, 0, 0.15003, 0, 1.8, 0, -0.0240233, 0, 0.988681, -0.0920535, -0.9, -0.0251389)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("vine")
+

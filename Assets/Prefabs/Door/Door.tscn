@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://qpqfdi65n3qy"]
+
+[node name="Door" type="Node3D" unique_id=867679883]
+
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="." unique_id=1488364375]

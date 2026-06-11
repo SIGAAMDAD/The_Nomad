@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://dvouffdk4q1lm"]
+
+[node name="GalakasMidCity_ORG_Barrel_Rounded_01" type="Node3D" unique_id=452196986]
+
+[node name="Mat_WoodBarrel_Body_TaperedCylinder_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=733022957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.46, 0)
+radius = 0.38
+height = 0.92
+sides = 18
+
+[node name="Mat_MetalBand_BarrelHoop_Y0.1_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=993078856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+radius = 0.39
+height = 0.035
+sides = 18
+
+[node name="Mat_MetalBand_BarrelHoop_Y0.46_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1480398715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.46, 0)
+radius = 0.39
+height = 0.035
+sides = 18
+
+[node name="Mat_MetalBand_BarrelHoop_Y0.82_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1751563724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
+radius = 0.39
+height = 0.035
+sides = 18
+
+[node name="Mat_WoodBarrel_TopDisk_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=399020247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.94, 0)
+radius = 0.34
+height = 0.045
+sides = 18
+
+[node name="Mat_MetalRivet_BarrelPlug_CSGSphere_NoCollision" type="CSGSphere3D" parent="." unique_id=1498466730]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.63, -0.34)
+radius = 0.035
+radial_segments = 16
+rings = 8

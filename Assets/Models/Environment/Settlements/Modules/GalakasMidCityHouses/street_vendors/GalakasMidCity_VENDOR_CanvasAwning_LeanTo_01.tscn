@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://luggyge5jxvb"]
+
+[node name="GalakasMidCity_VENDOR_CanvasAwning_LeanTo_01" type="CSGCombiner3D" unique_id=1451504730]
+use_collision = true
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "street_vendor"
+metadata/material_note = "cloth canvas plus dark wood beams"
+
+[node name="Mat_ClothCanvasAwning_SlopedPlane" type="CSGBox3D" parent="." unique_id=720798635]
+transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, 0, 2.25, -0.35)
+size = Vector3(3.2, 0.08, 1.45)
+
+[node name="Mat_WoodBeam_Awning_BackPole_-1.45" type="CSGBox3D" parent="." unique_id=755113602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.45, 1.15, 0.25)
+size = Vector3(0.12, 2.3, 0.12)
+
+[node name="Mat_WoodBeam_Awning_FrontPole_-1.45" type="CSGBox3D" parent="." unique_id=237838414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.45, 0.925, -1)
+size = Vector3(0.12, 1.85, 0.12)
+
+[node name="Mat_WoodBeam_Awning_BackPole_1.45" type="CSGBox3D" parent="." unique_id=1758914929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.15, 0.25)
+size = Vector3(0.12, 2.3, 0.12)
+
+[node name="Mat_WoodBeam_Awning_FrontPole_1.45" type="CSGBox3D" parent="." unique_id=2125473285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 0.925, -1)
+size = Vector3(0.12, 1.85, 0.12)
+
+[node name="Mat_WoodBeam_Awning_FrontRail" type="CSGBox3D" parent="." unique_id=2031277608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -1)
+size = Vector3(3.2, 0.12, 0.12)
+
+[node name="Mat_WoodBeam_Awning_BackRail" type="CSGBox3D" parent="." unique_id=835413884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.35, 0.35)
+size = Vector3(3.2, 0.12, 0.12)
+
+[node name="Mat_WoodBeam_Awning_LeftRafter" type="CSGBox3D" parent="." unique_id=1474669134]
+transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, -1.45, 2.1, -0.35)
+size = Vector3(0.12, 0.12, 1.5)
+
+[node name="Mat_WoodBeam_Awning_RightRafter" type="CSGBox3D" parent="." unique_id=101328347]
+transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, 1.45, 2.1, -0.35)
+size = Vector3(0.12, 0.12, 1.5)
+
+[node name="Mat_ClothAwning_RolledFrontEdge_Cylinder" type="CSGCylinder3D" parent="." unique_id=2138103072]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1.72, -0.86)
+radius = 0.07
+height = 2.25
+sides = 14
+
+[node name="Mat_WoodPole_RoundAwningPole_-1.0" type="CSGCylinder3D" parent="." unique_id=1207705157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.825, -0.85)
+radius = 0.055
+height = 1.65
+sides = 12
+
+[node name="Mat_RopeTie_AwningKnot_-1.0" type="CSGSphere3D" parent="." unique_id=1489208853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.55, -0.85)
+radius = 0.06
+radial_segments = 10
+rings = 5
+
+[node name="Mat_WoodPole_RoundAwningPole_+1.0" type="CSGCylinder3D" parent="." unique_id=1214535109]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.825, -0.85)
+radius = 0.055
+height = 1.65
+sides = 12
+
+[node name="Mat_RopeTie_AwningKnot_+1.0" type="CSGSphere3D" parent="." unique_id=517810044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.55, -0.85)
+radius = 0.06
+radial_segments = 10
+rings = 5

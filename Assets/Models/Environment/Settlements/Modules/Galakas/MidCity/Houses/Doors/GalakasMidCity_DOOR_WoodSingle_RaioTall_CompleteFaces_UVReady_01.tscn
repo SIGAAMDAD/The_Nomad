@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Doors/GalakasMidCity_DOOR_WoodSingle_RaioTall_JoinedFrame_CompleteClosedBoxes_UVReady.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodDoor/SingleDoor_RaioTall_Panel_UVClosedBox.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/Metal/SingleDoor_HingePinVertical_UVClosedCylinderY.gltf" id="mesh_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodKnob/SingleDoor_RoundKnob_UVClosedSphere.gltf" id="mesh_4"]
+
+[node name="GalakasMidCity_DOOR_WoodSingle_RaioTall_CompleteFaces_UVReady_01" type="Node3D"]
+
+[node name="DoorFrame" type="Node3D" parent="."]
+
+[node name="DoorPanels" type="Node3D" parent="."]
+
+[node name="Hardware" type="Node3D" parent="."]
+
+[node name="Hinges" type="Node3D" parent="."]
+
+[node name="Mat_WoodBeam_JoinedDoorFrame_UShape_CompleteMesh_UVReady" parent="DoorFrame" instance=ExtResource("mesh_1")]
+
+[node name="Mat_WoodDoor_SinglePanel_CompleteBox_UVReady" parent="DoorPanels" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 1.700000, -0.100000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_LeftPair_0_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.920000, 1.080000, -0.230000)
+
+[node name="Mat_MetalHinge_VerticalCylinder_LeftPair_1_Complete360_UVReady" parent="Hinges" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.920000, 2.750000, -0.230000)
+
+[node name="Mat_WoodKnob_RoundHandle_CompleteSphere_UVReady" parent="Hardware" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.550000, 1.720000, -0.240000)

@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Windows/GalakasMidCity_WINDOW_TallMerchant_CompleteFaces_UVReady_01_JoinedWindowFrame_CompleteClosedBoxes_UVReady.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/GlassDirty/GalakasMidCity_WINDOW_TallMerchant_CompleteFaces_UVReady_01_GlassPane_UVClosedBox.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodBeam/GalakasMidCity_WINDOW_TallMerchant_CompleteFaces_UVReady_01_SideShutter_UVClosedBox.gltf" id="mesh_3"]
+
+[node name="GalakasMidCity_WINDOW_TallMerchant_CompleteFaces_UVReady_01" type="Node3D"]
+
+[node name="Glass" type="Node3D" parent="."]
+
+[node name="Shutters" type="Node3D" parent="."]
+
+[node name="WindowFrame" type="Node3D" parent="."]
+
+[node name="Mat_WoodBeam_JoinedWindowFrame_CompleteMesh_UVReady" parent="WindowFrame" instance=ExtResource("mesh_1")]
+
+[node name="Mat_GlassDirty_GlassPane_CompleteBox_UVReady" parent="Glass" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, -0.050000)
+
+[node name="Mat_WoodShutter_Left_CompleteBox_UVReady" parent="Shutters" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -1.005000, 0.000000, -0.020000)
+
+[node name="Mat_WoodShutter_Right_CompleteBox_UVReady" parent="Shutters" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.005000, 0.000000, -0.020000)

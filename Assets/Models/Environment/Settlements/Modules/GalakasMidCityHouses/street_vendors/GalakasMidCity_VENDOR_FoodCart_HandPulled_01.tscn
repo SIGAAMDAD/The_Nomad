@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://bv22bhlv6ptlo"]
+
+[ext_resource type="Material" uid="uid://8vob6sbo6x44" path="res://Assets/Textures/Environment/Surfaces/WeatheredBrownWoodPlank/WeatheredBrownWoodPlank_Material.tres" id="1_f2ex6"]
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="2_7x24b"]
+
+[node name="GalakasMidCity_VENDOR_FoodCart_HandPulled_01" type="CSGCombiner3D" unique_id=2055015405]
+use_collision = true
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "street_vendor"
+metadata/grid_hint = "small movable cart"
+
+[node name="Mat_WoodCart_Body" type="CSGBox3D" parent="." unique_id=1829577932]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0, 0.93796146, 1.0746869)
+size = Vector3(1.7, 0.55, 3.1751952)
+material = ExtResource("1_f2ex6")
+
+[node name="Mat_WoodCart_BedInterior" type="CSGBox3D" parent="." unique_id=1419687479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98, 0)
+size = Vector3(1.55, 0.08, 0.8)
+
+[node name="Mat_WoodCart_Handle_Left" type="CSGBox3D" parent="." unique_id=1456226450]
+transform = Transform3D(1, 0, 0, 0, 0.929047, 0.36996183, 0, -0.36996183, 0.929047, -0.55, 0.303, -1)
+size = Vector3(0.12, 0.12, 1.25)
+material = ExtResource("1_f2ex6")
+
+[node name="Mat_WoodCart_Handle_Right" type="CSGBox3D" parent="." unique_id=979401931]
+transform = Transform3D(1, 0, 0, 0, 0.9474693, 0.31984705, 0, -0.31984705, 0.9474693, 0.55, 0.29261434, -1.0307649)
+size = Vector3(0.12, 0.12, 1.3149414)
+material = ExtResource("1_f2ex6")
+
+[node name="Mat_WoodWheel_CartWheel_-0.9" type="CSGCylinder3D" parent="." unique_id=442523922]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.38, 0.45)
+radius = 0.38
+height = 0.16
+sides = 16
+material = ExtResource("1_f2ex6")
+
+[node name="Mat_MetalWheelHub_CartWheel_-0.9" type="CSGCylinder3D" parent="." unique_id=170482619]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.38, 0.45)
+radius = 0.1
+height = 0.19
+sides = 12
+material = ExtResource("2_7x24b")
+
+[node name="Mat_WoodWheel_CartWheel_0.9" type="CSGCylinder3D" parent="." unique_id=1867175350]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.38, 0.45)
+radius = 0.38
+height = 0.16
+sides = 16
+material = ExtResource("1_f2ex6")
+
+[node name="Mat_MetalWheelHub_CartWheel_0.9" type="CSGCylinder3D" parent="." unique_id=1178342021]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.38, 0.45)
+radius = 0.1
+height = 0.19
+sides = 12
+material = ExtResource("2_7x24b")
+
+[node name="Mat_BurlapSack_CartFlour_01_LumpyBoxProxy" type="CSGBox3D" parent="." unique_id=1534904076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.155, -0.05)
+size = Vector3(0.45, 0.35, 0.35)
+
+[node name="Mat_WoodCrate_CartSmallCrate_Body" type="CSGBox3D" parent="." unique_id=1297508909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.125, 0.05)
+size = Vector3(0.55, 0.35, 0.45)
+
+[node name="Mat_WoodCrate_CartSmallCrate_FrontSlatTop" type="CSGBox3D" parent="." unique_id=1012038759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.223, -0.195)
+size = Vector3(0.6, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_CartSmallCrate_FrontSlatBottom" type="CSGBox3D" parent="." unique_id=1761045686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.048, -0.195)
+size = Vector3(0.6, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_CartSmallCrate_LeftStrap" type="CSGBox3D" parent="." unique_id=765092673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 1.125, -0.215)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_WoodCrate_CartSmallCrate_RightStrap" type="CSGBox3D" parent="." unique_id=1599542793]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.625, 1.125, -0.215)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_ProduceFruit_RoundedScatter_01" type="CSGSphere3D" parent="." unique_id=1110623064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.34, -0.15)
+radius = 0.075
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_02" type="CSGSphere3D" parent="." unique_id=1313189425]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 1.34, 0.12)
+radius = 0.07
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_03" type="CSGSphere3D" parent="." unique_id=280772256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1.34, -0.04)
+radius = 0.08
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_04" type="CSGSphere3D" parent="." unique_id=1127326698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 1.34, 0.14)
+radius = 0.065
+radial_segments = 10
+rings = 5
+
+[node name="Mat_WoodCart_Cutout" type="CSGBox3D" parent="." unique_id=1347890373]
+transform = Transform3D(1, 0, 0, 0, 0.9608104, 0.2772066, 0, -0.2772066, 0.9608104, -0.0040664673, 1.253909, 0.9728322)
+visible = false
+operation = 2
+size = Vector3(1.5936127, 1, 3.043396)
+material = ExtResource("1_f2ex6")

@@ -4,7 +4,7 @@
 
 [node name="Prototyping" unique_id=218568658 instance=ExtResource("1_i0587")]
 
-[node name="GeneralSkeleton" parent="Idle" parent_id_path=PackedInt32Array(843051698) index="0" unique_id=1544301524]
+[node name="GeneralSkeleton" parent="Idle" parent_id_path=PackedInt32Array(390866718) index="0" unique_id=474275505]
 bones/0/rotation = Quaternion(-1.8626449e-09, -3.7543937e-09, -2.7648637e-09, 1)
 bones/1/rotation = Quaternion(3.7252899e-09, 1.8626449e-09, 1.8626449e-09, 1)
 bones/1/scale = Vector3(1, 0.99999994, 0.99999976)

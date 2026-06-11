@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://cgp2nj1prul3g"]
+
+[node name="GalakasMidCity_TRAV_PlankBridge_Alley_3p5m_01" type="CSGCombiner3D" unique_id=64475283]
+use_collision = true
+metadata/v22_traversal_prop = "Rough upper-floor alley crossing. Default starts at wall local z=0 and extends outward local -Z."
+metadata/root_policy = "Reusable prop root is CSGCombiner3D."
+
+[node name="Mat_WoodBridge_Plank_Left" type="CSGBox3D" parent="." unique_id=1246887899]
+transform = Transform3D(0.99955004, 0, 0.0299955, 0, 1, 0, -0.0299955, 0, 0.99955004, -0.4230589, 0, -1.8048198)
+use_collision = true
+size = Vector3(0.74137205, 0.13, 3.6)
+
+[node name="Mat_WoodBridge_Plank_Right" type="CSGBox3D" parent="." unique_id=746371233]
+transform = Transform3D(0.9992001, 0, -0.039989334, 0, 1, 0, 0.039989334, 0, 0.9992001, 0.42650658, 0.02, -1.8042167)
+use_collision = true
+size = Vector3(0.6308984, 0.13, 3.6)
+
+[node name="Mat_WoodBridge_CrossTie_Near" type="CSGBox3D" parent="." unique_id=2113839154]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.45)
+use_collision = true
+size = Vector3(1.05, 0.12, 0.16)
+
+[node name="Mat_WoodBridge_CrossTie_Mid" type="CSGBox3D" parent="." unique_id=851581059]
+transform = Transform3D(0.9992001, 0, 0.039989334, 0, 1, 0, -0.039989334, 0, 0.9992001, 0, 0.1, -1.8)
+use_collision = true
+size = Vector3(1.1, 0.12, 0.16)
+
+[node name="Mat_WoodBridge_CrossTie_Far" type="CSGBox3D" parent="." unique_id=807441309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -3.15)
+use_collision = true
+size = Vector3(1.05, 0.12, 0.16)
+
+[node name="Mat_RopeHandline_Left" type="CSGCylinder3D" parent="." unique_id=1802574181]
+transform = Transform3D(1, 0, 0, 0, 3.1391647e-07, -1, 0, 1, 3.1391647e-07, -0.66, 0.55, -1.8)
+use_collision = true
+radius = 0.03
+height = 3.4
+
+[node name="Mat_RopeHandline_Right" type="CSGCylinder3D" parent="." unique_id=1868924041]
+transform = Transform3D(1, 0, 0, 0, 3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0.66, 0.55, -1.8)
+use_collision = true
+radius = 0.03
+height = 3.4
+
+[node name="Mat_WoodPost_NearLeft" type="CSGCylinder3D" parent="." unique_id=1135427053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66, 0.42, -0.28)
+use_collision = true
+radius = 0.045
+height = 0.92
+
+[node name="Mat_WoodPost_NearRight" type="CSGCylinder3D" parent="." unique_id=432458607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0.42, -0.28)
+use_collision = true
+radius = 0.045
+height = 0.92
+
+[node name="Mat_WoodPost_FarLeft" type="CSGCylinder3D" parent="." unique_id=1072853705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66, 0.42, -3.35)
+use_collision = true
+radius = 0.045
+height = 0.92
+
+[node name="Mat_WoodPost_FarRight" type="CSGCylinder3D" parent="." unique_id=207152882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0.42, -3.35)
+use_collision = true
+radius = 0.045
+height = 0.92

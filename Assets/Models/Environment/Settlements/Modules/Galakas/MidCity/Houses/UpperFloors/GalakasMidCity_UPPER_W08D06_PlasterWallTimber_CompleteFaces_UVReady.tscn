@@ -1,0 +1,157 @@
+[gd_scene load_steps=38 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/DamagedPlaster/DamagedPlaster_Box_16x4p4x0p22_7a4a1f3236.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/DamagedPlaster/DamagedPlaster_Box_16x4p4x0p22_7a4a1f3236.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/DamagedPlaster/DamagedPlaster_Box_0p22x4p4x12_d4b5d1cedc.gltf" id="mesh_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/DamagedPlaster/DamagedPlaster_Box_0p22x4p4x12_d4b5d1cedc.gltf" id="mesh_4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16x0p12x12_b52279ee26.gltf" id="mesh_5"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16x0p1x12_ec4b5f21dc.gltf" id="mesh_6"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p45x0p22_ac67b3b102.gltf" id="mesh_7"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p45x0p22_ac67b3b102.gltf" id="mesh_8"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p45x0p22_ac67b3b102.gltf" id="mesh_9"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p45x0p22_ac67b3b102.gltf" id="mesh_10"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p24x0p22_e77261e1db.gltf" id="mesh_11"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p18x0p22_6a7334bfad.gltf" id="mesh_12"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p24x0p22_e77261e1db.gltf" id="mesh_13"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_14"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_15"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_16"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_17"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p24x0p22_e77261e1db.gltf" id="mesh_18"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p18x0p22_6a7334bfad.gltf" id="mesh_19"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_16p28x0p24x0p22_e77261e1db.gltf" id="mesh_20"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_21"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_22"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_23"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p18x4p4x0p22_1a5409be4e.gltf" id="mesh_24"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p24x12p28_56865ed77e.gltf" id="mesh_25"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p18x12p28_ed1416befd.gltf" id="mesh_26"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p24x12p28_56865ed77e.gltf" id="mesh_27"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_28"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_29"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_30"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p24x12p28_56865ed77e.gltf" id="mesh_31"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p18x12p28_ed1416befd.gltf" id="mesh_32"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x0p24x12p28_56865ed77e.gltf" id="mesh_33"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_34"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_35"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/AgedWood/AgedWood_Box_0p22x4p4x0p18_a3e5a5481c.gltf" id="mesh_36"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Shared/DamagedPlaster/DamagedPlaster_Box_14p8x0p12x0p08_f8e185515d.gltf" id="mesh_37"]
+
+[node name="GalakasMidCity_UPPER_W08D06_PlasterWallTimber_CompleteFaces_UVReady" type="Node3D"]
+
+[node name="FloorsCeilings" type="Node3D" parent="."]
+
+[node name="TimberFrame" type="Node3D" parent="."]
+
+[node name="WallPanels" type="Node3D" parent="."]
+
+[node name="Mat_PlasterWall_Front_WallPanel_CompleteBox_UVReady" parent="WallPanels" instance=ExtResource("mesh_1")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 2.200000, -6.000000)
+
+[node name="Mat_PlasterWall_Back_WallPanel_CompleteBox_UVReady" parent="WallPanels" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 2.200000, 6.000000)
+
+[node name="Mat_PlasterWall_Left_WallPanel_CompleteBox_UVReady" parent="WallPanels" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.000000, 2.200000, 0.000000)
+
+[node name="Mat_PlasterWall_Right_WallPanel_CompleteBox_UVReady" parent="WallPanels" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.000000, 2.200000, 0.000000)
+
+[node name="Mat_WoodFloor_FloorDeck_CompleteBox_UVReady" parent="FloorsCeilings" instance=ExtResource("mesh_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.060000, 0.000000)
+
+[node name="Mat_WoodFloor_CeilingDeck_CompleteBox_UVReady" parent="FloorsCeilings" instance=ExtResource("mesh_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 4.350000, 0.000000)
+
+[node name="Mat_WoodBeam_CornerPost_X_1_Z_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_7")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.000000, 2.200000, -6.000000)
+
+[node name="Mat_WoodBeam_CornerPost_X_1_Z1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_8")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.000000, 2.200000, 6.000000)
+
+[node name="Mat_WoodBeam_CornerPost_X1_Z_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_9")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.000000, 2.200000, -6.000000)
+
+[node name="Mat_WoodBeam_CornerPost_X1_Z1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_10")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.000000, 2.200000, 6.000000)
+
+[node name="Mat_WoodBeam_Front_BottomHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_11")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.420000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_MidHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_12")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 2.288000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_TopHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_13")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 4.150000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_VerticalStud_0_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_14")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -5.280000, 2.200000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_VerticalStud_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_15")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -2.560000, 2.200000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_VerticalStud_2_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_16")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 2.560000, 2.200000, -6.030000)
+
+[node name="Mat_WoodBeam_Front_VerticalStud_3_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_17")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 5.280000, 2.200000, -6.030000)
+
+[node name="Mat_WoodBeam_Back_BottomHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_18")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.420000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_MidHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_19")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 2.288000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_TopHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_20")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 4.150000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_VerticalStud_0_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_21")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -5.280000, 2.200000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_VerticalStud_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_22")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -2.560000, 2.200000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_VerticalStud_2_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_23")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 2.560000, 2.200000, 6.030000)
+
+[node name="Mat_WoodBeam_Back_VerticalStud_3_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_24")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 5.280000, 2.200000, 6.030000)
+
+[node name="Mat_WoodBeam_Left_BottomHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_25")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 0.420000, 0.000000)
+
+[node name="Mat_WoodBeam_Left_MidHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_26")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 2.288000, 0.000000)
+
+[node name="Mat_WoodBeam_Left_TopHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_27")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 4.150000, 0.000000)
+
+[node name="Mat_WoodBeam_Left_VerticalStud_0_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_28")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 2.200000, -3.600000)
+
+[node name="Mat_WoodBeam_Left_VerticalStud_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_29")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 2.200000, 0.000000)
+
+[node name="Mat_WoodBeam_Left_VerticalStud_2_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_30")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -8.030000, 2.200000, 3.600000)
+
+[node name="Mat_WoodBeam_Right_BottomHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_31")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 0.420000, 0.000000)
+
+[node name="Mat_WoodBeam_Right_MidHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_32")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 2.288000, 0.000000)
+
+[node name="Mat_WoodBeam_Right_TopHorizontal_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_33")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 4.150000, 0.000000)
+
+[node name="Mat_WoodBeam_Right_VerticalStud_0_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_34")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 2.200000, -3.600000)
+
+[node name="Mat_WoodBeam_Right_VerticalStud_1_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_35")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 2.200000, 0.000000)
+
+[node name="Mat_WoodBeam_Right_VerticalStud_2_CompleteBox_UVReady" parent="TimberFrame" instance=ExtResource("mesh_36")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 8.030000, 2.200000, 3.600000)
+
+[node name="Mat_PlasterWall_InsetFrontSmoothTrim_CompleteBox_UVReady" parent="WallPanels" instance=ExtResource("mesh_37")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 3.168000, -6.130000)

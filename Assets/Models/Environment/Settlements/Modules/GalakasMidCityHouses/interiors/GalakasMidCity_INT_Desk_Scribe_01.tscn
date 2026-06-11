@@ -1,0 +1,55 @@
+[gd_scene load_steps=1 format=3 uid="uid://da2b3efa9f54cef2da08"]
+
+[node name="GalakasMidCity_INT_Desk_Scribe_01" type="CSGCombiner3D"]
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodCounter_ScribeDesk_Top" type="CSGBox3D" parent="."]
+size = Vector3(1.55, 0.12, 0.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, 0)
+
+[node name="Mat_WoodBeam_ScribeDesk_Leg_-1_-1" type="CSGBox3D" parent="."]
+size = Vector3(0.16, 0.76, 0.16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.595, 0.38, -0.195)
+
+[node name="Mat_WoodBeam_ScribeDesk_Leg_-1_1" type="CSGBox3D" parent="."]
+size = Vector3(0.16, 0.76, 0.16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.595, 0.38, 0.195)
+
+[node name="Mat_WoodBeam_ScribeDesk_Leg_1_-1" type="CSGBox3D" parent="."]
+size = Vector3(0.16, 0.76, 0.16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.595, 0.38, -0.195)
+
+[node name="Mat_WoodBeam_ScribeDesk_Leg_1_1" type="CSGBox3D" parent="."]
+size = Vector3(0.16, 0.76, 0.16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.595, 0.38, 0.195)
+
+[node name="Mat_WoodBeam_ScribeDesk_FrontBrace" type="CSGBox3D" parent="."]
+size = Vector3(1.55, 0.12, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.295)
+
+[node name="Mat_WoodBeam_ScribeDesk_BackBrace" type="CSGBox3D" parent="."]
+size = Vector3(1.55, 0.12, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.295)
+
+[node name="Mat_PaperSheet_DeskPaper_01" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.42, 0.02, 0.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.9, -0.12)
+
+[node name="Mat_PaperSheet_DeskPaper_02" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.36, 0.02, 0.24)
+transform = Transform3D(0.990268, 0.139173, 0, -0.139173, 0.990268, 0, 0, 0, 1, 0.05, 0.905, -0.08)
+
+[node name="Mat_CeramicInkpot_DeskInkpot" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07
+height = 0.08
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48, 0.94, -0.18)
+
+[node name="Mat_WoodDesk_DrawerFront" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.1, 0.28, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.42)

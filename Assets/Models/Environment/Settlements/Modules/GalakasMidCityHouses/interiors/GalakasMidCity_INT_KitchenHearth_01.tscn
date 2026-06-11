@@ -1,0 +1,76 @@
+[gd_scene load_steps=1 format=3 uid="uid://66dc6fe59836abfe4023"]
+
+[node name="GalakasMidCity_INT_KitchenHearth_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_StoneHearth_BackWall" type="CSGBox3D" parent="."]
+size = Vector3(1.8, 1.55, 0.22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0.1)
+
+[node name="Mat_StoneHearth_LeftPillar" type="CSGBox3D" parent="."]
+size = Vector3(0.26, 1.2, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.78, 0.6, -0.12)
+
+[node name="Mat_StoneHearth_RightPillar" type="CSGBox3D" parent="."]
+size = Vector3(0.26, 1.2, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.78, 0.6, -0.12)
+
+[node name="Mat_StoneHearth_Mantel" type="CSGBox3D" parent="."]
+size = Vector3(2.0, 0.18, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.12)
+
+[node name="Mat_AshBlack_FireboxInterior" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.1, 0.65, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.35)
+
+[node name="Mat_MetalGrate_HearthBar_01" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.0, 0.05, 0.05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, -0.42)
+
+[node name="Mat_CharredWood_Log_-0.32" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.52, 0.08, 0.12)
+transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, -0.32, 0.28, -0.45)
+
+[node name="Mat_CharredWood_Log_0" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.52, 0.08, 0.12)
+transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 0, 0.28, -0.45)
+
+[node name="Mat_CharredWood_Log_0.32" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.52, 0.08, 0.12)
+transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 0.32, 0.28, -0.45)
+
+
+[node name="Mat_MetalCookPot_RoundPotBody" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.28
+height = 0.28
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.12)
+
+[node name="Mat_MetalCookPot_RimRound" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.29
+height = 0.035
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, -0.12)
+
+[node name="Mat_Charcoal_AshRoundedLump_01" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.08
+radial_segments = 8
+rings = 4
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.34, -0.15)
+
+[node name="Mat_Charcoal_AshRoundedLump_02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.07
+radial_segments = 8
+rings = 4
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.33, -0.08)

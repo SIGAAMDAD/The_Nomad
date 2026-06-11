@@ -1,0 +1,45 @@
+[gd_scene load_steps=1 format=3 uid="uid://575300589af127fd6ca9"]
+
+[node name="GalakasMidCity_INT_Wardrobe_Cabinet_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodWardrobe_CabinetBody" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 2.1, 0.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+
+[node name="Mat_WoodWardrobe_LeftDoorPanel" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.55, 1.85, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.31, 1.05, -0.32)
+
+[node name="Mat_WoodWardrobe_RightDoorPanel" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.55, 1.85, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.31, 1.05, -0.32)
+
+[node name="Mat_MetalHandle_WardrobeLeft" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.06, 0.18, 0.04)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 1.05, -0.38)
+
+[node name="Mat_MetalHandle_WardrobeRight" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.06, 0.18, 0.04)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 1.05, -0.38)
+
+
+[node name="Mat_MetalKnob_RoundedCabinetPull_-0.18" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.055
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.95, -0.32)
+
+[node name="Mat_MetalKnob_RoundedCabinetPull_+0.18" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.055
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.95, -0.32)

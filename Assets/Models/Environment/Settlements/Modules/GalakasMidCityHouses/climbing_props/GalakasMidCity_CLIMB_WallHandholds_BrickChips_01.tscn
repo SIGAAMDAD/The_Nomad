@@ -1,0 +1,109 @@
+[gd_scene load_steps=1 format=3 uid="uid://v171036656"]
+
+[node name="GalakasMidCity_CLIMB_WallHandholds_BrickChips_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "climbing_prop"
+metadata/climbable = "true"
+metadata/placement_note = "Place against building exterior wall. Default forward/depth faces are tuned for front facades."
+use_collision = true
+
+[node name="Mat_StoneBrickChip_Handhold_00" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(-0.550, 0.450, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_00" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(-0.410, 0.470, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_01" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(0.150, 0.850, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_01" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(0.290, 0.870, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(-0.250, 1.250, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(-0.110, 1.270, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_03" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(0.450, 1.650, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_03" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(0.590, 1.670, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_04" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(-0.100, 2.050, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_04" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(0.040, 2.070, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_05" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(0.600, 2.450, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_05" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(0.740, 2.470, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_06" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(-0.450, 2.850, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_06" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(-0.310, 2.870, 0.020)
+
+[node name="Mat_StoneBrickChip_Handhold_07" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.320, 0.100, 0.120)
+position = Vector3(0.200, 3.250, 0.000)
+
+[node name="Mat_StoneBrickChip_RoundedCorner_07" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 8
+rings = 6
+position = Vector3(0.340, 3.270, 0.020)
+
+[node name="Mat_MetadataClimbZone_BackplateHint" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.550, 3.200, 0.020)
+position = Vector3(0.000, 1.850, 0.080)

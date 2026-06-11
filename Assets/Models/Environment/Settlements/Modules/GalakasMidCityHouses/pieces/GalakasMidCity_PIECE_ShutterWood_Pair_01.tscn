@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://daa82bld25db4"]
+
+[ext_resource type="Material" uid="uid://irpeviim482n" path="res://Assets/Textures/Environment/Surfaces/WeatheredWood/WeatheredWood_Material.res" id="1_m83hl"]
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="2_175o5"]
+
+[node name="GalakasMidCity_PIECE_ShutterWood_Pair_01" type="CSGCombiner3D" unique_id=249472685]
+use_collision = true
+
+[node name="Mat_WoodShutter_LeftBoard" type="CSGBox3D" parent="." unique_id=648003243]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.6, 0)
+size = Vector3(0.45, 1.15, 0.06)
+material = ExtResource("1_m83hl")
+
+[node name="Mat_WoodShutter_RightBoard" type="CSGBox3D" parent="." unique_id=201083534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.6, 0)
+size = Vector3(0.45, 1.15, 0.06)
+material = ExtResource("1_m83hl")
+
+[node name="Mat_MetalLatch_ShutterHingePins" type="CSGBox3D" parent="." unique_id=216912204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+size = Vector3(1.55, 0.06, 0.05)
+material = ExtResource("2_175o5")

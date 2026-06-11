@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cjfhepllsjf3u" path="res://Assets/Prefabs/SingleWorld/SingleWorld.cs" id="1_gohso"]
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_fek2r"]
-[ext_resource type="Terrain3DAssets" uid="uid://bfsqp1v0o83iy" path="res://Assets/Terrain/new_terrain_3d_assets.tres" id="3_xaw48"]
 [ext_resource type="Environment" uid="uid://hadlmr477pu7" path="res://Assets/Prefabs/SingleWorld/SinglePlayerWorldEnvironment.tres" id="3_xrhpx"]
 
 [sub_resource type="Gradient" id="Gradient_xrhpx"]
@@ -46,6 +45,28 @@ _shader_parameters = {
 &"projection_threshold": 0.8
 }
 world_background = 0
+show_checkered = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xaw48"]
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+backlight_enabled = true
+backlight = Color(0.5, 0.5, 0.5, 1)
+distance_fade_mode = 1
+distance_fade_min_distance = 128.0
+distance_fade_max_distance = 96.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_xrhpx"]
+generated_type = 1
+height_offset = 0.5
+material_override = SubResource("StandardMaterial3D_xaw48")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_ud3ku"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_xrhpx")])
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qeavp"]
 
@@ -66,17 +87,17 @@ environment = ExtResource("3_xrhpx")
 debug_level = 2
 data_directory = "res://Assets/Terrain"
 material = SubResource("Terrain3DMaterial_2lkg4")
-assets = ExtResource("3_xaw48")
-collision_mode = 4
+assets = SubResource("Terrain3DAssets_ud3ku")
 collision_layer = 255
 collision_mask = 255
 physics_material = SubResource("PhysicsMaterial_qeavp")
+show_checkered = true
 top_level = true
 metadata/_edit_lock_ = true
 
 [node name="SpotLight3D" type="DirectionalLight3D" parent="World3D" unique_id=1537175786]
 transform = Transform3D(0.5735546, 0.80399776, 0.15691666, -0.073645696, -0.14017114, 0.9873847, 0.81585014, -0.5778752, -0.021184823, 20.201782, 144.0997, 0)
-light_energy = 0.024
+visible = false
 shadow_enabled = true
 directional_shadow_mode = 0
 directional_shadow_max_distance = 9569.3

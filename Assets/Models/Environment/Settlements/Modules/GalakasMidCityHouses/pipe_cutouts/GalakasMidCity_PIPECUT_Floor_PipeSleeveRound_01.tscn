@@ -1,0 +1,16 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_PIPECUT_Floor_PipeSleeveRound_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v18_cutout_template = "Reusable subtractive CSG cutout template. Copy/instance into the same CSGCombiner3D as the wall/floor/roof that should be cut."
+metadata/placement_note = "Vertical pipe sleeve cutout through a floor or ceiling slab."
+
+[node name="Cutout_Floor_PipeSleeve_RoundVertical_CSGCylinder" type="CSGCylinder3D" parent="."]
+operation = 2
+use_collision = true
+radius = 0.110
+height = 0.500
+sides = 18
+position = Vector3(0.000, 0.000, 0.000)
+rotation = Vector3(0.000, 0.000, 0.000)
+

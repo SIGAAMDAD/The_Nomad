@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://v171036647"]
+
+[node name="GalakasMidCity_INT_Bench_Armrest_Decorative_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "interior_chair"
+metadata/scale_note = "Ráio-scale compatible; decorative MidCity interior prop."
+use_collision = true
+
+[node name="Mat_WoodBench_LongSeat" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(1.850, 0.140, 0.580)
+position = Vector3(0.000, 0.540, 0.000)
+
+[node name="Mat_ClothBenchPad_Worn" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.650, 0.080, 0.480)
+position = Vector3(0.000, 0.660, 0.000)
+
+[node name="Mat_WoodBench_BackPanel" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(1.900, 0.720, 0.110)
+position = Vector3(0.000, 0.980, 0.340)
+
+[node name="Mat_WoodBench_BackTopRail" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(2.040, 0.130, 0.140)
+position = Vector3(0.000, 1.400, 0.350)
+
+[node name="Mat_WoodBench_RoundLeg_-0.82_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(-0.820, 0.260, -0.220)
+
+[node name="Mat_WoodBench_RoundLeg_-0.82_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(-0.820, 0.260, 0.220)
+
+[node name="Mat_WoodBench_RoundLeg_-0.28_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(-0.280, 0.260, -0.220)
+
+[node name="Mat_WoodBench_RoundLeg_-0.28_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(-0.280, 0.260, 0.220)
+
+[node name="Mat_WoodBench_RoundLeg_+0.28_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(0.280, 0.260, -0.220)
+
+[node name="Mat_WoodBench_RoundLeg_+0.28_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(0.280, 0.260, 0.220)
+
+[node name="Mat_WoodBench_RoundLeg_+0.82_-0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(0.820, 0.260, -0.220)
+
+[node name="Mat_WoodBench_RoundLeg_+0.82_+0.22" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.035
+height = 0.520
+sides = 10
+position = Vector3(0.820, 0.260, 0.220)
+
+[node name="Mat_WoodBench_ArmSide_-1.02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.140, 0.550, 0.620)
+position = Vector3(-1.020, 0.820, 0.000)
+
+[node name="Mat_WoodBench_ArmKnobFront_-1.02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(-1.020, 1.120, -0.320)
+
+[node name="Mat_WoodBench_ArmKnobBack_-1.02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(-1.020, 1.120, 0.320)
+
+[node name="Mat_WoodBench_ArmSide_+1.02" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.140, 0.550, 0.620)
+position = Vector3(1.020, 0.820, 0.000)
+
+[node name="Mat_WoodBench_ArmKnobFront_+1.02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(1.020, 1.120, -0.320)
+
+[node name="Mat_WoodBench_ArmKnobBack_+1.02" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(1.020, 1.120, 0.320)

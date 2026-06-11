@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Material" path="../Materials/BushLeafMaterial.tres" id="leaf"]
+
+[sub_resource type="QuadMesh" id="Quad"]
+size = Vector2(1, 1)
+
+[node name="ScrubBush_Small" type="Node3D"]
+
+[node name="LeafCard_01" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.262615, 0, -0.786302, 0, 0.471466, 0, 0.334218, 0, -0.617843, -0.0711481, 0.171188, -0.0133053)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_02" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.173096, 0, -0.952231, 0, 0.606061, 0, 0.539748, 0, 0.305378, 0.17961, 0.254023, -0.144962)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_03" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.342089, 0, 0.178546, 0, 0.464821, 0, -0.0620762, 0, 0.983932, 0.0217259, 0.195953, -0.000791771)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_04" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.3131, 0, 0.718567, 0, 0.458157, 0, -0.323504, 0, -0.695458, -0.185843, 0.313969, 0.141446)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_05" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.499043, 0, 0.0401241, 0, 0.522856, 0, -0.0200398, 0, -0.999195, -0.263706, 0.269246, 0.0711882)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_06" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.409542, 0, 0.344091, 0, 0.464065, 0, -0.150085, 0, 0.938936, 0.0730989, 0.33259, 0.100288)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_07" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.425156, 0, 0.5681, 0, 0.592868, 0, -0.293491, 0, -0.822959, -0.0156507, 0.256928, 0.036463)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_08" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.235, 0, 0.742339, 0, 0.585539, 0, -0.260363, 0, 0.670025, 0.0998626, 0.247514, 0.239011)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_09" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4954, 0, 0.0133106, 0, 0.406791, 0, -0.00659467, 0, 0.999911, 0.16844, 0.25499, -0.0461944)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+
+[node name="LeafCard_10" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.0435295, 0, -0.996404, 0, 0.403847, 0, 0.511873, 0, 0.0847339, -0.150733, 0.339813, -0.253085)
+mesh = SubResource("Quad")
+surface_material_override/0 = ExtResource("leaf")
+

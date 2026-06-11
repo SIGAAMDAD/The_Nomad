@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://d3luqsc03yp2t"]
+
+[node name="GalakasMidCity_PIECE_ChimneyMetal_Narrow_01" type="CSGCombiner3D" unique_id=1057729733]
+use_collision = true
+
+[node name="Mat_MetalChimney_CylindricalPipe" type="CSGCylinder3D" parent="." unique_id=1774840212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+use_collision = true
+radius = 0.16
+height = 1.8
+sides = 12
+
+[node name="Mat_MetalChimney_RainCap" type="CSGCylinder3D" parent="." unique_id=933219300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86, 0)
+use_collision = true
+radius = 0.28
+height = 0.12
+sides = 12

@@ -1,0 +1,141 @@
+[gd_scene format=3 uid="uid://dnf4i6ojb8nm1"]
+
+[node name="GalakasMidCity_VENDOR_Table_CrateDisplay_01" type="CSGCombiner3D" unique_id=1390197942]
+use_collision = true
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "street_vendor"
+metadata/grid_hint = "2.6m frontage, 1m depth"
+
+[node name="Mat_WoodCounter_VendorCrateDisplay_Top" type="CSGBox3D" parent="." unique_id=1965161709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+size = Vector3(2.6, 0.12, 0.95)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_Leg_-1_-1" type="CSGBox3D" parent="." unique_id=1241968165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.12, 0.425, -0.295)
+size = Vector3(0.16, 0.85, 0.16)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_Leg_-1_1" type="CSGBox3D" parent="." unique_id=1035195057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.12, 0.425, 0.295)
+size = Vector3(0.16, 0.85, 0.16)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_Leg_1_-1" type="CSGBox3D" parent="." unique_id=1437300016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12, 0.425, -0.295)
+size = Vector3(0.16, 0.85, 0.16)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_Leg_1_1" type="CSGBox3D" parent="." unique_id=353607926]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12, 0.425, 0.295)
+size = Vector3(0.16, 0.85, 0.16)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_FrontBrace" type="CSGBox3D" parent="." unique_id=332453638]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.395)
+size = Vector3(2.6, 0.12, 0.12)
+
+[node name="Mat_WoodBeam_VendorCrateDisplay_BackBrace" type="CSGBox3D" parent="." unique_id=1634339266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.395)
+size = Vector3(2.6, 0.12, 0.12)
+
+[node name="Mat_WoodCrate_FrontLeft_Body" type="CSGBox3D" parent="." unique_id=1112009885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 1.125, -0.18)
+size = Vector3(0.65, 0.35, 0.5)
+
+[node name="Mat_WoodCrate_FrontLeft_FrontSlatTop" type="CSGBox3D" parent="." unique_id=691021800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 1.223, -0.45)
+size = Vector3(0.7, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_FrontLeft_FrontSlatBottom" type="CSGBox3D" parent="." unique_id=515305487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 1.048, -0.45)
+size = Vector3(0.7, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_FrontLeft_LeftStrap" type="CSGBox3D" parent="." unique_id=1523208610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.925, 1.125, -0.47)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_WoodCrate_FrontLeft_RightStrap" type="CSGBox3D" parent="." unique_id=1754514670]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.475, 1.125, -0.47)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_WoodCrate_FrontRight_Body" type="CSGBox3D" parent="." unique_id=714666135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.125, -0.18)
+size = Vector3(0.65, 0.35, 0.5)
+
+[node name="Mat_WoodCrate_FrontRight_FrontSlatTop" type="CSGBox3D" parent="." unique_id=1432163944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.223, -0.45)
+size = Vector3(0.7, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_FrontRight_FrontSlatBottom" type="CSGBox3D" parent="." unique_id=1306736854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.048, -0.45)
+size = Vector3(0.7, 0.08, 0.06)
+
+[node name="Mat_WoodCrate_FrontRight_LeftStrap" type="CSGBox3D" parent="." unique_id=1738613751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.475, 1.125, -0.47)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_WoodCrate_FrontRight_RightStrap" type="CSGBox3D" parent="." unique_id=308217739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.925, 1.125, -0.47)
+size = Vector3(0.07, 0.4, 0.07)
+
+[node name="Mat_ProduceFruit_DisplayApple_1" type="CSGCylinder3D" parent="." unique_id=1891769466]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_ProduceFruit_DisplayApple_2" type="CSGCylinder3D" parent="." unique_id=1035813136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_ProduceFruit_DisplayApple_3" type="CSGCylinder3D" parent="." unique_id=1892868125]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_ProduceFruit_DisplayApple_4" type="CSGCylinder3D" parent="." unique_id=827325954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_ProduceFruit_DisplayApple_5" type="CSGCylinder3D" parent="." unique_id=1177978643]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_ProduceFruit_DisplayApple_6" type="CSGCylinder3D" parent="." unique_id=289446740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 1.36, -0.22)
+radius = 0.08
+height = 0.08
+
+[node name="Mat_BurlapSack_BackSack_1_LumpyBoxProxy" type="CSGBox3D" parent="." unique_id=1097114772]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.16, 0.25)
+size = Vector3(0.38, 0.42, 0.32)
+
+[node name="Mat_BurlapSack_BackSack_2_LumpyBoxProxy" type="CSGBox3D" parent="." unique_id=601027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16, 0.25)
+size = Vector3(0.38, 0.42, 0.32)
+
+[node name="Mat_BurlapSack_BackSack_3_LumpyBoxProxy" type="CSGBox3D" parent="." unique_id=1653454774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.16, 0.25)
+size = Vector3(0.38, 0.42, 0.32)
+
+[node name="Mat_ProduceFruit_RoundedScatter_01" type="CSGSphere3D" parent="." unique_id=2020142494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.34, -0.15)
+radius = 0.075
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_02" type="CSGSphere3D" parent="." unique_id=1049411673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 1.34, 0.12)
+radius = 0.07
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_03" type="CSGSphere3D" parent="." unique_id=577347436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1.34, -0.04)
+radius = 0.08
+radial_segments = 10
+rings = 5
+
+[node name="Mat_ProduceFruit_RoundedScatter_04" type="CSGSphere3D" parent="." unique_id=1803289656]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 1.34, 0.14)
+radius = 0.065
+radial_segments = 10
+rings = 5

@@ -1,0 +1,190 @@
+[gd_scene format=3 uid="uid://bi6423ixmlhv0"]
+
+[ext_resource type="PackedScene" uid="uid://br2i5a4ooptlb" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/doors/GalakasMidCity_DOOR_WoodDouble_Shopfront_01.tscn" id="1"]
+[ext_resource type="Material" uid="uid://2ap8angmbhkr" path="res://Assets/Textures/Environment/Surfaces/RedBrick/RedBrick_Material.res" id="1_s5a5d"]
+[ext_resource type="Material" uid="uid://8vob6sbo6x44" path="res://Assets/Textures/Environment/Surfaces/WeatheredBrownWoodPlank/WeatheredBrownWoodPlank_Material.tres" id="2_sbd3w"]
+[ext_resource type="Material" uid="uid://dawfb5i4rr8h1" path="res://Assets/Textures/Environment/Surfaces/StoneBrickWall/StoneBrickWall_Material.res" id="2_t0ych"]
+[ext_resource type="PackedScene" uid="uid://crsbu3wjx0pla" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/pieces/GalakasMidCity_PIECE_WindowDirty_Small_01.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://2h0007mk3o56" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/pieces/GalakasMidCity_PIECE_AwningFrameWood_01.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://wgx54b737xri" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/pieces/GalakasMidCity_PIECE_SignBracketWood_01.tscn" id="5"]
+
+[node name="GalakasMidCity_LWR_W04D04_BrickShopfront_01" type="CSGCombiner3D" unique_id=1584168591]
+use_collision = true
+metadata/module_version = "v16_clearance_fix"
+metadata/height_meters = 4.8
+metadata/clearance_policy = "Ráio-scale lower floor: raised doors/awnings, no front windows inside door span, exterior and interior combiners split."
+
+[node name="Exterior" type="CSGCombiner3D" parent="." unique_id=138751116]
+use_collision = true
+
+[node name="Mat_BrickWall_BackPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=786041527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023376465, 2.4, 3.875)
+use_collision = true
+size = Vector3(7.953247, 4.8, 0.25)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_BrickWall_LeftPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=755571326]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -3.8493872, 2.3506727, -0.007183221)
+use_collision = true
+size = Vector3(0.25, 7.852411, 4.6799774)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_BrickWall_RightPanel_Taller" type="CSGBox3D" parent="Exterior" unique_id=1170070233]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 3.9498973, 2.3881593, -0.0061763525)
+use_collision = true
+size = Vector3(0.25, 7.9964356, 4.721924)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_BrickWall_FrontLeftPier_DoorClearance" type="CSGBox3D" parent="Exterior" unique_id=1959798160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.581336, 2.4, -3.875)
+use_collision = true
+size = Vector3(2.713672, 4.8, 0.25)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_BrickWall_FrontRightPier_DoorClearance" type="CSGBox3D" parent="Exterior" unique_id=1310813087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.612, 2.4, -3.8858025)
+use_collision = true
+size = Vector3(2.775, 4.8, 0.25)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_BrickWall_FrontDoorHeader_RaisedAboveRaioDoor" type="CSGBox3D" parent="Exterior" unique_id=1868130753]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1, -3.875)
+use_collision = true
+size = Vector3(2.65, 1.4, 0.25)
+material = ExtResource("1_s5a5d")
+
+[node name="Mat_StoneFoundation_DoorThreshold_RaisedStep" type="CSGBox3D" parent="Exterior" unique_id=1885742864]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -4.05)
+use_collision = true
+size = Vector3(2.73, 0.18, 0.42)
+material = ExtResource("2_t0ych")
+
+[node name="Mat_WoodBeam_CornerPost_FL_Taller" type="CSGBox3D" parent="Exterior" unique_id=255102153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.04, 2.4, -4.04)
+use_collision = true
+size = Vector3(0.18, 4.8, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_CornerPost_FR_Taller" type="CSGBox3D" parent="Exterior" unique_id=684541656]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.04, 2.4, -4.04)
+use_collision = true
+size = Vector3(0.18, 4.8, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_CornerPost_BL_Taller" type="CSGBox3D" parent="Exterior" unique_id=1865394906]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.04, 2.4, 4.04)
+use_collision = true
+size = Vector3(0.18, 4.8, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_CornerPost_BR_Taller" type="CSGBox3D" parent="Exterior" unique_id=578212393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.04, 2.4, 4.04)
+use_collision = true
+size = Vector3(0.18, 4.8, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_FrontTopRail_Taller" type="CSGBox3D" parent="Exterior" unique_id=1719798019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.72, -4.04)
+use_collision = true
+size = Vector3(8.18, 0.18, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_BackTopRail_Taller" type="CSGBox3D" parent="Exterior" unique_id=1439404733]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.72, 4.04)
+use_collision = true
+size = Vector3(8.18, 0.18, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_LeftTopRail_Taller" type="CSGBox3D" parent="Exterior" unique_id=753258003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.04, 4.72, 0)
+use_collision = true
+size = Vector3(0.18, 0.18, 8.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_RightTopRail_Taller" type="CSGBox3D" parent="Exterior" unique_id=1449832453]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.04, 4.72, 0)
+use_collision = true
+size = Vector3(0.18, 0.18, 8.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_FrontBaseRail_ClearOfFoundationCourse" type="CSGBox3D" parent="Exterior" unique_id=290211277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, -4.04)
+use_collision = true
+size = Vector3(8.18, 0.16, 0.18)
+material = ExtResource("2_sbd3w")
+
+[node name="Mat_WoodBeam_FrontLintelRail_AboveDoorsAndWindows" type="CSGBox3D" parent="Exterior" unique_id=2002132618]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.62, -4.055)
+size = Vector3(8.12, 0.12, 0.14)
+material = ExtResource("2_sbd3w")
+
+[node name="Door_Main_GalakasMidCity_DOOR_WoodDouble_Shopfront_01_RaisedRaioClearance" parent="Exterior" unique_id=360565267 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1.22, 0, 0, 0, 1, 0, 0.18, -4.095)
+
+[node name="Window_Back_01_Raised" parent="Exterior" unique_id=258777586 instance=ExtResource("3")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2, 2.42, 4.1)
+
+[node name="Window_Back_02_Raised" parent="Exterior" unique_id=1548027269 instance=ExtResource("3")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2, 2.42, 4.1)
+
+[node name="Piece_AwningFrame_FrontDoor_RaisedAboveDoorFrame" parent="Exterior" unique_id=126043206 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.78, -4.36)
+
+[node name="Piece_SignBracket_Commercial_RaisedAwayFromDoor" parent="Exterior" unique_id=1768696428 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.825, 3.9, -4.32)
+
+[node name="Mat_MetalDrainpipe_RoundFacadePipe_Taller_V16" type="CSGCylinder3D" parent="Exterior" unique_id=784999687]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 2.475, -3.35)
+radius = 0.05
+height = 4.25
+sides = 14
+
+[node name="Mat_MetalDrainpipe_RoundBracketBand_V16_1" type="CSGCylinder3D" parent="Exterior" unique_id=909791297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 0.85, -3.35)
+radius = 0.061
+height = 0.04
+sides = 14
+
+[node name="Mat_MetalDrainpipe_RoundBracketBand_V16_2" type="CSGCylinder3D" parent="Exterior" unique_id=1626726678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 2.25, -3.35)
+radius = 0.061
+height = 0.04
+sides = 14
+
+[node name="Mat_MetalDrainpipe_RoundBracketBand_V16_3" type="CSGCylinder3D" parent="Exterior" unique_id=1556288702]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 3.65, -3.35)
+radius = 0.061
+height = 0.04
+sides = 14
+
+[node name="Mat_StoneChip_RoundedFoundationPebble_V16_01" type="CSGSphere3D" parent="Exterior" unique_id=1874624043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0.18, -3.28)
+radius = 0.07
+radial_segments = 8
+rings = 4
+
+[node name="Mat_StoneChip_RoundedFoundationPebble_V16_02" type="CSGSphere3D" parent="Exterior" unique_id=788722965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 0.18, -3.33)
+radius = 0.055
+radial_segments = 8
+rings = 4
+
+[node name="Mat_StoneChip_RoundedFoundationPebble_V16_03" type="CSGSphere3D" parent="Exterior" unique_id=14612422]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 0.18, -3.28)
+radius = 0.045
+radial_segments = 8
+rings = 4
+
+[node name="Interior" type="CSGCombiner3D" parent="." unique_id=611145646]
+use_collision = true
+
+[node name="Mat_WoodFloor_Lower_RaisedInteriorSlab_ClearOfFoundation" type="CSGBox3D" parent="Interior" unique_id=360766122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+use_collision = true
+size = Vector3(7.75, 0.14, 7.75)
+
+[node name="Mat_WoodCeiling_Lower_TallerJoistSlab" type="CSGBox3D" parent="Interior" unique_id=622977475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.033281088, 4.75683, -0.02022481)
+use_collision = true
+size = Vector3(7.8865623, 0.12, 7.9349804)
+material = ExtResource("2_sbd3w")

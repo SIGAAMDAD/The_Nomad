@@ -1,0 +1,123 @@
+[gd_scene format=3 uid="uid://v171036654"]
+
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="1_bitq6"]
+
+[node name="GalakasMidCity_CLIMB_Drainpipe_Metal_4p8m_01" type="CSGCombiner3D" unique_id=732918386]
+material_override = ExtResource("1_bitq6")
+use_collision = true
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "climbing_prop"
+metadata/climbable = "true"
+metadata/placement_note = "Place against building exterior wall. Default forward/depth faces are tuned for front facades."
+
+[node name="Mat_MetalClimbPipe_MainVertical" type="CSGCylinder3D" parent="." unique_id=94093592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+use_collision = true
+radius = 0.055
+height = 4.8
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_0_5_Band" type="CSGCylinder3D" parent="." unique_id=1247800432]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+use_collision = true
+radius = 0.07
+height = 0.05
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_0_5_WallPlate" type="CSGBox3D" parent="." unique_id=1085143161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.08)
+use_collision = true
+size = Vector3(0.28, 0.07, 0.05)
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_1_4_Band" type="CSGCylinder3D" parent="." unique_id=1236328591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0)
+use_collision = true
+radius = 0.07
+height = 0.05
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_1_4_WallPlate" type="CSGBox3D" parent="." unique_id=2101324977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.08)
+use_collision = true
+size = Vector3(0.28, 0.07, 0.05)
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_2_2_Band" type="CSGCylinder3D" parent="." unique_id=1579519232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+use_collision = true
+radius = 0.07
+height = 0.05
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_2_2_WallPlate" type="CSGBox3D" parent="." unique_id=635523582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0.08)
+use_collision = true
+size = Vector3(0.28, 0.07, 0.05)
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_3_1_Band" type="CSGCylinder3D" parent="." unique_id=524554742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
+use_collision = true
+radius = 0.07
+height = 0.05
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_3_1_WallPlate" type="CSGBox3D" parent="." unique_id=1592341591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0.08)
+use_collision = true
+size = Vector3(0.28, 0.07, 0.05)
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_4_Band" type="CSGCylinder3D" parent="." unique_id=712180283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05, 0)
+use_collision = true
+radius = 0.07
+height = 0.05
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipeWallStrap_4_WallPlate" type="CSGBox3D" parent="." unique_id=1722790393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05, 0.08)
+use_collision = true
+size = Vector3(0.28, 0.07, 0.05)
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipe_TopElbowHorizontal" type="CSGCylinder3D" parent="." unique_id=154614620]
+transform = Transform3D(1, 0, 0, 0, -0.00020365318, -1, 0, 1, -0.00020365318, -0.0013595968, 4.7799954, -0.28664064)
+use_collision = true
+radius = 0.055
+height = 0.6667187
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipe_TopElbowHorizontalCutout" type="CSGCylinder3D" parent="." unique_id=66709701]
+transform = Transform3D(1, 0, 0, 0, -0.00020365318, -1, 0, 1, -0.00020365318, 0, 4.78, -0.31100586)
+operation = 2
+use_collision = true
+radius = 0.03955078
+height = 0.6220117
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipe_BottomElbowKickout" type="CSGCylinder3D" parent="." unique_id=1066589022]
+transform = Transform3D(1, 0, 0, 0, -0.00020365318, -1, 0, 1, -0.00020365318, 0, 0.2, -0.21)
+use_collision = true
+radius = 0.055
+height = 0.42
+sides = 14
+material = ExtResource("1_bitq6")
+
+[node name="Mat_MetalPipe_BottomElbowKickout_Cutout" type="CSGCylinder3D" parent="." unique_id=1495758296]
+transform = Transform3D(1, 0, 0, 0, -0.00020365318, -1, 0, 1, -0.00020365318, 0, 0.20000546, -0.23680297)
+operation = 2
+use_collision = true
+radius = 0.03955078
+height = 0.3706714
+sides = 14
+material = ExtResource("1_bitq6")

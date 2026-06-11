@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" uid="uid://cuscd48w0jayk" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/reeds_clump_tall.obj" id="1_mesh"]
+
+[node name="reeds_clump_tall" type="MeshInstance3D"]
+mesh = ExtResource("1_mesh")
+cast_shadow = 1

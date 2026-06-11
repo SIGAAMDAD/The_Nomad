@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://jwnnplqb5noh"]
+
+[node name="GalakasMidCity_ORG_RopeCoil_01" type="Node3D" unique_id=1700951920]
+
+[node name="Mat_Rope_Coil_Layer_0_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=9065304]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, 0)
+radius = 0.32
+height = 0.035
+sides = 24
+
+[node name="Mat_Rope_Coil_Layer_1_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=682837978]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+radius = 0.26
+height = 0.035
+sides = 24
+
+[node name="Mat_Rope_Coil_Layer_2_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=333490278]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.105, 0)
+radius = 0.2
+height = 0.035
+sides = 24
+
+[node name="Mat_Rope_Coil_Layer_3_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1976173946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+radius = 0.14
+height = 0.035
+sides = 24
+
+[node name="Mat_Rope_LooseEnd_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=651968321]
+transform = Transform3D(0.40848747, -0.91276395, 0, 0.91276395, 0.40848747, 0, 0, 0, 1, 0.28, 0.15, 0.02)
+radius = 0.025
+height = 0.62

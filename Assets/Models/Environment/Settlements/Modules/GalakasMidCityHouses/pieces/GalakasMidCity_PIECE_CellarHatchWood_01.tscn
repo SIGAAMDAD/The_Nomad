@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://20fp3b8r3wng"]
+
+[node name="GalakasMidCity_PIECE_CellarHatchWood_01" type="CSGCombiner3D" unique_id=61261935]
+use_collision = true
+
+[node name="Mat_WoodCellarHatch_PlankDoor" type="CSGBox3D" parent="." unique_id=1455977175]
+transform = Transform3D(1, 0, 0, 0, 0.978148, -0.207912, 0, 0.207912, 0.978148, 0, 0.06, 0)
+use_collision = true
+size = Vector3(1.4, 0.12, 1)
+
+[node name="Mat_MetalLatch_CellarHandle_NoCollision" type="CSGBox3D" parent="." unique_id=1140941055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.25)
+size = Vector3(0.28, 0.06, 0.08)

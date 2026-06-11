@@ -1,0 +1,18 @@
+# GalakasMidCity_DOORCUT_CellarHatch_01
+mtllib GalakasMidCity_DOORCUT_CellarHatch_01.mtl
+v -0.95000 0.00000 -0.11000
+v 0.95000 0.00000 -0.11000
+v 0.95000 3.50000 -0.11000
+v -0.95000 3.50000 -0.11000
+v -0.95000 0.00000 0.11000
+v 0.95000 0.00000 0.11000
+v 0.95000 3.50000 0.11000
+v -0.95000 3.50000 0.11000
+g door_cutout_volume
+usemtl Mat_CutoutGuide
+f 1 2 3 4
+f 5 8 7 6
+f 1 5 6 2
+f 2 6 7 3
+f 3 7 8 4
+f 4 8 5 1

@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[sub_resource type="Curve3D" id="Curve3D_1"]
+bake_interval = 0.120
+up_vector_enabled = true
+_data = {
+"points": PackedVector3Array(0.000, 0.000, 0.000, 0.250, 0.000, 0.000, -0.450, 0.000, 0.000, -0.180, -0.080, 0.000, 0.180, 0.080, 0.000, 0.000, 0.160, 0.000, -0.250, 0.000, 0.000, 0.000, 0.000, 0.000, 0.450, 0.320, 0.000),
+"tilts": PackedFloat32Array(0.000, 0.000, 0.000)
+}
+
+[node name="GalakasMidCity_CURVE_Drainpipe_SideElbow_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v18_curved_mesh = "CSGPolygon3D MODE_PATH + Path3D. Separate reusable curve mesh scene for details that should render as actual curved geometry."
+metadata/placement_note = "Side-to-side pipe turn, useful on corner drainpipes and roofline gutters."
+
+[node name="Path3D_1" type="Path3D" parent="."]
+curve = SubResource("Curve3D_1")
+
+[node name="Mat_MetalPipe_CSGPolygonPath_SideElbow_Rounded" type="CSGPolygon3D" parent="."]
+use_collision = false
+mode = 2
+path_node = NodePath("../Path3D_1")
+path_interval = 0.080
+path_interval_type = 0
+path_rotation = 2
+path_rotation_accurate = true
+path_simplify_angle = 2.000
+polygon = PackedVector2Array(0.050, 0.000, 0.040, 0.029, 0.015, 0.048, -0.015, 0.048, -0.040, 0.029, -0.050, 0.000, -0.040, -0.029, -0.015, -0.048, 0.015, -0.048, 0.040, -0.029)

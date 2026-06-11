@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://b0p1n6kukl2al"]
+
+[node name="GalakasMidCity_ORG_CeramicJug_Rounded_01" type="Node3D" unique_id=274443438]
+
+[node name="Mat_CeramicPot_Belly_CSGSphereLike_NoCollision" type="CSGCylinder3D" parent="." unique_id=1204251408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 0)
+radius = 0.34
+height = 0.42
+sides = 20
+
+[node name="Mat_CeramicPot_Neck_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1635808546]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+radius = 0.18
+height = 0.24
+sides = 18
+
+[node name="Mat_CeramicPot_Rim_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=240394288]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, 0)
+radius = 0.22
+height = 0.055
+sides = 18
+
+[node name="Mat_CeramicPot_HandleLeft_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1237804326]
+transform = Transform3D(0.8525245, -0.52268726, 0, 0.52268726, 0.8525245, 0, 0, 0, 1, -0.32, 0.55, 0)
+radius = 0.035
+height = 0.45
+sides = 10
+
+[node name="Mat_CeramicPot_HandleRight_CSGCylinder_NoCollision" type="CSGCylinder3D" parent="." unique_id=1126679345]
+transform = Transform3D(0.8525245, 0.52268726, 0, -0.52268726, 0.8525245, 0, 0, 0, 1, 0.32, 0.55, 0)
+radius = 0.035
+height = 0.45
+sides = 10

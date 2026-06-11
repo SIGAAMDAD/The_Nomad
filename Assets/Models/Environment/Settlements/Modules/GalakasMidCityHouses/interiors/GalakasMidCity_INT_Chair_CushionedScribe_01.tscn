@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://v171036644"]
+
+[ext_resource type="Material" uid="uid://8vob6sbo6x44" path="res://Assets/Textures/Environment/Surfaces/WeatheredBrownWoodPlank/WeatheredBrownWoodPlank_Material.tres" id="1_gk3mn"]
+
+[node name="GalakasMidCity_INT_Chair_CushionedScribe_01" type="CSGCombiner3D" unique_id=249127826]
+use_collision = true
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "interior_chair"
+metadata/scale_note = "Ráio-scale compatible; decorative MidCity interior prop."
+
+[node name="Mat_WoodChair_ScribeSeat" type="CSGBox3D" parent="." unique_id=1588638323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+use_collision = true
+size = Vector3(0.62, 0.12, 0.56)
+material = ExtResource("1_gk3mn")
+
+[node name="Mat_ClothCushion_LeftLump" type="CSGSphere3D" parent="." unique_id=872559933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.66, 0)
+radius = 0.23
+
+[node name="Mat_ClothCushion_RightLump" type="CSGSphere3D" parent="." unique_id=818828344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.66, 0)
+radius = 0.23
+
+[node name="Mat_WoodChair_RoundLeg_-0.24_-0.22" type="CSGCylinder3D" parent="." unique_id=930517021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 0.26, -0.22)
+use_collision = true
+radius = 0.03
+height = 0.52
+sides = 10
+
+[node name="Mat_WoodChair_RoundLeg_-0.24_+0.22" type="CSGCylinder3D" parent="." unique_id=1859297055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 0.26, 0.22)
+use_collision = true
+radius = 0.03
+height = 0.52
+sides = 10
+
+[node name="Mat_WoodChair_RoundLeg_+0.24_-0.22" type="CSGCylinder3D" parent="." unique_id=1286256831]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.26, -0.22)
+use_collision = true
+radius = 0.03
+height = 0.52
+sides = 10
+
+[node name="Mat_WoodChair_RoundLeg_+0.24_+0.22" type="CSGCylinder3D" parent="." unique_id=916109591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.26, 0.22)
+use_collision = true
+radius = 0.03
+height = 0.52
+sides = 10
+
+[node name="Mat_WoodChair_RoundBackRail_Top" type="CSGCylinder3D" parent="." unique_id=358558468]
+transform = Transform3D(-0.00020365318, -1, 0, 1, -0.00020365318, 0, 0, 0, 1, 0, 1.24, 0.3)
+use_collision = true
+radius = 0.035
+height = 0.72
+sides = 12
+material = ExtResource("1_gk3mn")
+
+[node name="Mat_WoodChair_RoundBackRail_Lower" type="CSGCylinder3D" parent="." unique_id=138751060]
+transform = Transform3D(-0.00020365318, -1, 0, 1, -0.00020365318, 0, 0, 0, 1, 0, 0.96, 0.3)
+use_collision = true
+radius = 0.025
+height = 0.62
+sides = 10
+
+[node name="Mat_WoodChair_BackPost_-0.26" type="CSGCylinder3D" parent="." unique_id=1836096767]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.26, 0.91, 0.3)
+use_collision = true
+radius = 0.035
+height = 0.85
+sides = 12
+
+[node name="Mat_WoodChair_BackPost_+0.26" type="CSGCylinder3D" parent="." unique_id=619166931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26, 0.91, 0.3)
+use_collision = true
+radius = 0.035
+height = 0.85
+sides = 12

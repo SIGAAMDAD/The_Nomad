@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://bhfr2qg8a0wij"]
+
+[node name="GalakasMidCity_DOOR_CellarHatch_Wood_01" type="CSGCombiner3D" unique_id=178372536]
+use_collision = true
+metadata/category = "door"
+metadata/v13_note = "Organic CSG pass: cylindrical hinges, pins, rivets, knobs, rounded plank edges."
+metadata/raio_scale_note = "primary doors use tall frames intended for Ráio-scale clearance; decorative small/balcony/cellar doors are exceptions by function"
+
+[node name="Mat_WoodDoor_CellarHatch_MainPlanks" type="CSGBox3D" parent="." unique_id=718239483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+size = Vector3(1.45, 0.12, 1.05)
+
+[node name="Mat_ShadowGap_CellarPlankSeam_-0.48" type="CSGBox3D" parent="." unique_id=908334925]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48, 0.155, -0.005)
+size = Vector3(0.025, 0.135, 1.08)
+
+[node name="Mat_ShadowGap_CellarPlankSeam_+0.00" type="CSGBox3D" parent="." unique_id=722419902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.155, -0.005)
+size = Vector3(0.025, 0.135, 1.08)
+
+[node name="Mat_ShadowGap_CellarPlankSeam_+0.48" type="CSGBox3D" parent="." unique_id=860578307]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48, 0.155, -0.005)
+size = Vector3(0.025, 0.135, 1.08)
+
+[node name="Mat_MetalHinge_CellarRoundBarrel_-0.55" type="CSGCylinder3D" parent="." unique_id=604010121]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.55, 0.19, -0.56)
+radius = 0.055
+height = 0.42
+sides = 16
+
+[node name="Mat_MetalBand_CellarHingeStrap_-0.55" type="CSGBox3D" parent="." unique_id=400412470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.205, -0.22)
+size = Vector3(0.12, 0.045, 0.65)
+
+[node name="Mat_MetalRivet_CellarHingeRivetA_-0.55" type="CSGSphere3D" parent="." unique_id=951102404]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.24, -0.47)
+radius = 0.045
+
+[node name="Mat_MetalRivet_CellarHingeRivetB_-0.55" type="CSGSphere3D" parent="." unique_id=772365040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.24, 0.03)
+radius = 0.045
+
+[node name="Mat_MetalHinge_CellarRoundBarrel_+0.55" type="CSGCylinder3D" parent="." unique_id=2043071569]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.55, 0.19, -0.56)
+radius = 0.055
+height = 0.42
+sides = 16
+
+[node name="Mat_MetalBand_CellarHingeStrap_+0.55" type="CSGBox3D" parent="." unique_id=225490916]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.205, -0.22)
+size = Vector3(0.12, 0.045, 0.65)
+
+[node name="Mat_MetalRivet_CellarHingeRivetA_+0.55" type="CSGSphere3D" parent="." unique_id=342185769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.24, -0.47)
+radius = 0.045
+
+[node name="Mat_MetalRivet_CellarHingeRivetB_+0.55" type="CSGSphere3D" parent="." unique_id=1748664922]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.24, 0.03)
+radius = 0.045
+
+[node name="Mat_MetalLatch_CellarPullRing_Top" type="CSGCylinder3D" parent="." unique_id=1958040752]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.235, 0.17)
+radius = 0.025
+height = 0.34
+sides = 10
+
+[node name="Mat_MetalLatch_CellarPullRing_Bottom" type="CSGCylinder3D" parent="." unique_id=128645766]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.235, 0.43)
+radius = 0.025
+height = 0.34
+sides = 10
+
+[node name="Mat_MetalLatch_CellarPullRing_Left" type="CSGCylinder3D" parent="." unique_id=330657917]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -0.17, 0.235, 0.3)
+radius = 0.025
+height = 0.26
+sides = 10
+
+[node name="Mat_MetalLatch_CellarPullRing_Right" type="CSGCylinder3D" parent="." unique_id=2030767276]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.17, 0.235, 0.3)
+radius = 0.025
+height = 0.26
+sides = 10

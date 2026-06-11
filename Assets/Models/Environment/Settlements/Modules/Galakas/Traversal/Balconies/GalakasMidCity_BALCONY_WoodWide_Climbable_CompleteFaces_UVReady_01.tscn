@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodFloor/Balcony_Deck_UVClosedBox.gltf" id="mesh_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodBeam/Balcony_Post_UVClosedBox.gltf" id="mesh_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodBeam/Balcony_FrontRail_UVClosedBox.gltf" id="mesh_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/Meshes/Generated/Components/WoodBeam/Balcony_Baluster_UVClosedBox.gltf" id="mesh_4"]
+
+[node name="GalakasMidCity_BALCONY_WoodWide_Climbable_CompleteFaces_UVReady_01" type="Node3D"]
+
+[node name="BalconyGeometry" type="Node3D" parent="."]
+
+[node name="Mat_WoodFloor_BalconyDeck_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_1")]
+
+[node name="Mat_WoodBeam_BalconySidePost_XN1p3_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -1.300000, 0.550000, -0.380000)
+
+[node name="Mat_WoodBeam_BalconySidePost_X1p3_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.300000, 0.550000, -0.380000)
+
+[node name="Mat_WoodBeam_BalconyFrontRail_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 1.000000, -0.500000)
+
+[node name="Mat_WoodBeam_BalconyBaluster_XN0p9_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.900000, 0.560000, -0.500000)
+
+[node name="Mat_WoodBeam_BalconyBaluster_XN0p45_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -0.450000, 0.560000, -0.500000)
+
+[node name="Mat_WoodBeam_BalconyBaluster_X0_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.560000, -0.500000)
+
+[node name="Mat_WoodBeam_BalconyBaluster_X0p45_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.450000, 0.560000, -0.500000)
+
+[node name="Mat_WoodBeam_BalconyBaluster_X0p9_CompleteBox_UVReady" parent="BalconyGeometry" instance=ExtResource("mesh_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.900000, 0.560000, -0.500000)

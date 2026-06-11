@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://c0j67uvs4c7hl"]
+
+[ext_resource type="Texture2D" uid="uid://coulfam47jklk" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Albedo_1024.webp" id="1_7dnv2"]
+[ext_resource type="Texture2D" uid="uid://bhoswqo1ahvo2" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Displacement_1024.png" id="2_vqadb"]
+[ext_resource type="Texture2D" uid="uid://b8qiclan7i7m6" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Normal_1024.png" id="3_b30xc"]
+[ext_resource type="Texture2D" uid="uid://csppcmfb31820" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/StandstoneBlocks_ORM_1024.png" id="4_1jk5w"]
+[ext_resource type="Material" uid="uid://ch6he25vlwlsh" path="res://Assets/Textures/Environment/Surfaces/DarkWoodenPlank/DarkWoodenPlank_Material.res" id="5_7dnv2"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_0mc8x"]
+albedo_texture = ExtResource("1_7dnv2")
+orm_texture = ExtResource("4_1jk5w")
+normal_enabled = true
+normal_texture = ExtResource("3_b30xc")
+ao_enabled = true
+ao_light_affect = 0.2
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_vqadb")
+uv1_scale = Vector3(0.475, 0.475, 0.475)
+uv1_triplanar = true
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_y0xcy"]
+albedo_texture = ExtResource("1_7dnv2")
+orm_texture = ExtResource("4_1jk5w")
+normal_enabled = true
+normal_texture = ExtResource("3_b30xc")
+ao_enabled = true
+ao_light_affect = 0.2
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_vqadb")
+uv1_scale = Vector3(0.475, 0.475, 0.475)
+uv1_triplanar = true
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_7dnv2"]
+albedo_texture = ExtResource("1_7dnv2")
+orm_texture = ExtResource("4_1jk5w")
+normal_enabled = true
+normal_texture = ExtResource("3_b30xc")
+ao_enabled = true
+ao_light_affect = 0.2
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_vqadb")
+uv1_scale = Vector3(0.475, 0.475, 0.475)
+uv1_triplanar = true
+
+[node name="StoneArchway" type="CSGCombiner3D" unique_id=2127222146]
+
+[node name="Arch" type="CSGPolygon3D" parent="." unique_id=425429081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.38455394, -0.033050925, 1.1138871, 0.19862336)
+polygon = PackedVector2Array(-0.61491525, -1.182553, -0.63788927, -0.10935247, -0.48759684, 0.26971602, -0.29712144, 0.55079806, -0.122826785, 0.7236781, 0.07453341, 0.7893169, 0.25922382, 0.705925, 0.56012785, 0.3147967, 0.6845051, -0.16244465, 0.70930225, -1.2394257, 0.5882081, -1.2220005, 0.5785477, -0.1694454, 0.4733794, 0.22832346, 0.21115148, 0.62255454, 0.070612356, 0.66302156, -0.069808915, 0.6316211, -0.19987094, 0.48898876, -0.36166272, 0.20729816, -0.5039705, -0.10475707, -0.4971893, -1.191726)
+material = SubResource("ORMMaterial3D_0mc8x")
+
+[node name="Wall" type="CSGBox3D" parent="." unique_id=837811175]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0996138, 0)
+size = Vector3(2.3701172, 2.196167, 0.25585938)
+material = SubResource("ORMMaterial3D_y0xcy")
+
+[node name="WalkWay" type="CSGPolygon3D" parent="Wall" unique_id=894341925]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.47304136, -1.1229064, 0.53893423)
+operation = 2
+polygon = PackedVector2Array(-0.07397276, 0.011110485, -0.07141, 1.01996, 0.02730462, 1.3627712, 0.20431101, 1.6365964, 0.35242978, 1.7874781, 0.4833459, 1.8375818, 0.61420876, 1.7997946, 0.7538847, 1.6456743, 0.9220455, 1.3998038, 1.0367477, 1.0133352, 1.0402539, -0.0004671812)
+material = SubResource("ORMMaterial3D_7dnv2")
+
+[node name="Door" type="CSGPolygon3D" parent="." unique_id=1869983402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.22585648, -0.47304136, -0.0238204, 0.18485028)
+polygon = PackedVector2Array(-0.07397276, 0.011110485, -0.07141, 1.01996, 0.02730462, 1.3627712, 0.20431101, 1.6365964, 0.35242978, 1.7874781, 0.4833459, 1.8375818, 0.61420876, 1.7997946, 0.7538847, 1.6456743, 0.9220455, 1.3998038, 1.0367477, 1.0133352, 1.0402539, -0.0004671812)
+material = ExtResource("5_7dnv2")

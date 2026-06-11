@@ -1,0 +1,225 @@
+[gd_scene format=3 uid="uid://xkmows6jsjv1"]
+
+[ext_resource type="Material" uid="uid://8vob6sbo6x44" path="res://Assets/Textures/Environment/Surfaces/WeatheredBrownWoodPlank/WeatheredBrownWoodPlank_Material.tres" id="1_3fu8w"]
+[ext_resource type="Material" uid="uid://irpeviim482n" path="res://Assets/Textures/Environment/Surfaces/WeatheredWood/WeatheredWood_Material.res" id="2_dv0y2"]
+[ext_resource type="Material" uid="uid://dawfb5i4rr8h1" path="res://Assets/Textures/Environment/Surfaces/StoneBrickWall/StoneBrickWall_Material.res" id="3_mec3e"]
+[ext_resource type="Material" uid="uid://cgy2p7rs8yl66" path="res://Assets/Textures/Environment/Surfaces/MetalSoot/MetalSoot_Material.res" id="4_l6hyo"]
+
+[node name="GalakasMidCity_DOOR_WoodSingle_RaioTall_01" type="CSGCombiner3D" unique_id=2050705460]
+use_collision = true
+metadata/category = "door"
+metadata/v13_note = "Organic CSG pass: cylindrical hinges, pins, rivets, knobs, rounded plank edges."
+metadata/raio_scale_note = "primary doors use tall frames intended for Ráio-scale clearance; decorative small/balcony/cellar doors are exceptions by function"
+
+[node name="Mat_WoodBeam_DoorFrame_BackLintel_Block" type="CSGBox3D" parent="." unique_id=2104142177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.73, 0)
+size = Vector3(1.63, 0.16, 0.18)
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodBeam_DoorFrame_LeftRoundedJamb" type="CSGCylinder3D" parent="." unique_id=2112742102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.77, 1.385, 0.01)
+radius = 0.075
+height = 2.89
+sides = 12
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodBeam_DoorFrame_RightRoundedJamb" type="CSGCylinder3D" parent="." unique_id=970163999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.77, 1.385, 0.01)
+radius = 0.075
+height = 2.89
+sides = 12
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodBeam_DoorFrame_TopRoundedLintel" type="CSGCylinder3D" parent="." unique_id=97532329]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.78, 0.02)
+radius = 0.07
+height = 1.7
+sides = 12
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodDoor_VerticalPlankPanel_Main" type="CSGBox3D" parent="." unique_id=455637065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.325, -0.08)
+size = Vector3(1.35, 2.65, 0.1)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_01" type="CSGBox3D" parent="." unique_id=612127828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3375, 1.325, -0.135)
+size = Vector3(0.022, 2.491, 0.12)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_01" type="CSGCylinder3D" parent="." unique_id=1347188151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3125, 1.325, -0.142)
+radius = 0.016
+height = 2.438
+material = ExtResource("3_mec3e")
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_02" type="CSGBox3D" parent="." unique_id=189053897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.325, -0.135)
+size = Vector3(0.022, 2.491, 0.12)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_02" type="CSGCylinder3D" parent="." unique_id=649018385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 1.325, -0.142)
+radius = 0.016
+height = 2.438
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_03" type="CSGBox3D" parent="." unique_id=1151266318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3375, 1.325, -0.135)
+size = Vector3(0.022, 2.491, 0.12)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_03" type="CSGCylinder3D" parent="." unique_id=394648838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3625, 1.325, -0.142)
+radius = 0.016
+height = 2.438
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodBeam_DoorCrossbar_TopBoard" type="CSGBox3D" parent="." unique_id=640385292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.908, -0.14)
+size = Vector3(1.161, 0.13, 0.14)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodBeam_DoorCrossbar_BottomBoard" type="CSGBox3D" parent="." unique_id=1607738277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8215, -0.14)
+size = Vector3(1.161, 0.13, 0.14)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodBeam_DoorDiagonalBrace_Board" type="CSGBox3D" parent="." unique_id=1381657374]
+transform = Transform3D(0.72, 0.694, 0, -0.694, 0.72, 0, 0, 0, 1, 0, 1.36475, -0.15)
+size = Vector3(1.5525, 0.1, 0.13)
+material = ExtResource("2_dv0y2")
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_01" type="CSGSphere3D" parent="." unique_id=303441291]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.486, 1.908, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_02" type="CSGSphere3D" parent="." unique_id=300406140]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.486, 1.908, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_03" type="CSGSphere3D" parent="." unique_id=263945121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.486, 0.8215, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_04" type="CSGSphere3D" parent="." unique_id=1750216487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.486, 0.8215, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+material = ExtResource("1_3fu8w")
+
+[node name="Mat_MetalHinge_RoundBarrel_01" type="CSGCylinder3D" parent="." unique_id=2038645856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.695, 2.067, -0.16143543)
+radius = 0.055
+height = 0.32
+sides = 16
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalHinge_FlatLeafStrap_01" type="CSGBox3D" parent="." unique_id=349829826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.535, 2.067, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeUpper_01" type="CSGSphere3D" parent="." unique_id=253768632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.645, 2.122, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeLower_01" type="CSGSphere3D" parent="." unique_id=1827519123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.465, 2.012, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalHinge_RoundBarrel_02" type="CSGCylinder3D" parent="." unique_id=1213826570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.695, 1.325, -0.17262122)
+radius = 0.055
+height = 0.32
+sides = 16
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalHinge_FlatLeafStrap_02" type="CSGBox3D" parent="." unique_id=5991973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.535, 1.325, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeUpper_02" type="CSGSphere3D" parent="." unique_id=1952412397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.645, 1.38, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeLower_02" type="CSGSphere3D" parent="." unique_id=664824928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.465, 1.27, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalHinge_RoundBarrel_03" type="CSGCylinder3D" parent="." unique_id=968689193]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.695, 0.583, -0.17363617)
+radius = 0.055
+height = 0.32
+sides = 16
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalHinge_FlatLeafStrap_03" type="CSGBox3D" parent="." unique_id=1131221480]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.535, 0.583, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeUpper_03" type="CSGSphere3D" parent="." unique_id=1672908320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.645, 0.638, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalRivet_HingeLower_03" type="CSGSphere3D" parent="." unique_id=381999392]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.465, 0.528, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalLatch_RoundBackplate_Disk" type="CSGCylinder3D" parent="." unique_id=625138874]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.405, 1.272, -0.24)
+radius = 0.105
+height = 0.035
+sides = 18
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalLatch_RoundedKnob" type="CSGSphere3D" parent="." unique_id=594124293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.272, -0.285)
+radius = 0.085
+radial_segments = 14
+rings = 7
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalLatch_ShortHandle_Rod" type="CSGCylinder3D" parent="." unique_id=459907750]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.565, 1.272, -0.285)
+radius = 0.025
+height = 0.28
+sides = 10
+material = ExtResource("4_l6hyo")
+
+[node name="Mat_MetalLatch_HandleEndCap" type="CSGSphere3D" parent="." unique_id=1804274800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.715, 1.272, -0.285)
+radius = 0.045
+radial_segments = 10
+rings = 5
+material = ExtResource("4_l6hyo")

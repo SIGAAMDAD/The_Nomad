@@ -1,0 +1,25 @@
+[gd_scene load_steps=1 format=3]
+
+[node name="GalakasMidCity_CUT_BalconyLedgerSockets_01" type="CSGCombiner3D"]
+use_collision = false
+metadata/v21_cutout = "Placement template for balcony ledger and corbel sockets. Copy operation=2 boxes into the same Exterior CSGCombiner3D as the wall if boolean cuts are desired."
+metadata/category = "cutout_template"
+visible = false
+
+[node name="Cutout_BalconyLedger_Recess" type="CSGBox3D" parent="."]
+operation = 2
+use_collision = false
+size = Vector3(2.600, 0.320, 0.220)
+position = Vector3(0.000, 0.000, 0.000)
+
+[node name="Cutout_BalconyCorbel_LeftSocket" type="CSGBox3D" parent="."]
+operation = 2
+use_collision = false
+size = Vector3(0.220, 0.620, 0.240)
+position = Vector3(-0.900, -0.480, 0.000)
+
+[node name="Cutout_BalconyCorbel_RightSocket" type="CSGBox3D" parent="."]
+operation = 2
+use_collision = false
+size = Vector3(0.220, 0.620, 0.240)
+position = Vector3(0.900, -0.480, 0.000)

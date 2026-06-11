@@ -1,0 +1,41 @@
+[gd_scene load_steps=1 format=3 uid="uid://874afc12e485f8d5f2b6"]
+
+[node name="GalakasMidCity_INT_Stair_Straight_01" type="CSGCombiner3D"]
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodStair_Step_1" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -1.2)
+
+[node name="Mat_WoodStair_Step_2" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27, -0.88)
+
+[node name="Mat_WoodStair_Step_3" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.56)
+
+[node name="Mat_WoodStair_Step_4" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.63, -0.24)
+
+[node name="Mat_WoodStair_Step_5" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.81, 0.08)
+
+[node name="Mat_WoodStair_Step_6" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99, 0.4)
+
+[node name="Mat_WoodStair_Step_7" type="CSGBox3D" parent="."]
+size = Vector3(1.25, 0.18, 0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.17, 0.72)
+
+[node name="Mat_WoodStair_LeftStringer" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.18, 2.55)
+transform = Transform3D(1, 0, 0, 0, 0.913545, -0.406737, 0, 0.406737, 0.913545, -0.7, 0.65, -0.25)
+
+[node name="Mat_WoodStair_RightStringer" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.18, 2.55)
+transform = Transform3D(1, 0, 0, 0, 0.913545, -0.406737, 0, 0.406737, 0.913545, 0.7, 0.65, -0.25)

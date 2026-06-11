@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[sub_resource type="Curve3D" id="Curve3D_1"]
+bake_interval = 0.120
+up_vector_enabled = true
+_data = {
+"points": PackedVector3Array(0.000, 0.000, 0.000, 0.000, 0.320, 0.000, 0.000, 0.000, 0.000, 0.000, -0.220, 0.100, 0.000, 0.220, -0.100, 0.000, 0.580, -0.240, 0.000, -0.220, -0.100, 0.000, 0.220, 0.100, 0.000, 1.160, -0.240, 0.000, -0.320, 0.000, 0.000, 0.000, 0.000, 0.000, 1.740, 0.000),
+"tilts": PackedFloat32Array(0.000, 0.000, 0.000, 0.000)
+}
+
+[node name="GalakasMidCity_CURVE_Drainpipe_SBend_WallOffset_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v18_curved_mesh = "CSGPolygon3D MODE_PATH + Path3D. Separate reusable curve mesh scene for details that should render as actual curved geometry."
+metadata/placement_note = "Offset pipe section for avoiding a beam, sign, ledge, or warped facade."
+
+[node name="Path3D_1" type="Path3D" parent="."]
+curve = SubResource("Curve3D_1")
+
+[node name="Mat_MetalPipe_CSGPolygonPath_SBendOffset_Rounded" type="CSGPolygon3D" parent="."]
+use_collision = false
+mode = 2
+path_node = NodePath("../Path3D_1")
+path_interval = 0.080
+path_interval_type = 0
+path_rotation = 2
+path_rotation_accurate = true
+path_simplify_angle = 2.000
+polygon = PackedVector2Array(0.052, 0.000, 0.042, 0.031, 0.016, 0.049, -0.016, 0.049, -0.042, 0.031, -0.052, 0.000, -0.042, -0.031, -0.016, -0.049, 0.016, -0.049, 0.042, -0.031)

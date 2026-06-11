@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://dwa08gsextif"]
+
+[node name="GalakasMidCity_ORG_PotteryJugs_Cluster_01" type="CSGCombiner3D" unique_id=1827013763]
+use_collision = true
+metadata/category = "organic_detail"
+
+[node name="Mat_CeramicJug_BellyCylinder_1" type="CSGCylinder3D" parent="." unique_id=340398974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.19, 0)
+radius = 0.16
+height = 0.38
+sides = 16
+
+[node name="Mat_CeramicJug_RoundedShoulder_1" type="CSGSphere3D" parent="." unique_id=664049134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.3154, 0)
+radius = 0.152
+radial_segments = 14
+rings = 7
+
+[node name="Mat_CeramicJug_Neck_1" type="CSGCylinder3D" parent="." unique_id=1478141541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.399, 0)
+radius = 0.0672
+height = 0.133
+sides = 12
+
+[node name="Mat_CeramicJug_Rim_1" type="CSGCylinder3D" parent="." unique_id=659008734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.4712, 0)
+radius = 0.08
+height = 0.035
+sides = 12
+
+[node name="Mat_CeramicJug_BellyCylinder_2" type="CSGCylinder3D" parent="." unique_id=1386275756]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.26, 0.07)
+radius = 0.22
+height = 0.52
+sides = 16
+
+[node name="Mat_CeramicJug_RoundedShoulder_2" type="CSGSphere3D" parent="." unique_id=1298362834]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.4316, 0.07)
+radius = 0.209
+radial_segments = 14
+rings = 7
+
+[node name="Mat_CeramicJug_Neck_2" type="CSGCylinder3D" parent="." unique_id=1680160468]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.546, 0.07)
+radius = 0.0924
+height = 0.182
+sides = 12
+
+[node name="Mat_CeramicJug_Rim_2" type="CSGCylinder3D" parent="." unique_id=1514673989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.6448, 0.07)
+radius = 0.11
+height = 0.035
+sides = 12
+
+[node name="Mat_CeramicJug_BellyCylinder_3" type="CSGCylinder3D" parent="." unique_id=871262232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 0.17, -0.03)
+radius = 0.14
+height = 0.34
+sides = 16
+
+[node name="Mat_CeramicJug_RoundedShoulder_3" type="CSGSphere3D" parent="." unique_id=1034915127]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 0.2822, -0.03)
+radius = 0.133
+radial_segments = 14
+rings = 7
+
+[node name="Mat_CeramicJug_Neck_3" type="CSGCylinder3D" parent="." unique_id=1075842905]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 0.357, -0.03)
+radius = 0.0588
+height = 0.119
+sides = 12
+
+[node name="Mat_CeramicJug_Rim_3" type="CSGCylinder3D" parent="." unique_id=741261601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 0.4216, -0.03)
+radius = 0.07
+height = 0.035
+sides = 12

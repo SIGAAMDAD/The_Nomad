@@ -1,0 +1,178 @@
+{
+  "intended_root_folder": "res://nomad_terrain3d_vegetation/",
+  "terrain3d_usage": "Use the OBJ meshes directly in Terrain3D's instancer asset list; use the .tscn files for manual preview/placement or as scene wrappers.",
+  "assets": [
+    {
+      "name": "grass_dry_tuft_a",
+      "role": "Safe Sands / Galakas dry grass",
+      "height_m": 0.42,
+      "density": "high",
+      "suggested_textures": [
+        "sand",
+        "vegetative_mud"
+      ],
+      "view_distance_m": "35-70"
+    },
+    {
+      "name": "grass_green_tuft_a",
+      "role": "vegetative mud grass",
+      "height_m": 0.38,
+      "density": "high",
+      "suggested_textures": [
+        "vegetative_mud"
+      ],
+      "view_distance_m": "35-70"
+    },
+    {
+      "name": "dune_grass_sparse",
+      "role": "sparse dune grass",
+      "height_m": 0.34,
+      "density": "medium",
+      "suggested_textures": [
+        "sand"
+      ],
+      "view_distance_m": "30-60"
+    },
+    {
+      "name": "reeds_clump_tall",
+      "role": "mud/water-edge reeds",
+      "height_m": 1.25,
+      "density": "medium",
+      "suggested_textures": [
+        "vegetative_mud"
+      ],
+      "view_distance_m": "60-100"
+    },
+    {
+      "name": "flower_yellow_patch",
+      "role": "small yellow flowers",
+      "height_m": 0.38,
+      "density": "low-medium",
+      "suggested_textures": [
+        "vegetative_mud",
+        "grass"
+      ],
+      "view_distance_m": "25-50"
+    },
+    {
+      "name": "flower_red_patch",
+      "role": "small red flowers / wasteland accent",
+      "height_m": 0.38,
+      "density": "low",
+      "suggested_textures": [
+        "vegetative_mud",
+        "sand"
+      ],
+      "view_distance_m": "25-50"
+    },
+    {
+      "name": "dry_scrub_bush_small",
+      "role": "dry desert shrub",
+      "height_m": 0.75,
+      "density": "medium",
+      "suggested_textures": [
+        "sand",
+        "gravel_trail"
+      ],
+      "view_distance_m": "80-140"
+    },
+    {
+      "name": "thorn_bush_medium",
+      "role": "thorn scrub / hostile wasteland bush",
+      "height_m": 1.05,
+      "density": "low-medium",
+      "suggested_textures": [
+        "sand",
+        "gravel_trail"
+      ],
+      "view_distance_m": "100-180"
+    },
+    {
+      "name": "midcity_low_hedge",
+      "role": "maintained MidCity hedge",
+      "height_m": 0.9,
+      "density": "manual/low",
+      "suggested_textures": [
+        "vegetative_mud",
+        "cobblestone_edges"
+      ],
+      "view_distance_m": "100-200"
+    },
+    {
+      "name": "ground_vines_creeper",
+      "role": "ground cover vines",
+      "height_m": 0.16,
+      "density": "low-medium",
+      "suggested_textures": [
+        "vegetative_mud",
+        "cobblestone_edges"
+      ],
+      "view_distance_m": "40-80"
+    },
+    {
+      "name": "midcity_wall_vines_hanging",
+      "role": "wall vines, manual placement on masonry",
+      "height_m": 2.2,
+      "density": "manual",
+      "suggested_textures": [
+        "walls"
+      ],
+      "view_distance_m": "80-160"
+    },
+    {
+      "name": "small_desert_acacia",
+      "role": "small desert tree",
+      "height_m": 2.6,
+      "density": "low",
+      "suggested_textures": [
+        "sand",
+        "vegetative_mud"
+      ],
+      "view_distance_m": "180-320"
+    },
+    {
+      "name": "midcity_olive_tree",
+      "role": "MidCity ornamental/shade tree",
+      "height_m": 3.1,
+      "density": "manual/low",
+      "suggested_textures": [
+        "vegetative_mud",
+        "cobblestone_edges"
+      ],
+      "view_distance_m": "180-350"
+    },
+    {
+      "name": "dead_tree_snag",
+      "role": "dead wasteland tree silhouette",
+      "height_m": 2.2,
+      "density": "low",
+      "suggested_textures": [
+        "sand",
+        "gravel_trail"
+      ],
+      "view_distance_m": "150-300"
+    },
+    {
+      "name": "young_date_palm",
+      "role": "oasis / market palm",
+      "height_m": 2.7,
+      "density": "manual/low",
+      "suggested_textures": [
+        "sand",
+        "vegetative_mud"
+      ],
+      "view_distance_m": "180-350"
+    },
+    {
+      "name": "small_ribbed_cactus",
+      "role": "small cactus / desert detail",
+      "height_m": 0.85,
+      "density": "low-medium",
+      "suggested_textures": [
+        "sand",
+        "gravel_trail"
+      ],
+      "view_distance_m": "80-150"
+    }
+  ]
+}

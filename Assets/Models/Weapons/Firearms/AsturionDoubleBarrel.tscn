@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://c561msm1r6ish"]
+
+[ext_resource type="PackedScene" uid="uid://cfkd3oevkur2l" path="res://Assets/Models/Player/Prototyping.tscn" id="1_ixpdp"]
+[ext_resource type="Material" uid="uid://dmc0aswcr13fp" path="res://Assets/Textures/Environment/Surfaces/MetalPlate/MetalPlate_Material.res" id="2_3w8ub"]
+
+[node name="AsturionDoubleBarrel" type="Node3D" unique_id=1736189466]
+
+[node name="Prototyping" parent="." unique_id=218568658 instance=ExtResource("1_ixpdp")]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=2038953189]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.075074, 3.7551556, 0)
+
+[node name="Barrel" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=456647886]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.3441558, 0.93319035, 0)
+radius = 0.100097656
+height = 3.3755035
+sides = 12
+material = ExtResource("2_3w8ub")
+
+[node name="Barrel2" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=1829561214]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.3268447, 0.7592535, 0)
+radius = 0.100097656
+height = 3.3408813
+sides = 12
+material = ExtResource("2_3w8ub")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2019395852]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8499446, 0.8283763, 0.0035778284)
+size = Vector3(1.1074829, 0.45092773, 0.27246094)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=708901102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5359945, 0.6545067, 0.0035778284)
+size = Vector3(0.6919098, 0.48669434, 0.27246094)

@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://v171036641" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Chair_Armrest_MerchantCarved_01.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://v171036642" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Chair_Armrest_TavernHeavy_01.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://v171036643" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Chair_HighBack_Carved_01.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://v171036644" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Chair_CushionedScribe_01.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://v171036645" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Stool_Round_ThreeLeg_01.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://v171036646" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Stool_BarrelSeat_01.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://v171036647" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Bench_Armrest_Decorative_01.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://v171036648" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/interiors/GalakasMidCity_INT_Chair_RaioHeavy_01.tscn" id="8"]
+
+[node name="GalakasMidCity_PROP_Sampler_ChairVariety_01" type="Node3D"]
+metadata/category = "sampler"
+metadata/note = "Preview layout for decorative chair variants only."
+
+[node name="ChairVariant_01" parent="." instance=ExtResource("1")]
+position = Vector3(-2.175, 0.000, 0.000)
+
+[node name="ChairVariant_02" parent="." instance=ExtResource("2")]
+position = Vector3(-0.725, 0.000, 0.000)
+
+[node name="ChairVariant_03" parent="." instance=ExtResource("3")]
+position = Vector3(0.725, 0.000, 0.000)
+
+[node name="ChairVariant_04" parent="." instance=ExtResource("4")]
+position = Vector3(2.175, 0.000, 0.000)
+
+[node name="ChairVariant_05" parent="." instance=ExtResource("5")]
+position = Vector3(-2.175, 0.000, 1.450)
+
+[node name="ChairVariant_06" parent="." instance=ExtResource("6")]
+position = Vector3(-0.725, 0.000, 1.450)
+
+[node name="ChairVariant_07" parent="." instance=ExtResource("7")]
+position = Vector3(0.725, 0.000, 1.450)
+
+[node name="ChairVariant_08" parent="." instance=ExtResource("8")]
+position = Vector3(2.175, 0.000, 1.450)

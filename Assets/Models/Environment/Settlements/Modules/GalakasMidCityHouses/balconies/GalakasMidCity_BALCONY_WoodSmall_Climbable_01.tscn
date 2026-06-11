@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/GalakasMidCityHouses/curved_meshes/GalakasMidCity_CURVE_BalconyRail_CurvedEnd_01.tscn" id="1"]
+
+[node name="GalakasMidCity_BALCONY_WoodSmall_Climbable_01" type="CSGCombiner3D"]
+use_collision = true
+metadata/v21_traversal = "Small climbable wall-mounted balcony. Default attaches to a front-facing facade; platform projects along local -Z."
+metadata/category = "balcony_traversal"
+metadata/climbable = "true"
+
+[node name="Mat_WoodBalcony_WallLedger" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(2.200, 0.220, 0.180)
+position = Vector3(0.000, 0.000, 0.030)
+
+[node name="Mat_WoodBalcony_PlatformDeck" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(2.400, 0.180, 1.050)
+position = Vector3(0.000, -0.080, -0.520)
+
+[node name="Mat_WoodBalcony_FrontRail" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.055
+height = 2.450
+sides = 12
+position = Vector3(0.000, 0.780, -1.050)
+rotation = Vector3(0.000, 0.000, 1.571)
+
+[node name="Mat_WoodBalcony_LeftRail" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.050
+height = 0.950
+sides = 12
+position = Vector3(-1.170, 0.760, -0.560)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_WoodBalcony_RightRail" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.050
+height = 0.950
+sides = 12
+position = Vector3(1.170, 0.760, -0.560)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_WoodBalcony_Post_LFront" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.070
+height = 0.950
+sides = 10
+position = Vector3(-1.170, 0.370, -1.040)
+
+[node name="Mat_WoodBalcony_Post_RFront" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.070
+height = 0.950
+sides = 10
+position = Vector3(1.170, 0.370, -1.040)
+
+[node name="Mat_WoodBalcony_Corbel_Left" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.160, 0.900, 0.200)
+position = Vector3(-0.900, -0.420, -0.320)
+rotation = Vector3(0.720, 0.000, 0.000)
+
+[node name="Mat_WoodBalcony_Corbel_Right" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.160, 0.900, 0.200)
+position = Vector3(0.900, -0.420, -0.320)
+rotation = Vector3(0.720, 0.000, 0.000)
+
+[node name="Curve_BalconyRail_CurvedEnd_Left" parent="." instance=ExtResource("1")]
+position = Vector3(-1.250, 0.790, -0.860)
+rotation = Vector3(0.000, 0.000, 0.000)
+
+[node name="Curve_BalconyRail_CurvedEnd_Right" parent="." instance=ExtResource("1")]
+position = Vector3(1.250, 0.790, -0.860)
+rotation = Vector3(0.000, 3.142, 0.000)

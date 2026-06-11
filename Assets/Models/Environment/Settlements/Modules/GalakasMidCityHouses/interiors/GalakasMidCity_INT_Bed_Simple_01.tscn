@@ -1,0 +1,106 @@
+[gd_scene load_steps=1 format=3 uid="uid://61a32200815f31a16f06"]
+
+[node name="GalakasMidCity_INT_Bed_Simple_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodBed_Frame" type="CSGBox3D" parent="."]
+size = Vector3(2.05, 0.32, 1.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0)
+
+[node name="Mat_FabricMattress_BedMattress" type="CSGBox3D" parent="."]
+size = Vector3(1.88, 0.22, 1.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+
+[node name="Mat_FabricPillow_BedPillow" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.16, 0.82)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.76, 0)
+
+[node name="Mat_FabricBlanket_BedBlanket" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(1.0, 0.08, 0.98)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36, 0.76, 0)
+
+[node name="Mat_WoodBeam_BedPost_-0.95_-0.5" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.75, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.375, -0.5)
+
+[node name="Mat_WoodBeam_BedPost_-0.95_0.5" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.75, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.375, 0.5)
+
+[node name="Mat_WoodBeam_BedPost_0.95_-0.5" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.75, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.375, -0.5)
+
+[node name="Mat_WoodBeam_BedPost_0.95_0.5" type="CSGBox3D" parent="."]
+size = Vector3(0.12, 0.75, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.375, 0.5)
+
+
+[node name="Mat_WoodBedpost_RoundPost_-0.58_-0.95" type="CSGCylinder3D" parent="."]
+radius = 0.055
+height = 0.75
+sides = 12
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.52, -0.95)
+
+[node name="Mat_WoodBedpost_RoundKnob_-0.58_-0.95" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.075
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.92, -0.95)
+
+[node name="Mat_WoodBedpost_RoundPost_-0.58_+0.95" type="CSGCylinder3D" parent="."]
+radius = 0.055
+height = 0.75
+sides = 12
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.52, 0.95)
+
+[node name="Mat_WoodBedpost_RoundKnob_-0.58_+0.95" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.075
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0.92, 0.95)
+
+[node name="Mat_WoodBedpost_RoundPost_+0.58_-0.95" type="CSGCylinder3D" parent="."]
+radius = 0.055
+height = 0.75
+sides = 12
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.52, -0.95)
+
+[node name="Mat_WoodBedpost_RoundKnob_+0.58_-0.95" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.075
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.92, -0.95)
+
+[node name="Mat_WoodBedpost_RoundPost_+0.58_+0.95" type="CSGCylinder3D" parent="."]
+radius = 0.055
+height = 0.75
+sides = 12
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.52, 0.95)
+
+[node name="Mat_WoodBedpost_RoundKnob_+0.58_+0.95" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.075
+radial_segments = 10
+rings = 5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0.92, 0.95)
+
+[node name="Mat_ClothPillow_RoundedLump_Left" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.22
+radial_segments = 12
+rings = 6
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.26, 0.73, -0.72)
+
+[node name="Mat_ClothPillow_RoundedLump_Right" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.22
+radial_segments = 12
+rings = 6
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26, 0.73, -0.72)

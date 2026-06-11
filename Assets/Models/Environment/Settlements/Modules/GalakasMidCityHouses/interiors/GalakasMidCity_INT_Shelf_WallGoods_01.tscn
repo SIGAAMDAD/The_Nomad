@@ -1,0 +1,125 @@
+[gd_scene load_steps=1 format=3 uid="uid://fcb718a4fde5b1c393ba"]
+
+[node name="GalakasMidCity_INT_Shelf_WallGoods_01" type="CSGCombiner3D"]
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodShelf_BackBoard" type="CSGBox3D" parent="."]
+size = Vector3(2.4, 1.4, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.05)
+
+[node name="Mat_WoodShelf_Plank_Y0.55" type="CSGBox3D" parent="."]
+size = Vector3(2.45, 0.1, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.16)
+
+[node name="Mat_WoodShelf_Plank_Y1.05" type="CSGBox3D" parent="."]
+size = Vector3(2.45, 0.1, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.16)
+
+[node name="Mat_WoodShelf_Plank_Y1.55" type="CSGBox3D" parent="."]
+size = Vector3(2.45, 0.1, 0.42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -0.16)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_1_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_1_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.444, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_2_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_2_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.444, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_3_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_3_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.444, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_4_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_4_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.444, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_5_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_5_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.444, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_6_Body" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.07200000000000001
+height = 0.25200000000000006
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.246, -0.28)
+
+[node name="Mat_GlassDirty_Bottle_ShelfBottle_6_Neck" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.03150000000000001
+height = 0.14400000000000002
+sides = 8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 1.444, -0.28)
+
+[node name="Mat_LeatherBook_ShelfBook_1_ClosedBook" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.22, 0.08, 0.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 1.62, -0.28)
+
+[node name="Mat_LeatherBook_ShelfBook_2_ClosedBook" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.22, 0.08, 0.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.62, -0.28)
+
+[node name="Mat_LeatherBook_ShelfBook_3_ClosedBook" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.22, 0.08, 0.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.62, -0.28)
+
+[node name="Mat_LeatherBook_ShelfBook_4_ClosedBook" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.22, 0.08, 0.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.62, -0.28)

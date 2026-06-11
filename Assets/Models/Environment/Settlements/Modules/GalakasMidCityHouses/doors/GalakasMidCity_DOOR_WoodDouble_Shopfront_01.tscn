@@ -1,0 +1,204 @@
+[gd_scene format=3 uid="uid://br2i5a4ooptlb"]
+
+[node name="GalakasMidCity_DOOR_WoodDouble_Shopfront_01" type="CSGCombiner3D" unique_id=7062440]
+use_collision = true
+metadata/category = "door"
+metadata/v13_note = "Organic CSG pass: cylindrical hinges, pins, rivets, knobs, rounded plank edges."
+metadata/raio_scale_note = "primary doors use tall frames intended for Ráio-scale clearance; decorative small/balcony/cellar doors are exceptions by function"
+
+[node name="Mat_WoodBeam_DoorFrame_BackLintel_Block" type="CSGBox3D" parent="." unique_id=1687446447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.43, 0)
+size = Vector3(1.92, 0.16, 0.18)
+
+[node name="Mat_WoodBeam_DoorFrame_LeftRoundedJamb" type="CSGCylinder3D" parent="." unique_id=1631411015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.915, 1.235, 0.01)
+radius = 0.075
+height = 2.59
+sides = 12
+
+[node name="Mat_WoodBeam_DoorFrame_RightRoundedJamb" type="CSGCylinder3D" parent="." unique_id=917093749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.915, 1.235, 0.01)
+radius = 0.075
+height = 2.59
+sides = 12
+
+[node name="Mat_WoodBeam_DoorFrame_TopRoundedLintel" type="CSGCylinder3D" parent="." unique_id=905133807]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.48, 0.02)
+radius = 0.07
+height = 1.99
+sides = 12
+
+[node name="Mat_WoodDoor_VerticalPlankPanel_Main" type="CSGBox3D" parent="." unique_id=432581584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.175, -0.08)
+size = Vector3(1.64, 2.35, 0.1)
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_01" type="CSGBox3D" parent="." unique_id=1984678863]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.546667, 1.175, -0.135)
+size = Vector3(0.022, 2.209, 0.12)
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_01" type="CSGCylinder3D" parent="." unique_id=1312307641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.521667, 1.175, -0.142)
+radius = 0.016
+height = 2.162
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_02" type="CSGBox3D" parent="." unique_id=1278900770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.273333, 1.175, -0.135)
+size = Vector3(0.022, 2.209, 0.12)
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_02" type="CSGCylinder3D" parent="." unique_id=1384031587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.248333, 1.175, -0.142)
+radius = 0.016
+height = 2.162
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_03" type="CSGBox3D" parent="." unique_id=342277895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.175, -0.135)
+size = Vector3(0.022, 2.209, 0.12)
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_03" type="CSGCylinder3D" parent="." unique_id=127789251]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.025, 1.175, -0.142)
+radius = 0.016
+height = 2.162
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_04" type="CSGBox3D" parent="." unique_id=1025122172]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.273333, 1.175, -0.135)
+size = Vector3(0.022, 2.209, 0.12)
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_04" type="CSGCylinder3D" parent="." unique_id=1131341776]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.298333, 1.175, -0.142)
+radius = 0.016
+height = 2.162
+
+[node name="Mat_ShadowGap_DoorPlankDarkRecess_05" type="CSGBox3D" parent="." unique_id=1800881021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.546667, 1.175, -0.135)
+size = Vector3(0.022, 2.209, 0.12)
+
+[node name="Mat_WoodDoor_RoundedPlankEdge_05" type="CSGCylinder3D" parent="." unique_id=1607746826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.571667, 1.175, -0.142)
+radius = 0.016
+height = 2.162
+
+[node name="Mat_WoodBeam_DoorCrossbar_TopBoard" type="CSGBox3D" parent="." unique_id=1863313572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.692, -0.14)
+size = Vector3(1.4104, 0.13, 0.14)
+
+[node name="Mat_WoodBeam_DoorCrossbar_BottomBoard" type="CSGBox3D" parent="." unique_id=462310576]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7285, -0.14)
+size = Vector3(1.4104, 0.13, 0.14)
+
+[node name="Mat_WoodBeam_DoorDiagonalBrace_Board" type="CSGBox3D" parent="." unique_id=830137776]
+transform = Transform3D(0.72, 0.694, 0, -0.694, 0.72, 0, 0, 0, 1, 0, 1.21025, -0.15)
+size = Vector3(1.886, 0.1, 0.13)
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_01" type="CSGSphere3D" parent="." unique_id=1453912408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5904, 1.692, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_02" type="CSGSphere3D" parent="." unique_id=1556239492]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5904, 1.692, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_03" type="CSGSphere3D" parent="." unique_id=511695521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5904, 0.7285, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+
+[node name="Mat_WoodPeg_RoundCrossbarPeg_04" type="CSGSphere3D" parent="." unique_id=80093915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5904, 0.7285, -0.23)
+radius = 0.042
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalHinge_RoundBarrel_01" type="CSGCylinder3D" parent="." unique_id=375215551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 1.833, -0.25)
+radius = 0.055
+height = 0.32
+sides = 16
+
+[node name="Mat_MetalHinge_FlatLeafStrap_01" type="CSGBox3D" parent="." unique_id=1025475059]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 1.833, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+
+[node name="Mat_MetalRivet_HingeUpper_01" type="CSGSphere3D" parent="." unique_id=227709198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.79, 1.888, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalRivet_HingeLower_01" type="CSGSphere3D" parent="." unique_id=991671497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61, 1.778, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalHinge_RoundBarrel_02" type="CSGCylinder3D" parent="." unique_id=1576275507]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 1.175, -0.25)
+radius = 0.055
+height = 0.32
+sides = 16
+
+[node name="Mat_MetalHinge_FlatLeafStrap_02" type="CSGBox3D" parent="." unique_id=306798603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 1.175, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+
+[node name="Mat_MetalRivet_HingeUpper_02" type="CSGSphere3D" parent="." unique_id=413596090]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.79, 1.23, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalRivet_HingeLower_02" type="CSGSphere3D" parent="." unique_id=749127765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61, 1.12, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalHinge_RoundBarrel_03" type="CSGCylinder3D" parent="." unique_id=674065422]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.517, -0.25)
+radius = 0.055
+height = 0.32
+sides = 16
+
+[node name="Mat_MetalHinge_FlatLeafStrap_03" type="CSGBox3D" parent="." unique_id=353249845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.68, 0.517, -0.21)
+size = Vector3(0.34, 0.09, 0.045)
+
+[node name="Mat_MetalRivet_HingeUpper_03" type="CSGSphere3D" parent="." unique_id=793180759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.79, 0.572, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalRivet_HingeLower_03" type="CSGSphere3D" parent="." unique_id=772876623]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61, 0.462, -0.245)
+radius = 0.035
+radial_segments = 10
+rings = 5
+
+[node name="Mat_MetalLatch_RoundBackplate_Disk" type="CSGCylinder3D" parent="." unique_id=166222114]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.492, 1.128, -0.24)
+radius = 0.105
+height = 0.035
+sides = 18
+
+[node name="Mat_MetalLatch_RoundedKnob" type="CSGSphere3D" parent="." unique_id=82576449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.492, 1.128, -0.285)
+radius = 0.085
+radial_segments = 14
+rings = 7
+
+[node name="Mat_MetalLatch_ShortHandle_Rod" type="CSGCylinder3D" parent="." unique_id=1612542116]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.652, 1.128, -0.285)
+radius = 0.025
+height = 0.28
+sides = 10
+
+[node name="Mat_MetalLatch_HandleEndCap" type="CSGSphere3D" parent="." unique_id=454156978]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.802, 1.128, -0.285)
+radius = 0.045
+radial_segments = 10
+rings = 5

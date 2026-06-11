@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://wgx54b737xri"]
+
+[node name="GalakasMidCity_PIECE_SignBracketWood_01" type="CSGCombiner3D" unique_id=279443411]
+use_collision = true
+
+[node name="Mat_WoodSignBracket_HorizontalArm" type="CSGBox3D" parent="." unique_id=45186081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.45, 0)
+use_collision = true
+size = Vector3(1.3, 0.12, 0.12)
+
+[node name="Mat_WoodSignBracket_DiagonalBrace" type="CSGBox3D" parent="." unique_id=981013525]
+transform = Transform3D(0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0, 1, 0.42, 1.15, 0)
+use_collision = true
+size = Vector3(1.1, 0.1, 0.1)
+
+[node name="Mat_MetalLatch_SignHook_NoCollision" type="CSGBox3D" parent="." unique_id=1183354493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.15, 0)
+size = Vector3(0.08, 0.35, 0.08)

@@ -1,0 +1,102 @@
+[gd_scene load_steps=8 format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W04D04_StoneRaised_CompleteFaces_UVReady.tscn" id="scene_1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerFloors/GalakasMidCity_LOWER_W04D04_BrickWallTimber_CompleteFaces_UVReady.tscn" id="scene_2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Doors/GalakasMidCity_DOOR_WoodSingle_RaioTall_CompleteFaces_UVReady_01.tscn" id="scene_3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Windows/GalakasMidCity_WINDOW_TallMerchant_CompleteFaces_UVReady_01.tscn" id="scene_4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperFloors/GalakasMidCity_UPPER_W04D04_PlasterWallTimber_CompleteFaces_UVReady.tscn" id="scene_5"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Windows/GalakasMidCity_WINDOW_TimberDirtyGlass_CompleteFaces_UVReady_01.tscn" id="scene_6"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W04D04_Flat_CompleteFaces_SeparateUVPlanes.tscn" id="scene_7"]
+
+[node name="GalakasMidCity_ServiceFlatRoof_W04D04_F01_R01U02L01_A01_MeshAssembly_v26" type="Node3D"]
+
+[node name="BuildingModules" type="Node3D" parent="."]
+
+[node name="Doors" type="Node3D" parent="."]
+
+[node name="FacadeWindows" type="Node3D" parent="."]
+
+[node name="Module_Foundation_W04D04" parent="BuildingModules" instance=ExtResource("scene_1")]
+
+[node name="Module_LowerFloor_W04D04" parent="BuildingModules" instance=ExtResource("scene_2")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.550000, 0.000000)
+
+[node name="Door_Main_Front_RaioScale_CorrectRotation" parent="Doors" instance=ExtResource("scene_3")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.700000, -4.300000)
+
+[node name="Win_Front_F0_0" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -2.560000, 2.550000, -4.250000)
+
+[node name="Win_Front_F0_2" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 2.560000, 2.550000, -4.250000)
+
+[node name="Win_Back_F0_0" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, -2.560000, 2.550000, 4.250000)
+
+[node name="Win_Back_F0_1" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 2.550000, 4.250000)
+
+[node name="Win_Back_F0_2" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 2.560000, 2.550000, 4.250000)
+
+[node name="Win_Left_F0_0" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(0.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 0.000000, -4.250000, 2.550000, 0.000000)
+
+[node name="Win_Right_F0_0" parent="FacadeWindows" instance=ExtResource("scene_4")]
+transform = Transform3D(0.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 0.000000, 4.250000, 2.550000, 0.000000)
+
+[node name="Module_UpperFloor_1_W04D04" parent="BuildingModules" instance=ExtResource("scene_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 5.350000, 0.000000)
+
+[node name="Win_Front_F1_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -2.560000, 6.900000, -4.250000)
+
+[node name="Win_Front_F1_1" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 6.900000, -4.250000)
+
+[node name="Win_Front_F1_2" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 2.560000, 6.900000, -4.250000)
+
+[node name="Win_Back_F1_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, -2.560000, 6.900000, 4.250000)
+
+[node name="Win_Back_F1_1" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 6.900000, 4.250000)
+
+[node name="Win_Back_F1_2" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 2.560000, 6.900000, 4.250000)
+
+[node name="Win_Left_F1_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(0.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 0.000000, -4.250000, 6.900000, 0.000000)
+
+[node name="Win_Right_F1_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(0.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 0.000000, 4.250000, 6.900000, 0.000000)
+
+[node name="Module_UpperFloor_2_W04D04" parent="BuildingModules" instance=ExtResource("scene_5")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 9.750000, 0.000000)
+
+[node name="Win_Front_F2_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, -2.560000, 11.300000, -4.250000)
+
+[node name="Win_Front_F2_1" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 11.300000, -4.250000)
+
+[node name="Win_Front_F2_2" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 2.560000, 11.300000, -4.250000)
+
+[node name="Win_Back_F2_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, -2.560000, 11.300000, 4.250000)
+
+[node name="Win_Back_F2_1" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 0.000000, 11.300000, 4.250000)
+
+[node name="Win_Back_F2_2" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(-1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, -1.000000, 2.560000, 11.300000, 4.250000)
+
+[node name="Win_Left_F2_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(0.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, 0.000000, -4.250000, 11.300000, 0.000000)
+
+[node name="Win_Right_F2_0" parent="FacadeWindows" instance=ExtResource("scene_6")]
+transform = Transform3D(0.000000, 0.000000, 1.000000, 0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 0.000000, 4.250000, 11.300000, 0.000000)
+
+[node name="Module_Roof_Flat_SeparateClosedPlanes" parent="BuildingModules" instance=ExtResource("scene_7")]
+transform = Transform3D(1.000000, 0.000000, -0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 14.150000, 0.000000)

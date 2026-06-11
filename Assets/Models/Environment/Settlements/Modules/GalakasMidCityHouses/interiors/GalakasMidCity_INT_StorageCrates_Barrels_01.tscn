@@ -1,0 +1,167 @@
+[gd_scene load_steps=1 format=3 uid="uid://aaff02727029e3920a1b"]
+
+[node name="GalakasMidCity_INT_StorageCrates_Barrels_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodCrate_InteriorStorageCrate_1_Body" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.42, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.21, -0.25)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_1_FrontSlatTop" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3276, -0.52)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_1_FrontSlatBottom" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1176, -0.52)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_1_LeftStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.775, 0.21, -0.54)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_1_RightStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.425, 0.21, -0.54)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_2_Body" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.42, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.21, -0.25)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_2_FrontSlatTop" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.3276, -0.52)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_2_FrontSlatBottom" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.1176, -0.52)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_2_LeftStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.21, -0.54)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_2_RightStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.21, -0.54)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_3_Body" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.42, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.21, -0.2)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_3_FrontSlatTop" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.3276, -0.47)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_3_FrontSlatBottom" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.1176, -0.47)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_3_LeftStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.21, -0.49)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_3_RightStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.925, 0.21, -0.49)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_4_Body" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.42, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.21, 0.35)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_4_FrontSlatTop" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.3276, 0.08)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_4_FrontSlatBottom" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.1176, 0.08)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_4_LeftStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.425, 0.21, 0.06)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_4_RightStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.21, 0.06)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_5_Body" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.42, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.21, 0.45)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_5_FrontSlatTop" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.3276, 0.18)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_5_FrontSlatBottom" type="CSGBox3D" parent="."]
+size = Vector3(0.6000000000000001, 0.08, 0.06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.1176, 0.18)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_5_LeftStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.325, 0.21, 0.16)
+
+[node name="Mat_WoodCrate_InteriorStorageCrate_5_RightStrap" type="CSGBox3D" parent="."]
+size = Vector3(0.07, 0.47, 0.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.675, 0.21, 0.16)
+
+[node name="Mat_WoodBarrel_InteriorStorageBarrel_1_Body" type="CSGCylinder3D" parent="."]
+radius = 0.28
+height = 0.65
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.325, 0.45)
+
+[node name="Mat_MetalBand_InteriorStorageBarrel_1_TopHoop" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.29500000000000004
+height = 0.04
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.533, 0.45)
+
+[node name="Mat_MetalBand_InteriorStorageBarrel_1_BottomHoop" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.29500000000000004
+height = 0.04
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.143, 0.45)
+
+[node name="Mat_WoodBarrel_InteriorStorageBarrel_2_Body" type="CSGCylinder3D" parent="."]
+radius = 0.28
+height = 0.65
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.325, 0.35)
+
+[node name="Mat_MetalBand_InteriorStorageBarrel_2_TopHoop" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.29500000000000004
+height = 0.04
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.533, 0.35)
+
+[node name="Mat_MetalBand_InteriorStorageBarrel_2_BottomHoop" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.29500000000000004
+height = 0.04
+sides = 16
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.143, 0.35)
+
+
+[node name="Mat_WoodBarrel_ExtraRoundedBarrel_A" type="CSGCylinder3D" parent="."]
+radius = 0.31
+height = 0.72
+sides = 18
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62, 0.36, -0.15)
+
+[node name="Mat_MetalBand_ExtraRoundedBarrel_A_Top" type="CSGCylinder3D" parent="."]
+use_collision = false
+radius = 0.32
+height = 0.035
+sides = 18
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62, 0.59, -0.15)
+
+[node name="Mat_BurlapSack_ExtraLumpySack" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.26
+radial_segments = 12
+rings = 6
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66, 0.32, 0.18)

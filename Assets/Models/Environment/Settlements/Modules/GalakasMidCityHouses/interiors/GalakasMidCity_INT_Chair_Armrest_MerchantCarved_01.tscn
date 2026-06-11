@@ -1,0 +1,211 @@
+[gd_scene format=3 uid="uid://v171036641"]
+
+[node name="GalakasMidCity_INT_Chair_Armrest_MerchantCarved_01" type="CSGCombiner3D"]
+metadata/v17_extension = "decorative chairs, lamps, and building climbing props; CSGCombiner3D root."
+metadata/category = "interior_chair"
+metadata/scale_note = "Ráio-scale compatible; decorative MidCity interior prop."
+use_collision = true
+
+[node name="Mat_WoodChair_CurvedWideSeat" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.820, 0.140, 0.720)
+position = Vector3(0.000, 0.580, 0.000)
+
+[node name="Mat_ClothCushion_SlightlyRaised" type="CSGBox3D" parent="."]
+use_collision = false
+size = Vector3(0.700, 0.100, 0.620)
+position = Vector3(0.000, 0.700, 0.000)
+
+[node name="Mat_WoodChair_TurnedLeg_-0.35_-0.28" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.620
+sides = 14
+position = Vector3(-0.350, 0.310, -0.280)
+
+[node name="Mat_WoodChair_FootKnob_-0.35_-0.28" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.065
+radial_segments = 10
+rings = 6
+position = Vector3(-0.350, 0.040, -0.280)
+
+[node name="Mat_WoodChair_TurnedLeg_-0.35_+0.28" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.620
+sides = 14
+position = Vector3(-0.350, 0.310, 0.280)
+
+[node name="Mat_WoodChair_FootKnob_-0.35_+0.28" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.065
+radial_segments = 10
+rings = 6
+position = Vector3(-0.350, 0.040, 0.280)
+
+[node name="Mat_WoodChair_TurnedLeg_+0.35_-0.28" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.620
+sides = 14
+position = Vector3(0.350, 0.310, -0.280)
+
+[node name="Mat_WoodChair_FootKnob_+0.35_-0.28" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.065
+radial_segments = 10
+rings = 6
+position = Vector3(0.350, 0.040, -0.280)
+
+[node name="Mat_WoodChair_TurnedLeg_+0.35_+0.28" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.620
+sides = 14
+position = Vector3(0.350, 0.310, 0.280)
+
+[node name="Mat_WoodChair_FootKnob_+0.35_+0.28" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.065
+radial_segments = 10
+rings = 6
+position = Vector3(0.350, 0.040, 0.280)
+
+[node name="Mat_WoodChair_RoundArmPostFront_-0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.660
+sides = 14
+position = Vector3(-0.480, 0.780, -0.300)
+
+[node name="Mat_WoodChair_RoundArmPostBack_-0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 1.000
+sides = 14
+position = Vector3(-0.480, 0.950, 0.300)
+
+[node name="Mat_WoodChair_CylindricalArmRest_-0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.040
+height = 0.720
+sides = 14
+position = Vector3(-0.480, 1.020, 0.000)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_WoodChair_ArmRestCap_-0.48" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(-0.480, 1.020, -0.370)
+
+[node name="Mat_WoodChair_RoundArmPostFront_+0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 0.660
+sides = 14
+position = Vector3(0.480, 0.780, -0.300)
+
+[node name="Mat_WoodChair_RoundArmPostBack_+0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.045
+height = 1.000
+sides = 14
+position = Vector3(0.480, 0.950, 0.300)
+
+[node name="Mat_WoodChair_CylindricalArmRest_+0.48" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.040
+height = 0.720
+sides = 14
+position = Vector3(0.480, 1.020, 0.000)
+rotation = Vector3(1.571, 0.000, 0.000)
+
+[node name="Mat_WoodChair_ArmRestCap_+0.48" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.060
+radial_segments = 10
+rings = 6
+position = Vector3(0.480, 1.020, -0.370)
+
+[node name="Mat_WoodChair_BackPanel_Lower" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.820, 0.120, 0.090)
+position = Vector3(0.000, 0.880, 0.380)
+
+[node name="Mat_WoodChair_BackPanel_CarvedTop" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(0.880, 0.160, 0.100)
+position = Vector3(0.000, 1.450, 0.400)
+
+[node name="Mat_WoodChair_BackSpindle_-0.30" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.580
+sides = 10
+position = Vector3(-0.300, 1.160, 0.390)
+
+[node name="Mat_WoodChair_BackSpindleKnob_-0.30" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.040
+radial_segments = 8
+rings = 6
+position = Vector3(-0.300, 1.470, 0.390)
+
+[node name="Mat_WoodChair_BackSpindle_-0.15" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.580
+sides = 10
+position = Vector3(-0.150, 1.160, 0.390)
+
+[node name="Mat_WoodChair_BackSpindleKnob_-0.15" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.040
+radial_segments = 8
+rings = 6
+position = Vector3(-0.150, 1.470, 0.390)
+
+[node name="Mat_WoodChair_BackSpindle_+0.00" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.580
+sides = 10
+position = Vector3(0.000, 1.160, 0.390)
+
+[node name="Mat_WoodChair_BackSpindleKnob_+0.00" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.040
+radial_segments = 8
+rings = 6
+position = Vector3(0.000, 1.470, 0.390)
+
+[node name="Mat_WoodChair_BackSpindle_+0.15" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.580
+sides = 10
+position = Vector3(0.150, 1.160, 0.390)
+
+[node name="Mat_WoodChair_BackSpindleKnob_+0.15" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.040
+radial_segments = 8
+rings = 6
+position = Vector3(0.150, 1.470, 0.390)
+
+[node name="Mat_WoodChair_BackSpindle_+0.30" type="CSGCylinder3D" parent="."]
+use_collision = true
+radius = 0.025
+height = 0.580
+sides = 10
+position = Vector3(0.300, 1.160, 0.390)
+
+[node name="Mat_WoodChair_BackSpindleKnob_+0.30" type="CSGSphere3D" parent="."]
+use_collision = false
+radius = 0.040
+radial_segments = 8
+rings = 6
+position = Vector3(0.300, 1.470, 0.390)

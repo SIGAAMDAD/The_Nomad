@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c5kpvgcvxf24t"]
+
+[ext_resource type="PackedScene" uid="uid://cnd62oj6tstkv" path="res://Assets/Models/Environment/Settlements/Decor/industrial_wall_sconce.glb" id="1_kfscs"]
+[ext_resource type="Texture2D" uid="uid://c6p3dqucwxybi" path="res://Assets/Textures/Environment/PointLight.dds" id="2_lb4dl"]
+
+[node name="industrial_wall_sconce" unique_id=841007467 instance=ExtResource("1_kfscs")]
+transform = Transform3D(3.999994, 0, 0, 0, 3.999992, 0, 0, 0, 3.9999983, 0, 0, 0)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1" unique_id=2026454502]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.0041984953, 0.055427343, 0.1950076)
+light_projector = ExtResource("2_lb4dl")
+shadow_enabled = true
+spot_range = 4.0

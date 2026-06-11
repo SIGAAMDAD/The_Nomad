@@ -1,0 +1,55 @@
+[gd_scene load_steps=1 format=3 uid="uid://87521486d04e2fef5002"]
+
+[node name="GalakasMidCity_INT_Chair_Wood_01" type="CSGCombiner3D"]
+metadata/v13_organic_csg_pass = "added rounded cylinders/spheres for less boxy silhouette"
+metadata/category = "interior"
+
+use_collision = true
+[node name="Mat_WoodChair_Seat" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.12, 0.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+
+[node name="Mat_WoodChair_Back" type="CSGBox3D" parent="."]
+size = Vector3(0.55, 0.85, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.28)
+
+[node name="Mat_WoodChair_Leg_-0.22_-0.22" type="CSGBox3D" parent="."]
+size = Vector3(0.08, 0.55, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.275, -0.22)
+
+[node name="Mat_WoodChair_Leg_-0.22_0.22" type="CSGBox3D" parent="."]
+size = Vector3(0.08, 0.55, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.275, 0.22)
+
+[node name="Mat_WoodChair_Leg_0.22_-0.22" type="CSGBox3D" parent="."]
+size = Vector3(0.08, 0.55, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.275, -0.22)
+
+[node name="Mat_WoodChair_Leg_0.22_0.22" type="CSGBox3D" parent="."]
+size = Vector3(0.08, 0.55, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.275, 0.22)
+
+
+[node name="Mat_WoodFurniture_RoundLeg_-0.32_-0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.21, -0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_+0.32_-0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.21, -0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_-0.32_+0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.21, 0.22)
+
+[node name="Mat_WoodFurniture_RoundLeg_+0.32_+0.22" type="CSGCylinder3D" parent="."]
+radius = 0.035
+height = 0.42
+sides = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.21, 0.22)
