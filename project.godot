@@ -57,7 +57,7 @@ project/assembly_name="TheNomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/csg_scene_baker/plugin.cfg", "res://addons/cyclops_level_builder/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/traversal_baker/plugin.cfg")
+enabled=PackedStringArray("res://addons/csg_generator_3d/plugin.cfg", "res://addons/csg_scene_baker/plugin.cfg", "res://addons/csg_toolkit/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/traversal_baker/plugin.cfg")
 
 [filesystem]
 
