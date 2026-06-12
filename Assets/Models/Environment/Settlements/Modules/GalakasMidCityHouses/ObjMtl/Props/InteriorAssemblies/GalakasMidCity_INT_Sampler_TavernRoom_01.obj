@@ -1,18 +1,3 @@
-# GalakasMidCity_INT_Sampler_TavernRoom_01
-mtllib GalakasMidCity_INT_Sampler_TavernRoom_01.mtl
-v -0.50000 0.00000 -0.50000
-v 0.50000 0.00000 -0.50000
-v 0.50000 1.00000 -0.50000
-v -0.50000 1.00000 -0.50000
-v -0.50000 0.00000 0.50000
-v 0.50000 0.00000 0.50000
-v 0.50000 1.00000 0.50000
-v -0.50000 1.00000 0.50000
-g interior_prop
-usemtl Mat_WoodWeathered
-f 1 2 3 4
-f 5 8 7 6
-f 1 5 6 2
-f 2 6 7 3
-f 3 7 8 4
-f 4 8 5 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f727a06e0c7c08c3ca7495bbe14829c26a9a75f3da78d9c77781c15665e6837
+size 412

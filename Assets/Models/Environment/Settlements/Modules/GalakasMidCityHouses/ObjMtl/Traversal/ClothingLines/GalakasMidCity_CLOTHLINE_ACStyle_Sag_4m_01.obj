@@ -1,18 +1,3 @@
-# GalakasMidCity_CLOTHLINE_ACStyle_Sag_4m_01
-mtllib GalakasMidCity_CLOTHLINE_ACStyle_Sag_4m_01.mtl
-v -0.50000 0.00000 -0.50000
-v 0.50000 0.00000 -0.50000
-v 0.50000 1.00000 -0.50000
-v -0.50000 1.00000 -0.50000
-v -0.50000 0.00000 0.50000
-v 0.50000 0.00000 0.50000
-v 0.50000 1.00000 0.50000
-v -0.50000 1.00000 0.50000
-g generic_asset
-usemtl Mat_WoodWeathered
-f 1 2 3 4
-f 5 8 7 6
-f 1 5 6 2
-f 2 6 7 3
-f 3 7 8 4
-f 4 8 5 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f93a4989f7416906deec80c2bc91110d6c392b7b72b365e947f1850ee4b7634
+size 416

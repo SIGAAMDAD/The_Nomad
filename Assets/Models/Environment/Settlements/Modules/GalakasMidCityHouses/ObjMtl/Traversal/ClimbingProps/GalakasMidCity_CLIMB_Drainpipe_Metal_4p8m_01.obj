@@ -1,18 +1,3 @@
-# GalakasMidCity_CLIMB_Drainpipe_Metal_4p8m_01
-mtllib GalakasMidCity_CLIMB_Drainpipe_Metal_4p8m_01.mtl
-v -0.50000 0.00000 -0.50000
-v 0.50000 0.00000 -0.50000
-v 0.50000 1.00000 -0.50000
-v -0.50000 1.00000 -0.50000
-v -0.50000 0.00000 0.50000
-v 0.50000 0.00000 0.50000
-v 0.50000 1.00000 0.50000
-v -0.50000 1.00000 0.50000
-g generic_asset
-usemtl Mat_WoodWeathered
-f 1 2 3 4
-f 5 8 7 6
-f 1 5 6 2
-f 2 6 7 3
-f 3 7 8 4
-f 4 8 5 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:88f57a328570536196e6a0c729bffe513eaccef959bfdcb451f51a4d1fbec35a
+size 420

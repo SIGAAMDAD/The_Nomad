@@ -1,18 +1,3 @@
-# GalakasMidCity_CLIMB_Drainpipe_Metal_BentCorner_01
-mtllib GalakasMidCity_CLIMB_Drainpipe_Metal_BentCorner_01.mtl
-v -0.50000 0.00000 -0.50000
-v 0.50000 0.00000 -0.50000
-v 0.50000 1.00000 -0.50000
-v -0.50000 1.00000 -0.50000
-v -0.50000 0.00000 0.50000
-v 0.50000 0.00000 0.50000
-v 0.50000 1.00000 0.50000
-v -0.50000 1.00000 0.50000
-g generic_asset
-usemtl Mat_WoodWeathered
-f 1 2 3 4
-f 5 8 7 6
-f 1 5 6 2
-f 2 6 7 3
-f 3 7 8 4
-f 4 8 5 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:f19e47dc6c8bd03579054758928e001683641b93c6d0114de0840df944d3f71a
+size 432
