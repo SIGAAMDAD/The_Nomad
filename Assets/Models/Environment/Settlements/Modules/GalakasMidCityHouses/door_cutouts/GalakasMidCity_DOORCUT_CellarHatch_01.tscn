@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://dbd2uigegia8r"]
-
-[node name="GalakasMidCity_DOORCUT_CellarHatch_01" type="CSGCombiner3D" unique_id=922649514]
-use_collision = true
-
-[node name="CSG_Subtract_DoorOpening_Box" type="CSGBox3D" parent="." unique_id=1060761600]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
-operation = 2
-size = Vector3(2.2, 0.25, 0.6)

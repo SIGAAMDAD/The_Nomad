@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://lxwfqsefrbl4"]
-
-[node name="GalakasMidCity_PIECE_RoofTileStrip_4m_01" type="CSGCombiner3D" unique_id=1639567632]
-use_collision = true
-
-[node name="Mat_RoofTile_LongRaisedCourse" type="CSGBox3D" parent="." unique_id=864149128]
-size = Vector3(4, 0.06, 0.08)

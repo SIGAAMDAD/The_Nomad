@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://bth0j64b6bwc5"]
-
-[node name="GalakasMidCity_DOORCUT_RaioTall_01" type="CSGCombiner3D" unique_id=1842391038]
-use_collision = true
-
-[node name="CSG_Subtract_DoorOpening_Box" type="CSGBox3D" parent="." unique_id=2128767098]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.375, 0)
-operation = 2
-size = Vector3(1.5, 2.75, 0.6)
