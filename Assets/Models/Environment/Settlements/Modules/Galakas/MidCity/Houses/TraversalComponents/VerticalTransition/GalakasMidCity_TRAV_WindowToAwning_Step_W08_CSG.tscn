@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_WindowToAwning_Step_W08_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Window_Sill_Step" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.0000, 0.2000, 0.5000)
+position = Vector3(0.0000, 0.1000, -0.0500)
+
+[node name="Under_Brace_Left" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1400, 0.7200, 0.1400)
+position = Vector3(-3.6500, -0.1800, 0.0000)
+rotation = Vector3(0.400000, 0.000000, 0.000000)
+
+[node name="Under_Brace_Right" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1400, 0.7200, 0.1400)
+position = Vector3(3.6500, -0.1800, 0.0000)
+rotation = Vector3(0.400000, 0.000000, 0.000000)
+

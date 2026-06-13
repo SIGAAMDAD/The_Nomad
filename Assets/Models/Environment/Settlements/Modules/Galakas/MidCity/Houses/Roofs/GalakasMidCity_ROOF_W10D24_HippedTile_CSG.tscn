@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W10D24_HippedTile_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="HipPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(19.4120, 0.3400, 27.5899)
+position = Vector3(0.0000, 6.2448, -12.2750)
+rotation = Vector3(-0.468149, 0.000000, 0.000000)
+
+[node name="HipPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(19.4120, 0.3400, 27.5899)
+position = Vector3(0.0000, 6.2432, 12.2750)
+rotation = Vector3(0.468149, 0.000000, 0.000000)
+
+[node name="HipPlane_Left" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(11.9020, 0.3400, 45.1720)
+position = Vector3(-5.2750, 2.7053, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.468149)
+
+[node name="HipPlane_Right" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(11.9020, 0.3400, 45.1720)
+position = Vector3(5.2750, 2.7068, 0.0000)
+rotation = Vector3(0.000000, 0.000000, -0.468149)
+
+[node name="ShortRidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(7.1740, 0.2000, 0.6200)
+position = Vector3(0.0000, 12.4896, 0.0000)
+
+[node name="Eave_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.1400, 0.1600, 0.2200)
+position = Vector3(0.0000, 0.0800, -24.5500)
+
+[node name="Eave_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.1400, 0.1600, 0.2200)
+position = Vector3(0.0000, 0.0800, 24.5500)
+

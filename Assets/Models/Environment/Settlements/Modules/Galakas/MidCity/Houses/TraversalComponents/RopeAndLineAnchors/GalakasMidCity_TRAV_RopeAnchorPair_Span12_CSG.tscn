@@ -1,0 +1,33 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_RopeAnchorPair_Span12_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Left_WallPlate" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.5500, 0.6500, 0.1200)
+position = Vector3(-6.0000, 1.2000, 0.0000)
+
+[node name="Left_Bracket_Arm" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.1600, 0.8000)
+position = Vector3(-6.0000, 1.2800, -0.4000)
+
+[node name="Left_Diagonal_Brace" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 0.7200, 0.1200)
+position = Vector3(-6.0000, 1.0000, -0.2500)
+rotation = Vector3(0.550000, 0.000000, 0.000000)
+
+[node name="Right_WallPlate" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.5500, 0.6500, 0.1200)
+position = Vector3(6.0000, 1.2000, 0.0000)
+
+[node name="Right_Bracket_Arm" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.1600, 0.8000)
+position = Vector3(6.0000, 1.2800, -0.4000)
+
+[node name="Right_Diagonal_Brace" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 0.7200, 0.1200)
+position = Vector3(6.0000, 1.0000, -0.2500)
+rotation = Vector3(0.550000, 0.000000, 0.000000)
+

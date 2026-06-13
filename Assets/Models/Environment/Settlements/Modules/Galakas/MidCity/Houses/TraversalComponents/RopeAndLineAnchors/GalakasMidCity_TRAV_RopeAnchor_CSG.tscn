@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://chcnd6k82agko"]
+
+[node name="GalakasMidCity_TRAV_RopeAnchor_CSG" type="Node3D" unique_id=218783813]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=984806862]
+
+[node name="WallPlate" type="CSGBox3D" parent="CSGCombiner3D" unique_id=470389205]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00061944127, 0.040065035, 0)
+size = Vector3(0.55, 0.65, 0.12)
+
+[node name="Bracket_Arm" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1619809810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00061944127, 0.12006496, -0.4)
+size = Vector3(0.16, 0.16, 0.8)
+
+[node name="Diagonal_Brace" type="CSGBox3D" parent="CSGCombiner3D" unique_id=556365924]
+transform = Transform3D(1, 0, 0, 0, 0.8525245, -0.52268726, 0, 0.52268726, 0.8525245, -0.00061944127, -0.15993501, -0.25)
+size = Vector3(0.12, 0.72, 0.12)

@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STAIR_Market_Platform_4Step_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG"]
+size = Vector3(3.2000, 0.2200, 0.5500)
+position = Vector3(0.0000, 0.1100, 0.2750)
+
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG"]
+size = Vector3(3.2000, 0.2200, 0.5500)
+position = Vector3(0.0000, 0.3300, 0.8250)
+
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG"]
+size = Vector3(3.2000, 0.2200, 0.5500)
+position = Vector3(0.0000, 0.5500, 1.3750)
+
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG"]
+size = Vector3(3.2000, 0.2200, 0.5500)
+position = Vector3(0.0000, 0.7700, 1.9250)
+
+[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_Market_Platform_4Step_CSG_CSG"]
+size = Vector3(3.2000, 0.2200, 1.7600)
+position = Vector3(0.0000, 0.9000, 3.0800)
+

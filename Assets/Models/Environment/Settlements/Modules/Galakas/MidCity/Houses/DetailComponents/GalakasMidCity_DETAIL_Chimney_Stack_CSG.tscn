@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DETAIL_Chimney_Stack_CSG" type="Node3D"]
+
+[node name="Chimney_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Chimney_Shaft" type="CSGBox3D" parent="Chimney_CSG"]
+size = Vector3(0.8000, 2.1000, 0.8000)
+position = Vector3(0.0000, 1.0500, 0.0000)
+
+[node name="Chimney_Cap" type="CSGBox3D" parent="Chimney_CSG"]
+size = Vector3(1.0500, 0.2200, 1.0500)
+position = Vector3(0.0000, 2.2000, 0.0000)
+
+[node name="Chimney_Crown" type="CSGBox3D" parent="Chimney_CSG"]
+size = Vector3(0.6500, 0.2800, 0.6500)
+position = Vector3(0.0000, 2.4500, 0.0000)
+

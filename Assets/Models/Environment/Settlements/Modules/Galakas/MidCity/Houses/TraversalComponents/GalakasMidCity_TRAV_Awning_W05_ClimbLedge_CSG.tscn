@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_Awning_W05_ClimbLedge_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Awning_SlopedPlane" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(5.0000, 0.1800, 1.2500)
+position = Vector3(0.0000, 0.1000, -0.5500)
+rotation = Vector3(0.240000, 0.000000, 0.000000)
+
+[node name="Awning_WallBeam" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(5.1500, 0.1800, 0.1800)
+position = Vector3(0.0000, 0.3400, 0.0500)
+
+[node name="Awning_Chain_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.0600, 0.8000, 0.0600)
+position = Vector3(-2.5000, 0.5800, -1.1200)
+
+[node name="Awning_Chain_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.0600, 0.8000, 0.0600)
+position = Vector3(0.0000, 0.5800, -1.1200)
+
+[node name="Awning_Chain_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.0600, 0.8000, 0.0600)
+position = Vector3(2.5000, 0.5800, -1.1200)
+

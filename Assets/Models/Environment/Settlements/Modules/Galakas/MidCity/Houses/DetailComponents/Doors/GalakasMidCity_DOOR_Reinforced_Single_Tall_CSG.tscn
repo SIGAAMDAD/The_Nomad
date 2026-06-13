@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.5500, 2.9500, 0.1800)
+position = Vector3(0.0000, 1.4750, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.1800, 3.1500, 0.2800)
+position = Vector3(-0.8650, 1.5750, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.1800, 3.1500, 0.2800)
+position = Vector3(0.8650, 1.5750, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.9820, 0.1800, 0.3000)
+position = Vector3(0.0000, 3.0400, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.8380, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.0550, 2.5960, 0.0550)
+position = Vector3(-0.6510, 1.4750, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.0550, 2.5960, 0.0550)
+position = Vector3(-0.2170, 1.4750, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.0550, 2.5960, 0.0550)
+position = Vector3(0.2170, 1.4750, -0.1450)
+
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.0550, 2.5960, 0.0550)
+position = Vector3(0.6510, 1.4750, -0.1450)
+
+[node name="Brace_Horizontal_Lower" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.3330, 0.1200, 0.0800)
+position = Vector3(0.0000, 1.0030, -0.1600)
+
+[node name="Brace_Horizontal_Upper" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.3330, 0.1200, 0.0800)
+position = Vector3(0.0000, 2.0060, -0.1600)
+
+[node name="Brace_Diagonal" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(1.9998, 0.1200, 0.0800)
+position = Vector3(0.0000, 1.5340, -0.1800)
+rotation = Vector3(0.000000, 0.000000, 0.921595)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6550, 0.7375, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6550, 1.5340, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6550, 2.3010, -0.2200)
+

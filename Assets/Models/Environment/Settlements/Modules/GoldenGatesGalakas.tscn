@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cftmtr5uv6ty0"]
+
+[ext_resource type="Material" uid="uid://jx7tl7deuwbv" path="res://Assets/Textures/Environment/Surfaces/Gold/GateGold_Material.res" id="1_s700t"]
+[ext_resource type="Material" uid="uid://dws3omrqy7bqb" path="res://Assets/Textures/Environment/Surfaces/Metal/Metal_Material.res" id="2_o2iwp"]
+
+[node name="GoldenGatesGalakas" type="Node3D" unique_id=869882068]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=932296434]
+
+[node name="GateHingeLeft" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1202684441]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 44.833324, 26.59269, -2.4671922)
+size = Vector3(54.40381, 1.65, 2.674)
+material = ExtResource("2_o2iwp")
+
+[node name="GateDoorLeft" type="CSGBox3D" parent="CSGCombiner3D" unique_id=812828898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.083305, 24.776413, -2.5841932)
+size = Vector3(44.25009, 50.101563, 2.396)
+material = ExtResource("1_s700t")
+
+[node name="GateHingeRight" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1712016473]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -48.267715, 26.880264, -2.5401597)
+size = Vector3(54.337402, 2.1038504, 1.8194895)
+material = ExtResource("2_o2iwp")
+
+[node name="GateDoorRight" type="CSGBox3D" parent="CSGCombiner3D" unique_id=784530279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.946302, 24.877213, -2.7304335)
+size = Vector3(47.144585, 49.874374, 2.1032715)
+material = ExtResource("1_s700t")

@@ -1,0 +1,25 @@
+scene,kind,width_m,steps,rise_m,run_m,landing,side_curbs,intended_use
+GalakasMidCity_STAIR_Straight_Narrow_6Step_CSG.tscn,straight,1.25,6,0.26,0.42,False,False,Narrow service stair for cramped alleys and side entries.
+GalakasMidCity_STAIR_Straight_Narrow_10Step_CSG.tscn,straight,1.25,10,0.24,0.4,False,True,Longer narrow exterior stair for mid-height doors and small raised walks.
+GalakasMidCity_STAIR_Straight_Standard_8Step_CSG.tscn,straight,1.8,8,0.25,0.44,False,False,General-purpose straight stair for building entrances.
+GalakasMidCity_STAIR_Straight_Standard_12Step_CSG.tscn,straight,1.8,12,0.24,0.42,True,True,Longer standard stair with small top landing for raised entrances.
+GalakasMidCity_STAIR_Straight_Wide_6Step_CSG.tscn,straight,2.6,6,0.24,0.48,False,False,Wide shopfront/civic steps for market streets.
+GalakasMidCity_STAIR_Straight_Wide_10Step_CSG.tscn,straight,2.6,10,0.23,0.46,True,True,"Wide formal stair for tavern, guild, or civic building fronts."
+GalakasMidCity_STAIR_Alley_Steep_8Step_CSG.tscn,straight,1.05,8,0.3,0.34,False,True,Steeper alley stair for dense medieval elevation changes.
+GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG.tscn,straight,1.35,5,0.28,0.38,False,False,Short rough backlane stair for service doors and rear yards.
+GalakasMidCity_STAIR_RooftopAccess_14Step_CSG.tscn,straight,1.35,14,0.24,0.38,True,True,Basic rooftop-access stair that can be placed manually in the city assembly.
+GalakasMidCity_STAIR_Market_Platform_4Step_CSG.tscn,straight,3.2,4,0.22,0.55,True,False,Low broad market-platform stair for plazas and commercial raised decks.
+GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG.tscn,descending,1.2,6,-0.22,0.38,False,True,Descending cellar stair blockout for basement/catacomb access.
+GalakasMidCity_STAIR_WallHugging_Narrow_12Step_CSG.tscn,straight,1.1,12,0.25,0.36,True,True,Narrow wall-hugging stair for tight medieval side passages.
+GalakasMidCity_STAIR_LTurn_Left_Standard_CSG.tscn,l_left,1.6,6,0.24,0.42,True,True,Left-turn exterior stair with landing; useful in courtyards.
+GalakasMidCity_STAIR_LTurn_Right_Standard_CSG.tscn,l_right,1.6,6,0.24,0.42,True,True,Right-turn exterior stair with landing; useful in courtyards.
+GalakasMidCity_STAIR_LTurn_Left_Narrow_CSG.tscn,l_left,1.2,5,0.26,0.36,True,True,Compact left-turn alley stair.
+GalakasMidCity_STAIR_LTurn_Right_Narrow_CSG.tscn,l_right,1.2,5,0.26,0.36,True,True,Compact right-turn alley stair.
+GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG.tscn,l_left,2.2,5,0.23,0.46,True,True,Wider corner stair for public-facing market blocks.
+GalakasMidCity_STAIR_CornerPlatform_Right_Wide_CSG.tscn,l_right,2.2,5,0.23,0.46,True,True,Wider corner stair for public-facing market blocks.
+GalakasMidCity_STAIR_Block_SingleStep_Wide_CSG.tscn,straight,2.8,1,0.22,0.6,False,False,Single wide step for thresholds and street-height correction.
+GalakasMidCity_STAIR_Block_TwoStep_Standard_CSG.tscn,straight,1.8,2,0.22,0.55,False,False,Two-step threshold block for lower modules.
+GalakasMidCity_STAIR_Block_ThreeStep_Narrow_CSG.tscn,straight,1.2,3,0.22,0.48,False,False,Three-step narrow threshold block for side doors.
+GalakasMidCity_STAIR_ServicePlatform_WithSteps_CSG.tscn,platform,1.8,4,0.24,0.42,True,True,Small platform stair for side/back service doors.
+GalakasMidCity_STAIR_RaisedWalk_Connector_CSG.tscn,platform,2.2,3,0.22,0.5,True,False,Low connector stair/deck piece for raised walkways.
+GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG.tscn,straight,3.0,7,0.23,0.5,True,True,Broad stone stair for wealthier courtyards.

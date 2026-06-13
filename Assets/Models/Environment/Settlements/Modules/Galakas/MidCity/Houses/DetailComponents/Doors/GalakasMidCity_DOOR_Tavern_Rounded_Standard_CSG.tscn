@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(1.7000, 2.6500, 0.1800)
+position = Vector3(0.0000, 1.3250, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.1800, 2.8500, 0.2800)
+position = Vector3(-0.9400, 1.4250, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.1800, 2.8500, 0.2800)
+position = Vector3(0.9400, 1.4250, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(2.1320, 0.1800, 0.3000)
+position = Vector3(0.0000, 2.7400, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(1.9880, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.3320, 0.0550)
+position = Vector3(-0.7140, 1.3250, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.3320, 0.0550)
+position = Vector3(-0.2380, 1.3250, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.3320, 0.0550)
+position = Vector3(0.2380, 1.3250, -0.1450)
+
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.3320, 0.0550)
+position = Vector3(0.7140, 1.3250, -0.1450)
+
+[node name="Arch_Block_LeftShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.5440, 0.1800, 0.3200)
+position = Vector3(-0.5100, 2.8700, 0.0200)
+
+[node name="Arch_Block_RightShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.5440, 0.1800, 0.3200)
+position = Vector3(0.5100, 2.8700, 0.0200)
+
+[node name="Arch_Block_Crown" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.7480, 0.2000, 0.3400)
+position = Vector3(0.0000, 3.0500, 0.0200)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7300, 0.6625, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7300, 1.3780, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7300, 2.0670, -0.2200)
+

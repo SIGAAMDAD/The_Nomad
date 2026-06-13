@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W06D28_SteepGable_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.1208, 0.3400, 34.4584)
+position = Vector3(0.0079, 9.6055, -14.2882)
+rotation = Vector3(-0.589990, 0.000000, 0.000000)
+
+[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.0862, 0.3400, 34.3043)
+position = Vector3(-0.0053, 9.4660, 14.2856)
+rotation = Vector3(0.583224, 0.000000, 0.000000)
+
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.1400, 0.2000, 0.7000)
+position = Vector3(0.0000, 19.2110, 0.0079)
+
+[node name="Eave_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.1600, 0.1800, 0.2400)
+position = Vector3(0.0000, 0.1000, -28.5700)
+
+[node name="Eave_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.1600, 0.1800, 0.2400)
+position = Vector3(0.0000, 0.1000, 28.5700)
+

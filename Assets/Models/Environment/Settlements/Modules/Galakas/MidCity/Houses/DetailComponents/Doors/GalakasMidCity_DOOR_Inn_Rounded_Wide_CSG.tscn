@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(2.1000, 2.8500, 0.1800)
+position = Vector3(0.0000, 1.4250, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.1800, 3.0500, 0.2800)
+position = Vector3(-1.1400, 1.5250, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.1800, 3.0500, 0.2800)
+position = Vector3(1.1400, 1.5250, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(2.5320, 0.1800, 0.3000)
+position = Vector3(0.0000, 2.9400, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(2.3880, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.0550, 2.5080, 0.0550)
+position = Vector3(-0.8820, 1.4250, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.0550, 2.5080, 0.0550)
+position = Vector3(-0.4410, 1.4250, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.0550, 2.5080, 0.0550)
+position = Vector3(0.0000, 1.4250, -0.1450)
+
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.0550, 2.5080, 0.0550)
+position = Vector3(0.4410, 1.4250, -0.1450)
+
+[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.0550, 2.5080, 0.0550)
+position = Vector3(0.8820, 1.4250, -0.1450)
+
+[node name="Arch_Block_LeftShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.6720, 0.1800, 0.3200)
+position = Vector3(-0.6300, 3.0700, 0.0200)
+
+[node name="Arch_Block_RightShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.6720, 0.1800, 0.3200)
+position = Vector3(0.6300, 3.0700, 0.0200)
+
+[node name="Arch_Block_Crown" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.9240, 0.2000, 0.3400)
+position = Vector3(0.0000, 3.2500, 0.0200)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.9300, 0.7125, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.9300, 1.4820, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.9300, 2.2230, -0.2200)
+

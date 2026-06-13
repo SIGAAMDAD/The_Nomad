@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 0.1200, 0.1900)
+
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 0.3600, 0.5700)
+
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 0.6000, 0.9500)
+
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 0.8400, 1.3300)
+
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 1.0800, 1.7100)
+
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 1.3200, 2.0900)
+
+[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 1.5600, 2.4700)
+
+[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 1.8000, 2.8500)
+
+[node name="Step_09" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 2.0400, 3.2300)
+
+[node name="Step_10" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 2.2800, 3.6100)
+
+[node name="Step_11" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 2.5200, 3.9900)
+
+[node name="Step_12" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 2.7600, 4.3700)
+
+[node name="Step_13" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 3.0000, 4.7500)
+
+[node name="Step_14" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2400, 0.3800)
+position = Vector3(0.0000, 3.2400, 5.1300)
+
+[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(1.3500, 0.2200, 0.9000)
+position = Vector3(0.0000, 3.3800, 5.7700)
+
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(0.1200, 3.5600, 6.2200)
+position = Vector3(-0.7550, 1.6800, 3.1100)
+
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
+size = Vector3(0.1200, 3.5600, 6.2200)
+position = Vector3(0.7550, 1.6800, 3.1100)
+

@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_CrossBuilding_TimberBridge_L18_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Deck_Center_Plank" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(2.4000, 0.2200, 18.0000)
+position = Vector3(0.0000, 0.1200, 0.0000)
+
+[node name="Deck_Left_Plank" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4200, 0.2400, 18.0500)
+position = Vector3(-1.0000, 0.1500, 0.0000)
+
+[node name="Deck_Right_Plank" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4200, 0.2400, 17.8500)
+position = Vector3(1.0200, 0.1800, 0.0600)
+
+[node name="Left_Rail" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.5200, 18.0000)
+position = Vector3(-1.3000, 0.5500, 0.0000)
+
+[node name="Right_Rail" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.5200, 18.0000)
+position = Vector3(1.3000, 0.5500, 0.0000)
+
+[node name="Left_Handrail" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1800, 0.1600, 18.1000)
+position = Vector3(-1.3000, 0.9200, 0.0000)
+
+[node name="Right_Handrail" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1800, 0.1600, 18.1000)
+position = Vector3(1.3000, 0.9200, 0.0000)
+
+[node name="Cross_Brace_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(2.8500, 0.1400, 0.1800)
+position = Vector3(0.0000, 0.3800, -7.8000)
+rotation = Vector3(0.000000, 0.000000, 0.100000)
+
+[node name="Cross_Brace_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(2.8500, 0.1400, 0.1800)
+position = Vector3(0.0000, 0.3800, 0.0000)
+rotation = Vector3(0.000000, 0.000000, -0.100000)
+
+[node name="Cross_Brace_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(2.8500, 0.1400, 0.1800)
+position = Vector3(0.0000, 0.3800, 7.8000)
+rotation = Vector3(0.000000, 0.000000, 0.100000)
+

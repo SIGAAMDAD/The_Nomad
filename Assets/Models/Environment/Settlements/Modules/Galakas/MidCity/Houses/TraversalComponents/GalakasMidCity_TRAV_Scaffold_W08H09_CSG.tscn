@@ -1,0 +1,123 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_Scaffold_W08H09_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Pole_M4_0_M0_6" type="CSGCylinder3D" parent="Traversal_CSG"]
+radius = 0.0700
+height = 9.0000
+sides = 8
+smooth_faces = false
+position = Vector3(-4.0000, 4.5000, -0.5500)
+
+[node name="Pole_M4_0_P0_6" type="CSGCylinder3D" parent="Traversal_CSG"]
+radius = 0.0700
+height = 9.0000
+sides = 8
+smooth_faces = false
+position = Vector3(-4.0000, 4.5000, 0.5500)
+
+[node name="Pole_P4_0_M0_6" type="CSGCylinder3D" parent="Traversal_CSG"]
+radius = 0.0700
+height = 9.0000
+sides = 8
+smooth_faces = false
+position = Vector3(4.0000, 4.5000, -0.5500)
+
+[node name="Pole_P4_0_P0_6" type="CSGCylinder3D" parent="Traversal_CSG"]
+radius = 0.0700
+height = 9.0000
+sides = 8
+smooth_faces = false
+position = Vector3(4.0000, 4.5000, 0.5500)
+
+[node name="Platform_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.5000, 0.1600, 1.5500)
+position = Vector3(0.0000, 1.7000, 0.0000)
+
+[node name="BackRail_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.5500, 0.7000)
+
+[node name="FrontRail_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.5500, -0.7000)
+
+[node name="DiagBrace_A_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(-2.0000, 1.8000, 0.6800)
+rotation = Vector3(0.000000, 0.000000, 0.550000)
+
+[node name="DiagBrace_B_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(2.0000, 1.8000, 0.6800)
+rotation = Vector3(0.000000, 0.000000, -0.550000)
+
+[node name="Platform_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.5000, 0.1600, 1.5500)
+position = Vector3(0.0000, 3.9667, 0.0000)
+
+[node name="BackRail_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 4.8167, 0.7000)
+
+[node name="FrontRail_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 4.8167, -0.7000)
+
+[node name="DiagBrace_A_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(-2.0000, 4.0667, 0.6800)
+rotation = Vector3(0.000000, 0.000000, 0.550000)
+
+[node name="DiagBrace_B_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(2.0000, 4.0667, 0.6800)
+rotation = Vector3(0.000000, 0.000000, -0.550000)
+
+[node name="Platform_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.5000, 0.1600, 1.5500)
+position = Vector3(0.0000, 6.2333, 0.0000)
+
+[node name="BackRail_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 7.0833, 0.7000)
+
+[node name="FrontRail_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 7.0833, -0.7000)
+
+[node name="DiagBrace_A_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(-2.0000, 6.3333, 0.6800)
+rotation = Vector3(0.000000, 0.000000, 0.550000)
+
+[node name="DiagBrace_B_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(2.0000, 6.3333, 0.6800)
+rotation = Vector3(0.000000, 0.000000, -0.550000)
+
+[node name="Platform_03" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.5000, 0.1600, 1.5500)
+position = Vector3(0.0000, 8.5000, 0.0000)
+
+[node name="BackRail_03" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 9.3500, 0.7000)
+
+[node name="FrontRail_03" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(8.6500, 0.1200, 0.1200)
+position = Vector3(0.0000, 9.3500, -0.7000)
+
+[node name="DiagBrace_A_03" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(-2.0000, 8.6000, 0.6800)
+rotation = Vector3(0.000000, 0.000000, 0.550000)
+
+[node name="DiagBrace_B_03" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 2.2000, 0.1000)
+position = Vector3(2.0000, 8.6000, 0.6800)
+rotation = Vector3(0.000000, 0.000000, -0.550000)
+

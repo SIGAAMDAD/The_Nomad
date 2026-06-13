@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Plank_Single_Standard_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(1.4500, 2.4500, 0.1800)
+position = Vector3(0.0000, 1.2250, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.1800, 2.6500, 0.2800)
+position = Vector3(-0.8150, 1.3250, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.1800, 2.6500, 0.2800)
+position = Vector3(0.8150, 1.3250, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(1.8820, 0.1800, 0.3000)
+position = Vector3(0.0000, 2.5400, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(1.7380, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.1560, 0.0550)
+position = Vector3(-0.6090, 1.2250, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.1560, 0.0550)
+position = Vector3(-0.2030, 1.2250, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.1560, 0.0550)
+position = Vector3(0.2030, 1.2250, -0.1450)
+
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.0550, 2.1560, 0.0550)
+position = Vector3(0.6090, 1.2250, -0.1450)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6050, 0.6125, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6050, 1.2740, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Plank_Single_Standard_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.6050, 1.9110, -0.2200)
+

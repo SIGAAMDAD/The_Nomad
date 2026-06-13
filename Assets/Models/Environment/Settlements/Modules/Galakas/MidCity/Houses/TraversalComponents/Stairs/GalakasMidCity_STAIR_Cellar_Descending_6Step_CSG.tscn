@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -0.1100, 0.1900)
+
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -0.3300, 0.5700)
+
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -0.5500, 0.9500)
+
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -0.7700, 1.3300)
+
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -0.9900, 1.7100)
+
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(1.2000, 0.2200, 0.3800)
+position = Vector3(0.0000, -1.2100, 2.0900)
+
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(0.1200, 1.5200, 2.2800)
+position = Vector3(-0.6800, -0.6600, 1.1400)
+
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Cellar_Descending_6Step_CSG_CSG"]
+size = Vector3(0.1200, 1.5200, 2.2800)
+position = Vector3(0.6800, -0.6600, 1.1400)
+

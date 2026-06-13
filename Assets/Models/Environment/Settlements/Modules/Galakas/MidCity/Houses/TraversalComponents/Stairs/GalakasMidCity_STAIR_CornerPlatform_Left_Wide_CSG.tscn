@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="RunA_Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2300, 0.4600)
+position = Vector3(0.0000, 0.1150, 0.2300)
+
+[node name="RunA_Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2300, 0.4600)
+position = Vector3(0.0000, 0.3450, 0.6900)
+
+[node name="RunA_Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2300, 0.4600)
+position = Vector3(0.0000, 0.5750, 1.1500)
+
+[node name="RunA_Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2300, 0.4600)
+position = Vector3(0.0000, 0.8050, 1.6100)
+
+[node name="RunA_Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2300, 0.4600)
+position = Vector3(0.0000, 1.0350, 2.0700)
+
+[node name="CornerLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(2.2000, 0.2200, 2.2000)
+position = Vector3(0.0000, 1.1700, 3.4000)
+
+[node name="RunB_Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.4600, 0.2300, 2.2000)
+position = Vector3(-0.2300, 1.2650, 4.5200)
+
+[node name="RunB_Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.4600, 0.2300, 2.2000)
+position = Vector3(-0.6900, 1.4950, 4.5200)
+
+[node name="RunB_Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.4600, 0.2300, 2.2000)
+position = Vector3(-1.1500, 1.7250, 4.5200)
+
+[node name="RunB_Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.4600, 0.2300, 2.2000)
+position = Vector3(-1.6100, 1.9550, 4.5200)
+
+[node name="RunB_Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.4600, 0.2300, 2.2000)
+position = Vector3(-2.0700, 2.1850, 4.5200)
+
+[node name="RunA_LeftCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.1200, 1.3300, 4.8500)
+position = Vector3(-1.1800, 0.5750, 2.1950)
+
+[node name="RunA_RightCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_CornerPlatform_Left_Wide_CSG_CSG"]
+size = Vector3(0.1200, 1.3300, 4.8500)
+position = Vector3(1.1800, 0.5750, 2.1950)
+

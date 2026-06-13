@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_Roof_EaveGrabLine_L06_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Wall_Mount_Beam" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(6.0000, 0.1800, 0.1800)
+position = Vector3(0.0000, 0.1000, 0.0000)
+
+[node name="Grab_Lip" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(6.0000, 0.1600, 0.2200)
+position = Vector3(0.0000, 0.3000, -0.2000)
+
+[node name="Bracket_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.5200, 0.1600)
+position = Vector3(-2.5000, -0.1000, -0.1000)
+rotation = Vector3(0.300000, 0.000000, 0.000000)
+
+[node name="Bracket_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.5200, 0.1600)
+position = Vector3(0.0000, -0.1000, -0.1000)
+rotation = Vector3(0.300000, 0.000000, 0.000000)
+
+[node name="Bracket_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1600, 0.5200, 0.1600)
+position = Vector3(2.5000, -0.1000, -0.1000)
+rotation = Vector3(0.300000, 0.000000, 0.000000)
+

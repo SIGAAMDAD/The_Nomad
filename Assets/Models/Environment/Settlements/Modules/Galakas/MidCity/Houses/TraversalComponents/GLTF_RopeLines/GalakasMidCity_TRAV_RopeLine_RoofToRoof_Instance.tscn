@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeLine_RoofToRoof.gltf" id="1"]
+
+[node name="GalakasMidCity_TRAV_RopeLine_RoofToRoof_Instance" type="Node3D"]
+
+[node name="SourceGLTF" parent="." instance=ExtResource("1")]

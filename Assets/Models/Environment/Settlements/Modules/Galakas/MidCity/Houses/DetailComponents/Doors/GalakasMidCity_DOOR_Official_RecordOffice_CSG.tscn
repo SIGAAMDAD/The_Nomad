@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Official_RecordOffice_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(1.7500, 2.9000, 0.1800)
+position = Vector3(0.0000, 1.4500, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.1800, 3.1000, 0.2800)
+position = Vector3(-0.9650, 1.5500, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.1800, 3.1000, 0.2800)
+position = Vector3(0.9650, 1.5500, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(2.1820, 0.1800, 0.3000)
+position = Vector3(0.0000, 2.9900, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(2.0380, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.0550, 2.5520, 0.0550)
+position = Vector3(-0.7350, 1.4500, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.0550, 2.5520, 0.0550)
+position = Vector3(-0.2450, 1.4500, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.0550, 2.5520, 0.0550)
+position = Vector3(0.2450, 1.4500, -0.1450)
+
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.0550, 2.5520, 0.0550)
+position = Vector3(0.7350, 1.4500, -0.1450)
+
+[node name="Brace_Horizontal_Lower" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(1.5050, 0.1200, 0.0800)
+position = Vector3(0.0000, 0.9860, -0.1600)
+
+[node name="Brace_Horizontal_Upper" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(1.5050, 0.1200, 0.0800)
+position = Vector3(0.0000, 1.9720, -0.1600)
+
+[node name="Brace_Diagonal" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(2.0774, 0.1200, 0.0800)
+position = Vector3(0.0000, 1.5080, -0.1800)
+rotation = Vector3(0.000000, 0.000000, 0.853868)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7550, 0.7250, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7550, 1.5080, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Official_RecordOffice_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.7550, 2.2620, -0.2200)
+

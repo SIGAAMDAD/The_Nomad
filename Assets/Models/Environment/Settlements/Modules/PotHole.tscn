@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bg1tbaruexvst"]
+
+[ext_resource type="PackedScene" uid="uid://cfkd3oevkur2l" path="res://Assets/Models/Player/Prototyping.tscn" id="1_uqq5t"]
+
+[node name="PotHole" type="Node3D" unique_id=1876719999]
+
+[node name="Inner" type="CSGCylinder3D" parent="." unique_id=1874735051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08396852, 0)
+radius = 1.6166992
+height = 0.16394043
+sides = 14
+
+[node name="Prototyping" parent="." unique_id=218568658 instance=ExtResource("1_uqq5t")]

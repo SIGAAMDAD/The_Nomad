@@ -1,0 +1,33 @@
+scene,width_m,height_m,style,intended_use
+GalakasMidCity_DOOR_Plank_Single_Narrow_CSG.tscn,1.2,2.25,plain,"Narrow worker/service plank door for alleys, rear entries, and poorer MidCity sides."
+GalakasMidCity_DOOR_Plank_Single_Standard_CSG.tscn,1.45,2.45,plain,General residential plank door for rowhouses and side-street shops.
+GalakasMidCity_DOOR_Plank_Single_Tall_CSG.tscn,1.45,2.85,plain,Taller late-medieval residence door for cleaner merchant blocks.
+GalakasMidCity_DOOR_Reinforced_Single_Narrow_CSG.tscn,1.25,2.35,reinforced,"Narrow braced door for warehouses, service corridors, and storage backs."
+GalakasMidCity_DOOR_Reinforced_Single_Standard_CSG.tscn,1.55,2.55,reinforced,"Heavy braced door for workshops, guild offices, or higher-risk commercial buildings."
+GalakasMidCity_DOOR_Reinforced_Single_Tall_CSG.tscn,1.55,2.95,reinforced,Tall heavy door for wealthier civic or guild-facing facades.
+GalakasMidCity_DOOR_Merchant_Double_Standard_CSG.tscn,2.4,2.55,double,"Double merchant door for shops, alehouses, and market-facing long facades."
+GalakasMidCity_DOOR_Merchant_Double_Wide_CSG.tscn,3.0,2.75,double,"Wide double door for market halls, taverns, and small loading entries."
+GalakasMidCity_DOOR_Warehouse_Double_Tall_CSG.tscn,3.2,3.25,warehouse,Tall wide warehouse/service door for cart access and storage buildings.
+GalakasMidCity_DOOR_Stable_Double_Low_CSG.tscn,2.8,2.35,stable,Low double stable or carriage-yard door for back-lane blocks.
+GalakasMidCity_DOOR_Tavern_Rounded_Standard_CSG.tscn,1.7,2.65,arched,Rounded tavern-style door with heavier framing.
+GalakasMidCity_DOOR_StoneArch_Narrow_CSG.tscn,1.35,2.6,arched_stone,Narrow arched stone-frame entry for older medieval blocks.
+GalakasMidCity_DOOR_StoneArch_Standard_CSG.tscn,1.7,2.85,arched_stone,Standard arched stone entry for civic or old merchant buildings.
+GalakasMidCity_DOOR_Guild_Heavy_Tall_CSG.tscn,2.0,3.1,guild,Heavy guild-office door with thick frame and bracing.
+GalakasMidCity_DOOR_Courtyard_Gate_Small_CSG.tscn,2.2,2.8,gate,Small courtyard gate for wealthy blocks and inner yards.
+GalakasMidCity_DOOR_Courtyard_Gate_Wide_CSG.tscn,3.2,3.2,gate,Wide courtyard gate for private block entrances and cart passages.
+GalakasMidCity_DOOR_Shop_Shutter_HalfOpen_CSG.tscn,2.2,2.3,shop_shutter,Shopfront shutter/door blockout for market lanes.
+GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG.tscn,3.0,2.45,shop_shutter,Wide shop shutter for commercial rows.
+GalakasMidCity_DOOR_Backlane_SlantedBrace_CSG.tscn,1.3,2.25,slanted,Rough backlane plank door with diagonal bracing.
+GalakasMidCity_DOOR_Backlane_Low_CSG.tscn,1.15,2.05,plain,Low backlane service door for cramped medieval alleys.
+GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG.tscn,1.55,0.95,cellar_left,Angled cellar hatch/door for exterior basement access.
+GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG.tscn,1.55,0.95,cellar_right,Mirrored angled cellar hatch/door for exterior basement access.
+GalakasMidCity_DOOR_UpperGallery_Single_CSG.tscn,1.25,2.15,plain,Small upper-gallery door for balcony and roof-adjacent access.
+GalakasMidCity_DOOR_UpperGallery_Double_CSG.tscn,2.1,2.2,double,Small double upper-gallery door for taverns or inns.
+GalakasMidCity_DOOR_Inn_Rounded_Wide_CSG.tscn,2.1,2.85,arched,Wider rounded inn/tavern entrance for public-facing lodging.
+GalakasMidCity_DOOR_Workshop_Split_CSG.tscn,2.4,2.7,split_workshop,Split workshop entry with large working door and smaller pedestrian leaf.
+GalakasMidCity_DOOR_ThinAlley_Service_CSG.tscn,0.95,2.15,plain,Very narrow alley service door for dense row layouts.
+GalakasMidCity_DOOR_Official_RecordOffice_CSG.tscn,1.75,2.9,guild,"More formal civic/record-office door, still CSG blockout simple."
+GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG.tscn,3.4,2.2,warehouse,Low wide loading bay door for storage/service edges.
+GalakasMidCity_DOOR_StoneLintel_Single_CSG.tscn,1.5,2.5,stone_lintel,"Single door with blocky stone lintel, useful for old lower floors."
+GalakasMidCity_DOOR_StoneLintel_Double_CSG.tscn,2.7,2.7,stone_lintel_double,Double door with blocky stone lintel for old market buildings.
+GalakasMidCity_DOOR_HalfTimber_Frame_Single_CSG.tscn,1.45,2.55,half_timber,Door with heavier timber surround for late-medieval half-timber facades.

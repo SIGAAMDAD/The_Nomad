@@ -96,7 +96,6 @@ namespace Nomad.Game.Application.Rendering.Quality
 
 			foreach ( var material in MaterialCache.GetMaterials() ) {
 				texturePath.Clear();
-				texturePath.Append();
 			}
 		}
 	};

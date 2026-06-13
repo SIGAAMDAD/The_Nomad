@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_Roof_RidgeWalk_L10_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Flattened_Ridge_Path" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.9000, 0.2200, 10.0000)
+position = Vector3(0.0000, 0.1000, 0.0000)
+
+[node name="Left_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4200, 0.1200, 10.0000)
+position = Vector3(-0.5400, 0.0400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.220000)
+
+[node name="Right_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4200, 0.1200, 10.0000)
+position = Vector3(0.5400, 0.0400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, -0.220000)
+

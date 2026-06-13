@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DETAIL_Door_DoubleShop_CSG" type="Node3D"]
+
+[node name="Door_CSG" type="CSGCombiner3D" parent="."]
+use_collision = false
+
+[node name="Door_LeftLeaf" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(1.1500, 2.8000, 0.1800)
+position = Vector3(-0.5800, 1.4000, 0.0000)
+
+[node name="Door_RightLeaf" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(1.1500, 2.8000, 0.1800)
+position = Vector3(0.5800, 1.4000, 0.0000)
+
+[node name="Door_CenterSeam" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.0800, 2.9000, 0.2400)
+position = Vector3(0.0000, 1.4500, -0.0200)
+
+[node name="Door_LeftJamb" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1800, 3.0500, 0.2400)
+position = Vector3(-1.2800, 1.5250, -0.0200)
+
+[node name="Door_RightJamb" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1800, 3.0500, 0.2400)
+position = Vector3(1.2800, 1.5250, -0.0200)
+
+[node name="Door_Header" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(2.7400, 0.2200, 0.2400)
+position = Vector3(0.0000, 3.0400, -0.0200)
+
+[node name="Door_Hinge_M1_12" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(-1.1200, 2.1500, -0.1400)
+
+[node name="Door_Hinge_Lower_M1_12" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(-1.1200, 0.8500, -0.1400)
+
+[node name="Door_Hinge_M0_06" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(-0.0600, 2.1500, -0.1400)
+
+[node name="Door_Hinge_Lower_M0_06" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(-0.0600, 0.8500, -0.1400)
+
+[node name="Door_Hinge_P0_06" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(0.0600, 2.1500, -0.1400)
+
+[node name="Door_Hinge_Lower_P0_06" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(0.0600, 0.8500, -0.1400)
+
+[node name="Door_Hinge_P1_12" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(1.1200, 2.1500, -0.1400)
+
+[node name="Door_Hinge_Lower_P1_12" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1200, 0.3800, 0.1000)
+position = Vector3(1.1200, 0.8500, -0.1400)
+

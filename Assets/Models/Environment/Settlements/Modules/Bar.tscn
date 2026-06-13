@@ -1,31 +1,24 @@
 [gd_scene format=3 uid="uid://d1pldagfqrl0b"]
 
-[ext_resource type="Material" uid="uid://ch6he25vlwlsh" path="res://Assets/Textures/Environment/Surfaces/DarkWoodenPlank/DarkWoodenPlank_Material.res" id="1_qxn02"]
-
 [node name="Bar" type="Node3D" unique_id=1575070715]
 
 [node name="Table" type="CSGBox3D" parent="." unique_id=1462309700]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1863995, 2.1225471, -0.025043726)
 size = Vector3(1.409668, 4.317871, 13.363026)
-material = ExtResource("1_qxn02")
 
 [node name="SideThing" type="CSGBox3D" parent="Table" unique_id=1350548791]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0083361, 0.03338623, -6.442705)
 size = Vector3(3.417642, 4.276001, 1.4155273)
-material = ExtResource("1_qxn02")
 
 [node name="UnderSpace" type="CSGBox3D" parent="Table" unique_id=2089877397]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0083361, 0.98051405, 0.35956025)
 size = Vector3(3.417642, 1.6921997, 12.605808)
-material = ExtResource("1_qxn02")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Table/UnderSpace" unique_id=830171171]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.888916, 0.1328125, -0.015938759)
 operation = 2
 size = Vector3(2.777832, 1.265625, 12.122942)
-material = ExtResource("1_qxn02")
 
 [node name="Counter" type="CSGBox3D" parent="Table" unique_id=714444148]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8153763, 2.0363727, 0.007380724)
 size = Vector3(4.157873, 0.57925415, 14.32106)
-material = ExtResource("1_qxn02")

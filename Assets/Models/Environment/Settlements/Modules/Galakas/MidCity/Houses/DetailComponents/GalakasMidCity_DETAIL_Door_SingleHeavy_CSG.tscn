@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DETAIL_Door_SingleHeavy_CSG" type="Node3D"]
+
+[node name="Door_CSG" type="CSGCombiner3D" parent="."]
+use_collision = false
+
+[node name="Door_Slab" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(1.3500, 2.6500, 0.1800)
+position = Vector3(0.0000, 1.3250, 0.0000)
+
+[node name="Door_LeftJamb" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1800, 2.9000, 0.2400)
+position = Vector3(-0.8000, 1.4500, -0.0200)
+
+[node name="Door_RightJamb" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1800, 2.9000, 0.2400)
+position = Vector3(0.8000, 1.4500, -0.0200)
+
+[node name="Door_Header" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(1.8000, 0.2000, 0.2400)
+position = Vector3(0.0000, 2.8500, -0.0200)
+
+[node name="Door_Brace_Diag_A" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1400, 2.1000, 0.0800)
+position = Vector3(-0.2200, 1.3500, -0.1200)
+rotation = Vector3(0.000000, 0.000000, 0.500000)
+
+[node name="Door_Brace_Diag_B" type="CSGBox3D" parent="Door_CSG"]
+size = Vector3(0.1400, 2.1000, 0.0800)
+position = Vector3(0.2200, 1.3500, -0.1200)
+rotation = Vector3(0.000000, 0.000000, -0.500000)
+
+[node name="Door_RingHandle" type="CSGCylinder3D" parent="Door_CSG"]
+radius = 0.1000
+height = 0.0400
+sides = 12
+smooth_faces = false
+position = Vector3(0.4200, 1.4500, -0.1400)
+rotation = Vector3(1.570796, 0.000000, 0.000000)
+

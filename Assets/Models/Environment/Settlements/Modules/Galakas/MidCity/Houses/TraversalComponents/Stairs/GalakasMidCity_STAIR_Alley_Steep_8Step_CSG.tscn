@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 0.1500, 0.1700)
+
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 0.4500, 0.5100)
+
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 0.7500, 0.8500)
+
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 1.0500, 1.1900)
+
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 1.3500, 1.5300)
+
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 1.6500, 1.8700)
+
+[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 1.9500, 2.2100)
+
+[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(1.0500, 0.3000, 0.3400)
+position = Vector3(0.0000, 2.2500, 2.5500)
+
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(0.1200, 2.6000, 2.7200)
+position = Vector3(-0.6050, 1.2000, 1.3600)
+
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
+size = Vector3(0.1200, 2.6000, 2.7200)
+position = Vector3(0.6050, 1.2000, 1.3600)
+

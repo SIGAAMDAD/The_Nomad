@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Backlane_Low_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(1.1500, 2.0500, 0.1800)
+position = Vector3(0.0000, 1.0250, -0.0300)
+
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.1800, 2.2500, 0.2800)
+position = Vector3(-0.6650, 1.1250, 0.0000)
+
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.1800, 2.2500, 0.2800)
+position = Vector3(0.6650, 1.1250, 0.0000)
+
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(1.5820, 0.1800, 0.3000)
+position = Vector3(0.0000, 2.1400, 0.0000)
+
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(1.4380, 0.1200, 0.3400)
+position = Vector3(0.0000, 0.0600, 0.0200)
+
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.0550, 1.8040, 0.0550)
+position = Vector3(-0.4830, 1.0250, -0.1450)
+
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.0550, 1.8040, 0.0550)
+position = Vector3(0.0000, 1.0250, -0.1450)
+
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.0550, 1.8040, 0.0550)
+position = Vector3(0.4830, 1.0250, -0.1450)
+
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.4550, 0.5125, -0.2200)
+
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.4550, 1.0660, -0.2200)
+
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Backlane_Low_CSG_CSG"]
+size = Vector3(0.1600, 0.1300, 0.0900)
+position = Vector3(-0.4550, 1.5990, -0.2200)
+

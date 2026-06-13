@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG" type="Node3D"]
+
+[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="AngledCellarLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG_CSG"]
+size = Vector3(1.5500, 0.1800, 1.6000)
+position = Vector3(0.0000, 0.5500, -0.2000)
+rotation = Vector3(-0.560000, 0.000000, 0.000000)
+
+[node name="CellarFrame_Left" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG_CSG"]
+size = Vector3(0.1600, 0.2000, 1.8000)
+position = Vector3(-0.8750, 0.5500, -0.2000)
+rotation = Vector3(-0.560000, 0.000000, 0.000000)
+
+[node name="CellarFrame_Right" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG_CSG"]
+size = Vector3(0.1600, 0.2000, 1.8000)
+position = Vector3(0.8750, 0.5500, -0.2000)
+rotation = Vector3(-0.560000, 0.000000, 0.000000)
+
+[node name="CellarTopRail" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Right_CSG_CSG"]
+size = Vector3(1.9000, 0.1800, 0.1600)
+position = Vector3(0.0000, 0.9200, -0.9200)
+rotation = Vector3(-0.560000, 0.000000, 0.000000)
+

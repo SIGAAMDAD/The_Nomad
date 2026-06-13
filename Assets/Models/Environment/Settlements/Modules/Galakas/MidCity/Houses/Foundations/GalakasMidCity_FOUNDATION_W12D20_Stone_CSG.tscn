@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_FOUNDATION_W12D20_Stone_CSG" type="Node3D"]
+
+[node name="Foundation_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Foundation_MainBlock" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(24.0000, 0.6000, 40.0000)
+position = Vector3(0.0000, 0.3000, 0.0000)
+
+[node name="Foundation_FrontLip" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(24.5000, 0.2000, 0.4000)
+position = Vector3(0.0000, 0.7000, -20.1000)
+
+[node name="Foundation_BackLip" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(24.5000, 0.2000, 0.4000)
+position = Vector3(0.0000, 0.7000, 20.1000)
+
+[node name="Foundation_LeftLip" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(0.4000, 0.2000, 40.5000)
+position = Vector3(-12.1000, 0.7000, 0.0000)
+
+[node name="Foundation_RightLip" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(0.4000, 0.2000, 40.5000)
+position = Vector3(12.1000, 0.7000, 0.0000)
+
+[node name="Foundation_FrontStep_Lower" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(3.0000, 0.1800, 0.8000)
+position = Vector3(0.0000, 0.0900, -20.7000)
+
+[node name="Foundation_FrontStep_Upper" type="CSGBox3D" parent="Foundation_CSG"]
+size = Vector3(2.5200, 0.1800, 0.5500)
+position = Vector3(0.0000, 0.3100, -20.4500)
+

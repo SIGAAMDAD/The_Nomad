@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_CrossBuilding_AngledPlankRamp_L05_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Angled_Main_Plank" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.3500, 0.2400, 5.0000)
+position = Vector3(0.0000, 0.1991, 0.0000)
+rotation = Vector3(0.160000, 0.000000, 0.000000)
+
+[node name="Left_Side_Lip" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 0.1800, 5.0000)
+position = Vector3(-0.7800, 0.3591, 0.0000)
+rotation = Vector3(0.160000, 0.000000, 0.000000)
+
+[node name="Right_Side_Lip" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.1200, 0.1800, 5.0000)
+position = Vector3(0.7800, 0.3591, 0.0000)
+rotation = Vector3(0.160000, 0.000000, 0.000000)
+
+[node name="Lower_End_Block" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.6000, 0.2000, 0.2500)
+position = Vector3(0.0000, 0.1800, -2.3800)
+rotation = Vector3(0.160000, 0.000000, 0.000000)
+
+[node name="Upper_End_Block" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.6000, 0.2000, 0.2500)
+position = Vector3(0.0000, 0.5783, 2.3800)
+rotation = Vector3(0.160000, 0.000000, 0.000000)
+

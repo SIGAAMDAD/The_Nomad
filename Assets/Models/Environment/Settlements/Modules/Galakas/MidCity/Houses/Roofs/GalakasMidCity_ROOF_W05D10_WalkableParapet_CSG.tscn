@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W05D10_WalkableParapet_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="FlatRoofDeck" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(11.1000, 0.3600, 21.1000)
+position = Vector3(0.0000, 0.1800, 0.0000)
+
+[node name="Parapet_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(11.1400, 0.8800, 0.3000)
+position = Vector3(0.0000, 0.9800, -10.5500)
+
+[node name="Parapet_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(11.1400, 0.8800, 0.3000)
+position = Vector3(0.0000, 0.9790, 10.5500)
+
+[node name="Parapet_Left" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.3000, 0.8800, 21.1400)
+position = Vector3(-5.5500, 0.9800, 0.0000)
+
+[node name="Parapet_Right" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.3000, 0.8800, 21.1400)
+position = Vector3(5.5500, 0.9810, 0.0000)
+

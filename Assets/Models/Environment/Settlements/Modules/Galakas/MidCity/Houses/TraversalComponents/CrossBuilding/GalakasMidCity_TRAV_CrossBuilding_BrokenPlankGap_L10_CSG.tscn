@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_TRAV_CrossBuilding_BrokenPlankGap_L10_CSG" type="Node3D"]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Left_Side_Plank_Long" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4200, 0.1800, 9.2000)
+position = Vector3(-0.5500, 0.1000, -0.1000)
+rotation = Vector3(0.000000, 0.000000, 0.020000)
+
+[node name="Center_Plank_Short_A" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4600, 0.1800, 3.8000)
+position = Vector3(0.0500, 0.1100, -2.5000)
+rotation = Vector3(0.000000, 0.000000, -0.035000)
+
+[node name="Center_Plank_Short_B" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4400, 0.1800, 3.4000)
+position = Vector3(0.1800, 0.1300, 2.8000)
+rotation = Vector3(0.000000, 0.000000, 0.028000)
+
+[node name="Right_Side_Plank_Offset" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(0.4000, 0.1800, 8.0000)
+position = Vector3(0.6800, 0.1200, 0.1800)
+rotation = Vector3(0.000000, 0.000000, -0.020000)
+
+[node name="Loose_Crossbar_00" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.7500, 0.1200, 0.1800)
+position = Vector3(0.0800, 0.3000, -4.3000)
+rotation = Vector3(0.000000, 0.000000, -0.020000)
+
+[node name="Loose_Crossbar_01" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.7500, 0.1200, 0.1800)
+position = Vector3(0.0800, 0.3000, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.035000)
+
+[node name="Loose_Crossbar_02" type="CSGBox3D" parent="Traversal_CSG"]
+size = Vector3(1.7500, 0.1200, 0.1800)
+position = Vector3(0.0800, 0.3000, 4.3000)
+rotation = Vector3(0.000000, 0.000000, -0.020000)
+
