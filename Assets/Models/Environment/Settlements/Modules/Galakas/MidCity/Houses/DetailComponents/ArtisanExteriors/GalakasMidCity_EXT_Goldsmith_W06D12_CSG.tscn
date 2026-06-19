@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_EXT_Goldsmith_W06D12_CSG" type="Node3D"]
+
+[node name="Exterior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="PrimaryShopSign_Frame" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(5.7600, 0.4200, 0.1200)
+position = Vector3(0.0000, 3.0500, -12.1100)
+
+[node name="ShopAwning_Main" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(10.5600, 0.1200, 1.1000)
+position = Vector3(0.0000, 2.5500, -12.5200)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="AwningFront_Rib" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(10.8000, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.4500, -13.0200)
+
+[node name="AwningBracket_M5_0" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(-5.0400, 2.3700, -12.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="AwningBracket_5_0" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(5.0400, 2.3700, -12.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="SecurityGrille_Left" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1500, 1.4500, 0.1000)
+position = Vector3(-3.6000, 1.6500, -12.2900)
+
+[node name="SecurityGrille_Right" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1500, 1.4500, 0.1000)
+position = Vector3(3.6000, 1.6500, -12.2900)
+
+[node name="LockedDisplay_Case" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(6.0000, 0.7500, 0.5500)
+position = Vector3(0.0000, 0.9200, -12.3500)
+

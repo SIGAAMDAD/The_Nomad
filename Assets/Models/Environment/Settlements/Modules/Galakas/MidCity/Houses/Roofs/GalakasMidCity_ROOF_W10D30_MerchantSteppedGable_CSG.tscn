@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W10D30_MerchantSteppedGable_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3000, 34.5985)
+position = Vector3(0.0000, 7.9884, -15.3000)
+rotation = Vector3(-0.480000, 0.000000, 0.000000)
+
+[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3000, 34.5985)
+position = Vector3(0.0000, 7.9884, 15.3000)
+rotation = Vector3(0.480000, 0.000000, 0.000000)
+
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.3000, 0.1800, 0.2600)
+position = Vector3(0.0000, 15.9769, 0.0000)
+
+[node name="FrontStepGable_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3400, 0.2400)
+position = Vector3(0.0000, 0.3800, -30.6400)
+
+[node name="BackStepGable_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3400, 0.2400)
+position = Vector3(0.0000, 0.3800, 30.6400)
+
+[node name="FrontStepGable_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(15.9000, 0.3400, 0.2400)
+position = Vector3(0.0000, 0.7300, -30.6400)
+
+[node name="BackStepGable_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(15.9000, 0.3400, 0.2400)
+position = Vector3(0.0000, 0.7300, 30.6400)
+
+[node name="FrontStepGable_02" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.6000, 0.3400, 0.2400)
+position = Vector3(0.0000, 1.0800, -30.6400)
+
+[node name="BackStepGable_02" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.6000, 0.3400, 0.2400)
+position = Vector3(0.0000, 1.0800, 30.6400)
+
+[node name="FrontStepGable_03" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.3000, 0.3400, 0.2400)
+position = Vector3(0.0000, 1.4300, -30.6400)
+
+[node name="BackStepGable_03" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.3000, 0.3400, 0.2400)
+position = Vector3(0.0000, 1.4300, 30.6400)
+

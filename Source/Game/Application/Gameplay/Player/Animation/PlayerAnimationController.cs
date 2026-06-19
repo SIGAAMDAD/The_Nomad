@@ -19,10 +19,13 @@ using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.Animation;
 using Nomad.Game.Sdk.Player.State;
+using Nomad.Game.Sdk.Player.Movement;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Sdk.Player.Input;
+using Nomad.Game.Sdk.Events.Player.Movement;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {
@@ -92,7 +95,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		public PlayerAnimationController(
 			PlayerId playerId,
 			PlayerPrefab prefab,
-			IMovementController movementController,
+			IPlayerMovementController movementController,
 			IAimReader aimReader,
 			IPlayerStateReader stateReader,
 			IGameEventRegistryService eventFactory

@@ -13,7 +13,7 @@ config_version=5
 config/name="The Nomad"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="TheNomad"
-config/features=PackedStringArray("4.6", "C#", "Forward Plus")
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [audio]
@@ -56,7 +56,7 @@ project/assembly_name="TheNomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/csg_scene_baker/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/traversal_baker/plugin.cfg")
+enabled=PackedStringArray("res://addons/csg_scene_baker/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/open-world-database/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/traversal_baker/plugin.cfg")
 
 [filesystem]
 
@@ -118,11 +118,12 @@ pathfinding/max_threads=1024
 3d/run_on_separate_thread=true
 common/physics_ticks_per_second=40
 2d/physics_engine="Rapier2D"
-3d/physics_engine="Jolt Physics"
+3d/physics_engine="Rapier3D"
 2d/solver/solver_iterations=12
 common/physics_interpolation=true
 common/enable_object_picking=false
 rapier/parallel/num_threads=128
+rapier/solver/max_ccd_substeps=1
 
 [rendering]
 
@@ -133,6 +134,8 @@ textures/vram_compression/import_etc2_astc=true
 2d/batching/uniform_set_cache_size=2048
 global_illumination/gi/use_half_resolution=true
 textures/default_filters/anisotropic_filtering_level=0
+environment/ssao/quality=0
+environment/ssil/quality=0
 viewport/hdr_2d=true
 environment/glow/upscale_mode=0
 limits/global_shader_variables/buffer_size=8192

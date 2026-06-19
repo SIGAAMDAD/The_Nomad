@@ -23,10 +23,12 @@ using Nomad.Game.Prefabs;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.Movement;
 using Nomad.Game.Sdk.Player.Input;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Player.Stats;
 using NumericsVector2 = System.Numerics.Vector2;
+using Nomad.Game.Sdk.Events.Player.Movement;
 
 namespace Nomad.Game.Application.Gameplay.Player.Movement
 {
@@ -48,7 +50,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 	/// the existing gameplay systems that still reason about movement in two axes.
 	/// </summary>
 
-	internal sealed class PlayerMovementController : NomadBehaviour, IMovementController
+	internal sealed class PlayerMovementController : NomadBehaviour, IPlayerMovementController
 	{
 		private const float EPSILON = 0.0001f;
 		private const float MOVING_THRESHOLD = 0.001f;
@@ -251,6 +253,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		ApplyLockedMovement
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="previousHorizontalVelocity"></param>
+		/// <param name="tick"></param>
 		private void ApplyLockedMovement( Vector3 previousHorizontalVelocity, uint tick )
 		{
 			_moveInput = NumericsVector2.Zero;
@@ -269,11 +276,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 			if ( previousHorizontalVelocity.LengthSquared() > MOVING_THRESHOLD ) {
 				_locomotionCue.Publish(
 					new PlayerLocomotionCueEventArgs(
+						Id,
 						PlayerLocomotionCue.HardStop,
 						ToPlanar2D( previousHorizontalVelocity ),
 						NumericsVector2.Zero,
 						false,
 						NumericsVector2.Zero,
+						_prefab.GlobalPosition.ToSystem(),
 						tick
 					)
 				);
@@ -285,6 +294,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		CalculateHorizontalVelocity
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
+		/// <param name="wishDirection"></param>
+		/// <returns></returns>
 		private Vector3 CalculateHorizontalVelocity( float delta, Vector3 wishDirection )
 		{
 			Vector3 targetVelocity;
@@ -315,6 +330,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		ApplyVelocityToBody
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="delta"></param>
 		private void ApplyVelocityToBody( float delta )
 		{
 			Vector3 velocity = _prefab.Velocity;
@@ -357,6 +376,11 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		PublishLocomotionCue
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="previousHorizontalVelocity"></param>
+		/// <param name="tick"></param>
 		private void PublishLocomotionCue( Vector3 previousHorizontalVelocity, uint tick )
 		{
 			PlayerLocomotionCue cue = DetectLocomotionCue( previousHorizontalVelocity );
@@ -366,11 +390,13 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 
 			_locomotionCue.Publish(
 				new PlayerLocomotionCueEventArgs(
+					Id,
 					cue,
 					ToPlanar2D( previousHorizontalVelocity ),
 					ToPlanar2D( _runtime.HorizontalVelocity ),
 					_runtime.HorizontalVelocity.LengthSquared() > MOVING_THRESHOLD,
 					_moveInput,
+					_prefab.GlobalPosition.ToSystem(),
 					tick
 				)
 			);

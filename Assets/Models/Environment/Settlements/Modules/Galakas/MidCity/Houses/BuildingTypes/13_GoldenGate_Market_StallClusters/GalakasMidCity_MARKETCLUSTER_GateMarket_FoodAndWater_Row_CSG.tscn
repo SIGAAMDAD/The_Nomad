@@ -1,0 +1,32 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_FruitBasketStall_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_GrainSackStall_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_BreadTableStall_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_MeatButcherStall_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_SaltFishStall_CSG.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_WaterCaskStall_CSG.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_AleKegStall_CSG.tscn" id="7"]
+
+[node name="GalakasMidCity_MARKETCLUSTER_GateMarket_FoodAndWater_Row_CSG" type="Node3D"]
+
+[node name="Stall_01_FruitBasketStall" parent="." instance=ExtResource("1")]
+position = Vector3(-13.2000, 0.0000, 0.0000)
+
+[node name="Stall_02_GrainSackStall" parent="." instance=ExtResource("2")]
+position = Vector3(-8.8000, 0.0000, 0.0000)
+
+[node name="Stall_03_BreadTableStall" parent="." instance=ExtResource("3")]
+position = Vector3(-4.4000, 0.0000, 0.0000)
+
+[node name="Stall_04_MeatButcherStall" parent="." instance=ExtResource("4")]
+position = Vector3(0.0000, 0.0000, 0.0000)
+
+[node name="Stall_05_SaltFishStall" parent="." instance=ExtResource("5")]
+position = Vector3(4.4000, 0.0000, 0.0000)
+
+[node name="Stall_06_WaterCaskStall" parent="." instance=ExtResource("6")]
+position = Vector3(8.8000, 0.0000, 0.0000)
+
+[node name="Stall_07_AleKegStall" parent="." instance=ExtResource("7")]
+position = Vector3(13.2000, 0.0000, 0.0000)
+

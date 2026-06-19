@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W10D30_DoubleRidgeMarket_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Left_Plane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.3000, 35.3608)
+position = Vector3(-2.6500, 8.7850, -15.3000)
+rotation = Vector3(-0.520000, 0.000000, 0.000000)
+
+[node name="Left_Plane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.3000, 35.3608)
+position = Vector3(-2.6500, 8.7850, 15.3000)
+rotation = Vector3(0.520000, 0.000000, 0.000000)
+
+[node name="Left_Ridge" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.1800, 0.2200)
+position = Vector3(-2.6500, 17.5701, 0.0000)
+
+[node name="Right_Plane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.3000, 35.3608)
+position = Vector3(2.6500, 8.7850, -15.3000)
+rotation = Vector3(-0.520000, 0.000000, 0.000000)
+
+[node name="Right_Plane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.3000, 35.3608)
+position = Vector3(2.6500, 8.7850, 15.3000)
+rotation = Vector3(0.520000, 0.000000, 0.000000)
+
+[node name="Right_Ridge" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(10.7000, 0.1800, 0.2200)
+position = Vector3(2.6500, 17.5701, 0.0000)
+
+[node name="CenterRainGutter" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.2200, 0.1800, 61.3000)
+position = Vector3(0.0000, 0.2200, 0.0000)
+

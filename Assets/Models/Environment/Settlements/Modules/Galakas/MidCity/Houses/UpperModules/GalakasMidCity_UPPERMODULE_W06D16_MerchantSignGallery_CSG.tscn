@@ -1,0 +1,123 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_UPPERMODULE_W06D16_MerchantSignGallery_CSG" type="Node3D"]
+
+[node name="UpperModule_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="UpperFloor_Slab" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(13.1000, 0.2200, 33.1000)
+position = Vector3(0.0000, 0.1000, 0.0000)
+
+[node name="FrontWall_WorkLoft" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(13.1000, 3.8000, 0.2800)
+position = Vector3(0.0000, 2.0500, -16.5500)
+
+[node name="BackWall_WorkLoft" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(13.1000, 3.8000, 0.2800)
+position = Vector3(0.0000, 2.0500, 16.5500)
+
+[node name="LeftWall_WorkLoft" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.2800, 3.8000, 33.1000)
+position = Vector3(-6.5500, 2.0500, 0.0000)
+
+[node name="RightWall_WorkLoft" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.2800, 3.8000, 33.1000)
+position = Vector3(6.5500, 2.0500, 0.0000)
+
+[node name="LargeFrontWindowFrame_00" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.7500, 1.0500, 0.1200)
+position = Vector3(-4.3200, 2.1000, -16.7500)
+
+[node name="BackWorkWindowFrame_00" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.6000, 0.9500, 0.1200)
+position = Vector3(-4.3200, 2.0500, 16.7500)
+
+[node name="LargeFrontWindowFrame_01" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.7500, 1.0500, 0.1200)
+position = Vector3(-2.1600, 2.1000, -16.7500)
+
+[node name="BackWorkWindowFrame_01" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.6000, 0.9500, 0.1200)
+position = Vector3(-2.1600, 2.0500, 16.7500)
+
+[node name="LargeFrontWindowFrame_02" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.7500, 1.0500, 0.1200)
+position = Vector3(0.0000, 2.1000, -16.7500)
+
+[node name="BackWorkWindowFrame_02" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.6000, 0.9500, 0.1200)
+position = Vector3(0.0000, 2.0500, 16.7500)
+
+[node name="LargeFrontWindowFrame_03" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.7500, 1.0500, 0.1200)
+position = Vector3(2.1600, 2.1000, -16.7500)
+
+[node name="BackWorkWindowFrame_03" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.6000, 0.9500, 0.1200)
+position = Vector3(2.1600, 2.0500, 16.7500)
+
+[node name="LargeFrontWindowFrame_04" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.7500, 1.0500, 0.1200)
+position = Vector3(4.3200, 2.1000, -16.7500)
+
+[node name="BackWorkWindowFrame_04" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.6000, 0.9500, 0.1200)
+position = Vector3(4.3200, 2.0500, 16.7500)
+
+[node name="FrontTimber_00" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(-6.3300, 2.0500, -16.8700)
+
+[node name="BackTimber_00" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(-6.3300, 2.0500, 16.8700)
+
+[node name="FrontTimber_01" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(-3.0000, 2.0500, -16.8700)
+
+[node name="BackTimber_01" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(-3.0000, 2.0500, 16.8700)
+
+[node name="FrontTimber_02" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(0.0000, 2.0500, -16.8700)
+
+[node name="BackTimber_02" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(0.0000, 2.0500, 16.8700)
+
+[node name="FrontTimber_03" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(3.0000, 2.0500, -16.8700)
+
+[node name="BackTimber_03" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(3.0000, 2.0500, 16.8700)
+
+[node name="FrontTimber_04" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(6.3300, 2.0500, -16.8700)
+
+[node name="BackTimber_04" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.1200, 3.6500, 0.1600)
+position = Vector3(6.3300, 2.0500, 16.8700)
+
+[node name="HoistBeam_Front" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.2200, 0.2200, 1.6000)
+position = Vector3(0.0000, 3.2000, -17.5000)
+
+[node name="HoistPulley_Block" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(0.3200, 0.3200, 0.2200)
+position = Vector3(0.0000, 2.8500, -18.2000)
+
+[node name="GoodsLiftDoor_Upper" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(1.3500, 1.8000, 0.1200)
+position = Vector3(0.0000, 1.9500, -16.9100)
+
+[node name="UpperTop_TieBeam" type="CSGBox3D" parent="UpperModule_CSG"]
+size = Vector3(13.3000, 0.1800, 33.3000)
+position = Vector3(0.0000, 3.8800, 0.0000)
+

@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_INT_Apothecary_W06D16_CSG" type="Node3D"]
+
+[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(6.9600, 0.8600, 0.5000)
+position = Vector3(0.0000, 0.6600, 2.8800)
+
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(8.4000, 1.4500, 0.1800)
+position = Vector3(0.0000, 1.3000, 9.9200)
+
+[node name="BottleStack_00" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.1800, 0.5500, 0.1800)
+position = Vector3(-3.6000, 1.3500, 8.0000)
+
+[node name="BottleStack_01" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.1800, 0.5500, 0.1800)
+position = Vector3(-1.8000, 1.3500, 8.0000)
+
+[node name="BottleStack_02" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.1800, 0.5500, 0.1800)
+position = Vector3(0.0000, 1.3500, 8.0000)
+
+[node name="BottleStack_03" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.1800, 0.5500, 0.1800)
+position = Vector3(1.8000, 1.3500, 8.0000)
+
+[node name="BottleStack_04" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.1800, 0.5500, 0.1800)
+position = Vector3(3.6000, 1.3500, 8.0000)
+
+[node name="MortarTable" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(3.6000, 0.6500, 0.6200)
+position = Vector3(2.8800, 0.5500, -1.2800)
+

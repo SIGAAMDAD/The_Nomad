@@ -1,0 +1,24 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_MapBrokerStall_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_GuildRecruitBooth_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_GoldWeigherBooth_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_PawnBrokerStall_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_ImportedRelicStall_CSG.tscn" id="5"]
+
+[node name="GalakasMidCity_MARKETCLUSTER_TollBroker_BazaarLine_CSG" type="Node3D"]
+
+[node name="Stall_01_MapBrokerStall" parent="." instance=ExtResource("1")]
+position = Vector3(-8.8000, 0.0000, 0.0000)
+
+[node name="Stall_02_GuildRecruitBooth" parent="." instance=ExtResource("2")]
+position = Vector3(-4.4000, 0.0000, 0.0000)
+
+[node name="Stall_03_GoldWeigherBooth" parent="." instance=ExtResource("3")]
+position = Vector3(0.0000, 0.0000, 0.0000)
+
+[node name="Stall_04_PawnBrokerStall" parent="." instance=ExtResource("4")]
+position = Vector3(4.4000, 0.0000, 0.0000)
+
+[node name="Stall_05_ImportedRelicStall" parent="." instance=ExtResource("5")]
+position = Vector3(8.8000, 0.0000, 0.0000)
+

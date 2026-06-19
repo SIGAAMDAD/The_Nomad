@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W08D16_DormerArcadeLong_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="MainPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(17.2000, 0.3000, 19.0156)
+position = Vector3(0.0000, 4.5583, -8.3000)
+rotation = Vector3(-0.500000, 0.000000, 0.000000)
+
+[node name="MainPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(17.2000, 0.3000, 19.0156)
+position = Vector3(0.0000, 4.5583, 8.3000)
+rotation = Vector3(0.500000, 0.000000, 0.000000)
+
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(17.3000, 0.1800, 0.2600)
+position = Vector3(0.0000, 9.1166, 0.0000)
+
+[node name="DormerBox_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.7000, 0.9000)
+position = Vector3(-6.1920, 4.7583, -5.9760)
+
+[node name="DormerCap_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.2500, 0.2000, 1.0500)
+position = Vector3(-6.1920, 5.1783, -5.9760)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="DormerBox_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.7000, 0.9000)
+position = Vector3(-2.0640, 4.7583, -5.9760)
+
+[node name="DormerCap_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.2500, 0.2000, 1.0500)
+position = Vector3(-2.0640, 5.1783, -5.9760)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="DormerBox_02" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.7000, 0.9000)
+position = Vector3(2.0640, 4.7583, -5.9760)
+
+[node name="DormerCap_02" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.2500, 0.2000, 1.0500)
+position = Vector3(2.0640, 5.1783, -5.9760)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="DormerBox_03" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.7000, 0.9000)
+position = Vector3(6.1920, 4.7583, -5.9760)
+
+[node name="DormerCap_03" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.2500, 0.2000, 1.0500)
+position = Vector3(6.1920, 5.1783, -5.9760)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+

@@ -1,0 +1,77 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_STALL_LeatherGoodsStall_CSG" type="Node3D"]
+
+[node name="Stall_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="StreetContact_PlankBase" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(3.8500, 0.1200, 3.3500)
+position = Vector3(0.0000, 0.0600, 0.0000)
+
+[node name="FrontCounter" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(3.3120, 0.7200, 0.3600)
+position = Vector3(0.0000, 0.5000, -1.6500)
+
+[node name="RearShelf" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(2.8800, 0.5200, 0.2800)
+position = Vector3(0.0000, 1.0500, 1.4200)
+
+[node name="CanopyPost_M1_7_M1_5" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.1200, 2.6500, 0.1200)
+position = Vector3(-1.6500, 1.3250, -1.5200)
+
+[node name="CanopyPost_M1_7_1_5" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.1200, 2.6500, 0.1200)
+position = Vector3(-1.6500, 1.3250, 1.5200)
+
+[node name="CanopyPost_1_7_M1_5" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.1200, 2.6500, 0.1200)
+position = Vector3(1.6500, 1.3250, -1.5200)
+
+[node name="CanopyPost_1_7_1_5" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.1200, 2.6500, 0.1200)
+position = Vector3(1.6500, 1.3250, 1.5200)
+
+[node name="LeanToCanvas" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(4.0500, 0.1100, 3.7500)
+position = Vector3(0.0000, 2.7300, 0.0000)
+rotation = Vector3(0.100000, 0.000000, 0.000000)
+
+[node name="HighBackPole" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(4.0500, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.8700, 1.9000)
+
+[node name="DrapedRoll_00" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.2800, 0.2800, 2.3040)
+position = Vector3(-1.0800, 0.9400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.000000)
+
+[node name="DrapedRoll_01" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.2800, 0.2800, 2.3040)
+position = Vector3(-0.3600, 0.9400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.020000)
+
+[node name="DrapedRoll_02" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.2800, 0.2800, 2.3040)
+position = Vector3(0.3600, 0.9400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.040000)
+
+[node name="DrapedRoll_03" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.2800, 0.2800, 2.3040)
+position = Vector3(1.0800, 0.9400, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.060000)
+
+[node name="HangingDisplayRail" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(3.0240, 0.1000, 0.1200)
+position = Vector3(0.0000, 1.7500, 1.2800)
+
+[node name="SmallSideSign_Post" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.0800, 1.2500, 0.0800)
+position = Vector3(1.9600, 1.1200, -1.7000)
+
+[node name="SmallSideSign_Board" type="CSGBox3D" parent="Stall_CSG"]
+size = Vector3(0.1200, 0.5200, 0.7200)
+position = Vector3(1.9800, 1.6500, -1.7000)
+rotation = Vector3(0.000000, 1.570796, 0.000000)
+

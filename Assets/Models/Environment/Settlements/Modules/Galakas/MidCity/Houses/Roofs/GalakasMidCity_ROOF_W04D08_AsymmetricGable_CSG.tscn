@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W04D08_AsymmetricGable_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="LongPlane_Shallow" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(9.2000, 0.3000, 11.0991)
+position = Vector3(-0.2500, 2.7575, -3.4400)
+rotation = Vector3(-0.520000, 0.000000, 0.000000)
+
+[node name="ShortPlane_Steep" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(9.2000, 0.3000, 10.0664)
+position = Vector3(0.2500, 3.3188, 4.8160)
+rotation = Vector3(0.720000, 0.000000, 0.000000)
+
+[node name="OffsetRidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(9.3000, 0.1800, 0.2400)
+position = Vector3(0.1500, 6.5776, 0.0600)
+

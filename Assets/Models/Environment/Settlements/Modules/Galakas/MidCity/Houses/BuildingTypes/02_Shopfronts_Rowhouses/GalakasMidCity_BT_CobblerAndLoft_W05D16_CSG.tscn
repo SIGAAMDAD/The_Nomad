@@ -1,8 +1,8 @@
 [gd_scene format=3]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W05D16_Stone_CSG.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W05D16_PlasterShop_CSG.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W05D16_HalfTimberOverhang_CSG.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W05D16_SteepGable_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W05D16_TailorDisplayLower_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W05D16_StorageHoistLoft_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W05D16_MerchantSteppedGable_CSG.tscn" id="4"]
 
 [node name="GalakasMidCity_BT_CobblerAndLoft_W05D16_CSG" type="Node3D"]
 

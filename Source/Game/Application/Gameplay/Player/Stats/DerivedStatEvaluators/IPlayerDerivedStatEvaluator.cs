@@ -21,5 +21,5 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
 	{
 		bool CanEvaluate( DerivedStatType type );
 		float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context );
-	}
-}
+	};
+};

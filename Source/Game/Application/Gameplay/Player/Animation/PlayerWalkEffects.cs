@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Godot;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Prefabs;
-using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.Animation
 {

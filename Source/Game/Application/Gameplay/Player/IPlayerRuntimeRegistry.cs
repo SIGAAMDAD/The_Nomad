@@ -24,5 +24,5 @@ namespace Nomad.Game.Application.Gameplay.Player
 		bool TryGetInventory( PlayerId playerId, out IPlayerInventoryCoordinator? inventory );
 		bool TryGetState( PlayerId playerId, out IPlayerStateReader? reader, out IPlayerStateWriter? writer );
 		bool TryGetWeaponSlots( PlayerId playerId, out IWeaponSlotService? slots );
-	}
-}
+	};
+};

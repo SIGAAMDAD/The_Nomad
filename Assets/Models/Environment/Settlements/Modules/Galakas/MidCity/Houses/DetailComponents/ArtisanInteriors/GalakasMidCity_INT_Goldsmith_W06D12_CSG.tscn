@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_INT_Goldsmith_W06D12_CSG" type="Node3D"]
+
+[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(6.9600, 0.8600, 0.5000)
+position = Vector3(0.0000, 0.6600, 2.1600)
+
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(8.4000, 1.4500, 0.1800)
+position = Vector3(0.0000, 1.3000, 7.4400)
+
+[node name="Strongbox_Display" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(4.0800, 0.5500, 0.5000)
+position = Vector3(0.0000, 0.5000, -1.2000)
+
+[node name="LedgerDesk" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(5.0400, 0.7000, 0.5500)
+position = Vector3(-2.4000, 0.5500, 2.4000)
+

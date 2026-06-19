@@ -1,42 +1,41 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dm3j27e4exs8n"]
 
-[node name="GalakasMidCity_TRAV_CrossBuilding_BrokenPlankGap_L06_CSG" type="Node3D"]
+[ext_resource type="Script" uid="uid://5xrat8u4pg4c" path="res://addons/traversal_baker/Authoring/TraversalLedgeStrip3D.cs" id="1_na6pr"]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_TRAV_CrossBuilding_BrokenPlankGap_L06_CSG" type="Node3D" unique_id=1140858600]
+
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=712473192]
 use_collision = true
 
-[node name="Left_Side_Plank_Long" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4200, 0.1800, 5.5200)
-position = Vector3(-0.5500, 0.1000, -0.1000)
-rotation = Vector3(0.000000, 0.000000, 0.020000)
+[node name="Left_Side_Plank_Long" type="CSGBox3D" parent="Traversal_CSG" unique_id=1822973854]
+transform = Transform3D(0.9998, -0.019998666, 0, 0.019998666, 0.9998, 0, 0, 0, 1, -0.55, 0.1, -0.1)
+size = Vector3(0.42, 0.18, 5.52)
+script = ExtResource("1_na6pr")
 
-[node name="Center_Plank_Short_A" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4600, 0.1800, 2.2800)
-position = Vector3(0.0500, 0.1100, -1.5000)
-rotation = Vector3(0.000000, 0.000000, -0.035000)
+[node name="Center_Plank" type="CSGBox3D" parent="Traversal_CSG" unique_id=588700734]
+transform = Transform3D(0.99938756, 0.034992855, 0, -0.034992855, 0.99938756, 0, 0, 0, 1, 0.05, 0.11, -0.021599054)
+size = Vector3(0.46, 0.18, 5.2368016)
 
-[node name="Center_Plank_Short_B" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4400, 0.1800, 2.0400)
-position = Vector3(0.1800, 0.1300, 1.6800)
-rotation = Vector3(0.000000, 0.000000, 0.028000)
+[node name="Right_Side_Plank_Offset" type="CSGBox3D" parent="Traversal_CSG" unique_id=2008876718]
+transform = Transform3D(0.9998, 0.019998666, 0, -0.019998666, 0.9998, 0, 0, 0, 1, 0.68, 0.12, -0.048320115)
+size = Vector3(0.4, 0.18, 5.2566404)
 
-[node name="Right_Side_Plank_Offset" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4000, 0.1800, 4.8000)
-position = Vector3(0.6800, 0.1200, 0.1800)
-rotation = Vector3(0.000000, 0.000000, -0.020000)
+[node name="Loose_Crossbar_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=1483279262]
+transform = Transform3D(0.9998, 0.019998666, 0, -0.019998666, 0.9998, 0, 0, 0, 1, 0.08, 0.21618125, -2.3)
+size = Vector3(1.75, 0.12, 0.18)
 
-[node name="Loose_Crossbar_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.7500, 0.1200, 0.1800)
-position = Vector3(0.0800, 0.3000, -2.3000)
-rotation = Vector3(0.000000, 0.000000, -0.020000)
+[node name="Loose_Crossbar_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=878112548]
+transform = Transform3D(0.99938756, -0.034992855, 0, 0.034992855, 0.99938756, 0, 0, 0, 1, 0.08, 0.23767143, 0)
+size = Vector3(1.75, 0.12, 0.18)
 
-[node name="Loose_Crossbar_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.7500, 0.1200, 0.1800)
-position = Vector3(0.0800, 0.3000, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.035000)
+[node name="Loose_Crossbar_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=873584227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.2433216, 2.3)
+size = Vector3(1.75, 0.12, 0.18)
 
-[node name="Loose_Crossbar_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.7500, 0.1200, 0.1800)
-position = Vector3(0.0800, 0.3000, 2.3000)
-rotation = Vector3(0.000000, 0.000000, -0.020000)
+[node name="Loose_Crossbar_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=181123785]
+transform = Transform3D(0.881046, 0, -0.4730306, 0, 1, 0, 0.4730306, 0, 0.881046, 0.08, 0.2433216, 1.316424)
+size = Vector3(1.75, 0.12, 0.18)
 
+[node name="Loose_Crossbar_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=856790379]
+transform = Transform3D(-0.6855803, 0, -0.72799695, 0, 1, 0, 0.72799695, 0, -0.6855803, 0.08, 0.2433216, -1.131508)
+size = Vector3(1.75, 0.12, 0.18)

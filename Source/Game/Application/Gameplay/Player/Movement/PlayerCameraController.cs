@@ -19,6 +19,9 @@ using Nomad.Game.Prefabs;
 using System;
 using Godot;
 using Nomad.Core.Numerics;
+using Nomad.Game.Sdk.Player.Movement;
+using Nomad.Game.Sdk.Events.Player.Movement;
+using Nomad.EngineUtils;
 
 namespace Nomad.Game.Application.Gameplay.Player.Movement
 {
@@ -33,7 +36,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 	///
 	/// </summary>
 
-	internal sealed class PlayerCameraController
+	internal sealed class PlayerCameraController : IPlayerCameraController
 	{
 		public const float FACING_VELOCITY_THRESHOLD_SQUARED = (16.0f / PlayerMovementController.GAMEPLAY_UNITS_PER_WORLD_UNIT) * (16.0f / PlayerMovementController.GAMEPLAY_UNITS_PER_WORLD_UNIT);
 
@@ -50,6 +53,22 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 
 		private readonly PlayerCameraSyncService _syncService;
 
+		public IGameEvent<PlayerCameraStatusChangedEventArgs> CameraStatusChanged => _cameraStatusChanged;
+		private readonly IGameEvent<PlayerCameraStatusChangedEventArgs> _cameraStatusChanged = null;
+
+		/*
+		===============
+		PlayerCameraController
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="prefab"></param>
+		/// <param name="camera"></param>
+		/// <param name="runtime"></param>
+		/// <param name="eventFactory"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public PlayerCameraController(
 			PlayerPrefab prefab,
 			PlayerCamera3D camera,
@@ -67,6 +86,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 
 			_visualRoot = _prefab.GetNodeOrNull<Node3D>( VISUAL_ROOT_PATH ) ?? _prefab;
 			_visualYawOffset = _visualRoot.Rotation.Y;
+
+			_cameraStatusChanged = eventFactory
+				.GetEvent<PlayerCameraStatusChangedEventArgs>(
+					PlayerCameraStatusChangedEventArgs.Name,
+					PlayerCameraStatusChangedEventArgs.NameSpace
+				);
 		}
 
 		/*
@@ -98,6 +123,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		GetCameraPlanarForward
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private Vector3 GetCameraPlanarForward()
 		{
 			Vector3 forward = -_camera.GlobalTransform.Basis.Z;
@@ -140,6 +169,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		GetCameraPlanarRight
 		===============
 		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		private Vector3 GetCameraPlanarRight()
 		{
 			Vector3 right = _camera.GlobalTransform.Basis.X;
@@ -206,6 +239,18 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 			Vector3 rotation = _visualRoot.Rotation;
 			rotation.Y = AngleMath.LerpRadians( rotation.Y, desiredYaw, MathF.Min( 1.0f, TURN_SPEED * delta ) );
 			_visualRoot.Rotation = rotation;
+
+			_cameraStatusChanged.Publish(
+				new PlayerCameraStatusChangedEventArgs(
+					playerId: _prefab.PeerId,
+					origin: _camera.GlobalPosition.ToSystem(),
+					forward: -_camera.GlobalBasis.Z.ToSystem(),
+					right: _camera.GlobalBasis.X.ToSystem(),
+					pitch: rotation.Y,
+					yaw: rotation.X,
+					roll: rotation.Z
+				)
+			);
 		}
 
 		/*
@@ -218,6 +263,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		/// </summary>
 		public void BeginSynchronization()
 		{
+			//			_syncService.BeginSync();
 		}
 	};
 };

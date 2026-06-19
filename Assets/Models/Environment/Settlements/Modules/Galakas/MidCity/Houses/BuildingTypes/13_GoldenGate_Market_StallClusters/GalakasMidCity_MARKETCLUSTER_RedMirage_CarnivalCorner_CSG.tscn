@@ -1,0 +1,22 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_CarnivalWyrmshotGallery_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_RedMiragePrizeTent_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_SandglassToyStall_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_FortuneTabletStall_CSG.tscn" id="4"]
+
+[node name="GalakasMidCity_MARKETCLUSTER_RedMirage_CarnivalCorner_CSG" type="Node3D"]
+
+[node name="Stall_01_CarnivalWyrmshotGallery" parent="." instance=ExtResource("1")]
+position = Vector3(-3.1500, 0.0000, -2.8500)
+
+[node name="Stall_02_RedMiragePrizeTent" parent="." instance=ExtResource("2")]
+position = Vector3(1.0500, 0.0000, -2.8500)
+
+[node name="Stall_03_SandglassToyStall" parent="." instance=ExtResource("3")]
+position = Vector3(1.0500, 0.0000, 0.9500)
+rotation = Vector3(0.000000, 1.570796, 0.000000)
+
+[node name="Stall_04_FortuneTabletStall" parent="." instance=ExtResource("4")]
+position = Vector3(1.0500, 0.0000, 4.7500)
+rotation = Vector3(0.000000, 1.570796, 0.000000)
+

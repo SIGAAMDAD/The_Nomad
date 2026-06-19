@@ -1,0 +1,37 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W10D30_ForgeVentGable_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="ForgePlane_Front" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3000, 36.6826)
+position = Vector3(0.0000, 10.0515, -15.3000)
+rotation = Vector3(-0.580000, 0.000000, 0.000000)
+
+[node name="ForgePlane_Back" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.2000, 0.3000, 36.6826)
+position = Vector3(0.0000, 10.0515, 15.3000)
+rotation = Vector3(0.580000, 0.000000, 0.000000)
+
+[node name="ForgeRidgeCap" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(21.3000, 0.1800, 0.2600)
+position = Vector3(0.0000, 20.1030, 0.0000)
+
+[node name="BroadForgeVent_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.7500, 1.6000, 0.7500)
+position = Vector3(-4.6640, 20.8530, -7.3440)
+
+[node name="VentCap_00" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.2200, 1.0500)
+position = Vector3(-4.6640, 21.7530, -7.3440)
+
+[node name="BroadForgeVent_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.7500, 1.6000, 0.7500)
+position = Vector3(3.8160, 20.8530, 4.8960)
+
+[node name="VentCap_01" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(1.0500, 0.2200, 1.0500)
+position = Vector3(3.8160, 21.7530, 4.8960)
+

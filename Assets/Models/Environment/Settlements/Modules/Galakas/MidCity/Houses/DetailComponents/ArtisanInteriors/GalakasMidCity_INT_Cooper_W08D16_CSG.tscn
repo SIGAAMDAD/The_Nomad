@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_INT_Cooper_W08D16_CSG" type="Node3D"]
+
+[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(9.2800, 0.8600, 0.5000)
+position = Vector3(0.0000, 0.6600, 2.8800)
+
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(11.2000, 1.4500, 0.1800)
+position = Vector3(0.0000, 1.3000, 9.9200)
+
+[node name="WorkBench_Main" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(8.9600, 0.7500, 0.8000)
+position = Vector3(0.0000, 0.5500, -1.6000)
+
+[node name="StorageCrate_Left" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.6500, 0.5500, 0.6500)
+position = Vector3(-5.4400, 0.4000, 4.0000)
+
+[node name="StorageCrate_Right" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.6500, 0.5500, 0.6500)
+position = Vector3(5.4400, 0.4000, 4.0000)
+

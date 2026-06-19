@@ -52,8 +52,8 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		public bool IsBurnedOut => _runtime.IsBurnedOut;
 		public bool CanDash => _runtime.CanStartDash();
 
-		private EngineLight2D? _light;
-		private GpuParticles2D _particles;
+		private SpotLight3D? _light;
+		private GpuParticles3D _particles;
 
 		private PlayerPrefab _prefab;
 

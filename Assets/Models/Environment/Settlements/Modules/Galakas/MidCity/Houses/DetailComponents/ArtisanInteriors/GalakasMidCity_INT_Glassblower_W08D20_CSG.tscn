@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_INT_Glassblower_W08D20_CSG" type="Node3D"]
+
+[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(9.2800, 0.8600, 0.5000)
+position = Vector3(0.0000, 0.6600, 3.6000)
+
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(11.2000, 1.4500, 0.1800)
+position = Vector3(0.0000, 1.3000, 12.4000)
+
+[node name="ForgeHearth_Block" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(5.4400, 1.1500, 1.0500)
+position = Vector3(-3.5200, 0.7800, -2.4000)
+
+[node name="Anvil_Blockout" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.6500, 0.5500, 0.4200)
+position = Vector3(2.8800, 0.5200, -3.6000)
+
+[node name="Bellows_Blockout" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(0.9500, 0.4200, 0.3500)
+position = Vector3(4.8000, 0.7200, 0.2000)
+rotation = Vector3(0.000000, 0.180000, 0.000000)
+
+[node name="OverheadSmokeHood" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(6.0800, 0.3800, 1.1000)
+position = Vector3(-3.5200, 2.1500, -2.4000)
+

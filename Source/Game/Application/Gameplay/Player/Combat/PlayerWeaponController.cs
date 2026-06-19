@@ -20,7 +20,6 @@ using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Player;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;
-using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -80,6 +79,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 		private void OnUseWeapon( in ButtonActionEventArgs args )
 		{
 			if ( args.Phase == InputActionPhase.Started ) {
+			}
+			if ( args.Phase == InputActionPhase.Canceled ) {
 			}
 		}
 

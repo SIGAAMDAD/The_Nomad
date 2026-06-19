@@ -18,11 +18,9 @@ using Nomad.Core.Events;
 using Nomad.EngineUtils;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
-using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Player.Stats;
 using Nomad.Game.Prefabs;
 using Nomad.Save.Services;
-using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -46,6 +44,9 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		private readonly object _lock = new();
 
+		private readonly IDisposable _saveBegin;
+		private readonly IDisposable _loadBegin;
+
 		/*
 		===============
 		PlayerSaveCoordinator
@@ -67,9 +68,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 			_prefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
 			_stateReader = stateReader ?? throw new ArgumentNullException( nameof( stateReader ) );
 
-			eventFactory
-				.GetEvent<SaveBeginEventArgs>( SaveBeginEventArgs.Name, SaveBeginEventArgs.NameSpace )
+			_saveBegin = eventFactory
+				.GetEvent<SaveBeginEventArgs>(
+					SaveBeginEventArgs.Name,
+					SaveBeginEventArgs.NameSpace
+				)
 				.Subscribe( OnSaveBegin );
+
+			_loadBegin = eventFactory
+				.GetEvent<LoadBeginEventArgs>(
+					LoadBeginEventArgs.Name,
+					LoadBeginEventArgs.NameSpace
+				)
+				.Subscribe( OnLoadBegin );
 		}
 
 		/*
@@ -91,8 +102,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 				section.AddField( nameof( DerivedStatType.EffectiveSanityMax ), _derivedStatService.GetValue( DerivedStatType.EffectiveSanityMax ) );
 
 				var position = _prefab.GlobalPosition.ToSystem();
-				section.AddField( "PositionX", position.X );
-				section.AddField( "PositionY", position.Y );
+				section.AddField( "Position.X", position.X );
+				section.AddField( "Position.Y", position.Y );
+				section.AddField( "Position.Z", position.Z );
+
 				section.AddField( "State", (byte)_stateReader.Current );
 
 				section.AddField( nameof( PlayerResourceType.Health ), _resourceService.GetValue( PlayerResourceType.Health ) );
@@ -103,6 +116,21 @@ namespace Nomad.Game.Application.Gameplay.Player
 				var module = jumpKit.Module;
 
 				section.AddField( $"DashModule", module.Name );
+			}
+		}
+
+		/*
+		===============
+		OnLoadBegin
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="args"></param>
+		private void OnLoadBegin( in LoadBeginEventArgs args )
+		{
+			lock ( _lock ) {
 			}
 		}
 	};

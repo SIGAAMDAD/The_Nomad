@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_LOWERMODULE_W05D16_TailorDisplayLower_CSG" type="Node3D"]
+
+[node name="LowerModule_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="BackWall_ServiceClosed" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(10.0000, 4.8000, 0.3000)
+position = Vector3(0.0000, 2.4000, 16.0000)
+
+[node name="LeftWall_LoadBearing" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.3200, 4.8000, 32.0000)
+position = Vector3(-5.0000, 2.4000, 0.0000)
+
+[node name="RightWall_LoadBearing" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.3200, 4.8000, 32.0000)
+position = Vector3(5.0000, 2.4000, 0.0000)
+
+[node name="Floor_Slab" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(9.6500, 0.1800, 31.6500)
+position = Vector3(0.0000, 0.0900, 0.0000)
+
+[node name="Ceiling_TieSlab" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(9.7500, 0.2200, 31.7500)
+position = Vector3(0.0000, 4.7200, 0.0000)
+
+[node name="FrontArcadePier_00" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.4200, 4.7000, 0.5000)
+position = Vector3(-5.0000, 2.3500, -16.0400)
+
+[node name="FrontArcadePier_01" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.4200, 4.7000, 0.5000)
+position = Vector3(0.0000, 2.3500, -16.0400)
+
+[node name="FrontArcadePier_02" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.4200, 4.7000, 0.5000)
+position = Vector3(5.0000, 2.3500, -16.0400)
+
+[node name="FrontHeaderBeam_Stone" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(10.1000, 0.5500, 0.5200)
+position = Vector3(0.0000, 4.2800, -16.0400)
+
+[node name="FrontCounterContinuous" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(8.4000, 0.7200, 0.4200)
+position = Vector3(0.0000, 0.5500, -16.2200)
+
+[node name="OpenShop_ThresholdSlab" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(9.0000, 0.1600, 0.9000)
+position = Vector3(0.0000, 0.0800, -16.6200)
+
+[node name="Loom_Frame_Interior" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(3.8000, 1.2000, 0.9500)
+position = Vector3(-2.0000, 0.9000, -3.2000)
+
+[node name="ClothRoll_Front_00" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.2600, 0.2600, 1.1200)
+position = Vector3(-3.4000, 1.0500, -16.5200)
+rotation = Vector3(0.000000, 0.000000, 0.000000)
+
+[node name="ClothRoll_Front_01" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.2600, 0.2600, 1.1200)
+position = Vector3(-1.8000, 1.0500, -16.5200)
+rotation = Vector3(0.000000, 0.000000, 0.030000)
+
+[node name="ClothRoll_Front_02" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.2600, 0.2600, 1.1200)
+position = Vector3(0.0000, 1.0500, -16.5200)
+rotation = Vector3(0.000000, 0.000000, 0.060000)
+
+[node name="ClothRoll_Front_03" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.2600, 0.2600, 1.1200)
+position = Vector3(1.8000, 1.0500, -16.5200)
+rotation = Vector3(0.000000, 0.000000, 0.090000)
+
+[node name="ClothRoll_Front_04" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(0.2600, 0.2600, 1.1200)
+position = Vector3(3.4000, 1.0500, -16.5200)
+rotation = Vector3(0.000000, 0.000000, 0.120000)
+
+[node name="DisplayRail_Front" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(7.4000, 0.1200, 0.1600)
+position = Vector3(0.0000, 2.2000, -16.3500)
+
+[node name="LargeTradeSign_Front" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(4.6000, 0.4200, 0.1200)
+position = Vector3(0.0000, 3.2500, -16.4200)
+
+[node name="TradeAwning_Sloped" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(8.6000, 0.1200, 1.3000)
+position = Vector3(0.0000, 2.6200, -16.6400)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="RearLoadingDoor_Blockout" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(2.0000, 2.6500, 0.2000)
+position = Vector3(0.0000, 1.3500, 16.1700)
+
+[node name="RearLoadingStep" type="CSGBox3D" parent="LowerModule_CSG"]
+size = Vector3(2.5500, 0.1800, 0.8000)
+position = Vector3(0.0000, 0.0900, 16.6000)
+

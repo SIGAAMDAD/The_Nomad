@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_EXT_ClothHall_W10D24_CSG" type="Node3D"]
+
+[node name="Exterior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="PrimaryShopSign_Frame" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(9.6000, 0.4200, 0.1200)
+position = Vector3(0.0000, 3.0500, -24.1100)
+
+[node name="ShopAwning_Main" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(17.6000, 0.1200, 1.1000)
+position = Vector3(0.0000, 2.5500, -24.5200)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="AwningFront_Rib" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(18.0000, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.4500, -25.0200)
+
+[node name="AwningBracket_M8_4" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(-8.4000, 2.3700, -24.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="AwningBracket_8_4" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(8.4000, 2.3700, -24.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="ClothRoll_Display_00" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.2600, 0.2600, 1.2000)
+position = Vector3(-6.0000, 1.2000, -24.4900)
+rotation = Vector3(0.000000, 0.000000, 0.000000)
+
+[node name="ClothRoll_Display_01" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.2600, 0.2600, 1.2000)
+position = Vector3(-2.4000, 1.2000, -24.4900)
+rotation = Vector3(0.000000, 0.000000, 0.050000)
+
+[node name="ClothRoll_Display_02" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.2600, 0.2600, 1.2000)
+position = Vector3(1.2000, 1.2000, -24.4900)
+rotation = Vector3(0.000000, 0.000000, 0.100000)
+
+[node name="ClothRoll_Display_03" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.2600, 0.2600, 1.2000)
+position = Vector3(4.8000, 1.2000, -24.4900)
+rotation = Vector3(0.000000, 0.000000, 0.150000)
+
+[node name="WideDrapedHeader" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(13.0000, 0.1800, 0.1600)
+position = Vector3(0.0000, 2.2200, -24.9200)
+

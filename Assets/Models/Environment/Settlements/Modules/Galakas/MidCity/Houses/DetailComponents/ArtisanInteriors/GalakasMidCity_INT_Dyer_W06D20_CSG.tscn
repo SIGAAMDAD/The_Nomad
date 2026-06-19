@@ -1,0 +1,37 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_INT_Dyer_W06D20_CSG" type="Node3D"]
+
+[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(6.9600, 0.8600, 0.5000)
+position = Vector3(0.0000, 0.6600, 3.6000)
+
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(8.4000, 1.4500, 0.1800)
+position = Vector3(0.0000, 1.3000, 12.4000)
+
+[node name="DyeVat_00" type="CSGCylinder3D" parent="Interior_CSG"]
+radius = 0.4600
+height = 0.7000
+sides = 16
+position = Vector3(-3.0000, 0.5000, -3.0000)
+
+[node name="DyeVat_01" type="CSGCylinder3D" parent="Interior_CSG"]
+radius = 0.4600
+height = 0.7000
+sides = 16
+position = Vector3(0.0000, 0.5000, -3.0000)
+
+[node name="DyeVat_02" type="CSGCylinder3D" parent="Interior_CSG"]
+radius = 0.4600
+height = 0.7000
+sides = 16
+position = Vector3(3.0000, 0.5000, -3.0000)
+
+[node name="DryingRack_Interior" type="CSGBox3D" parent="Interior_CSG"]
+size = Vector3(8.6400, 1.2000, 0.1400)
+position = Vector3(0.0000, 1.7500, 3.6000)
+

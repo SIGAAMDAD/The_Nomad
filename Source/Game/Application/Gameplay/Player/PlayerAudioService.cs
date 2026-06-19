@@ -18,7 +18,7 @@ using Nomad.Audio.Interfaces;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.EngineUtils;
 using Nomad.Events.Globals;
-using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Sdk.Multiplayer;

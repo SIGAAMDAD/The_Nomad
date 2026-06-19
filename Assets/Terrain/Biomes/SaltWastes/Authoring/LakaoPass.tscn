@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dgn5aifl7a5mi"]
+
+[ext_resource type="ArrayMesh" uid="uid://cd6al241x68fs" path="res://Assets/Terrain/Biomes/SaltWastes/Baked/SaltWastesArrayMesh.res" id="1_4bdlb"]
+
+[node name="LakaoPass" type="Node3D" unique_id=980436927]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1466462698]
+mesh = ExtResource("1_4bdlb")

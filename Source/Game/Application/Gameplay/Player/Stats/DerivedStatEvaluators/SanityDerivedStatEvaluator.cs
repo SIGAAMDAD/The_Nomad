@@ -14,7 +14,6 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
-using Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators;
 using Nomad.Game.Sdk.Player.Stats;
 
 namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators

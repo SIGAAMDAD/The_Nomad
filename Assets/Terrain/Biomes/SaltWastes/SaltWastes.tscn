@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dud236h1neoy7"]
+
+[ext_resource type="Terrain3DMaterial" uid="uid://dp72f2cyewka8" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainMaterial.tres" id="1_l1cpb"]
+[ext_resource type="Terrain3DAssets" uid="uid://3vaiqc4ckajo" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainAssets.tres" id="2_ho8jm"]
+[ext_resource type="PackedScene" uid="uid://c52vxqtr6uvil" path="res://Assets/Models/Player/Prototyping.glb" id="3_l1cpb"]
+[ext_resource type="ArrayMesh" uid="uid://cd6al241x68fs" path="res://Assets/Terrain/Biomes/SaltWastes/Baked/SaltWastesArrayMesh.res" id="4_3c3sv"]
+[ext_resource type="ArrayOccluder3D" uid="uid://f6wr3vf158x4" path="res://Assets/Terrain/Biomes/SaltWastes/Baked/SaltWastesBakedOccluder.res" id="4_6unn5"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xyiws"]
+seed = 20
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_l1cpb"]
+noise = SubResource("FastNoiseLite_xyiws")
+
+[sub_resource type="FogMaterial" id="FogMaterial_ho8jm"]
+density_texture = SubResource("NoiseTexture3D_l1cpb")
+
+[node name="SaltWastes" type="Node3D" unique_id=719567163]
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=315787355]
+debug_level = 2
+data_directory = "res://Assets/Terrain/Biomes/SaltWastes/Authoring"
+material = ExtResource("1_l1cpb")
+assets = ExtResource("2_ho8jm")
+cast_shadows = 2
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="Terrain3D" unique_id=1147948978]
+occluder = ExtResource("4_6unn5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain3D" unique_id=1277178455]
+mesh = ExtResource("4_3c3sv")
+
+[node name="BorderFog0" type="FogVolume" parent="." unique_id=1765913081]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -555.9637, -910.33984, 233.37762)
+size = Vector3(123.97928, 2153.8826, 1543.5717)
+material = SubResource("FogMaterial_ho8jm")
+
+[node name="BorderFog1" type="FogVolume" parent="." unique_id=471465490]
+transform = Transform3D(-4.3711385e-08, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, -4.3711385e-08, 133.03955, -674.031, 988.9782)
+size = Vector3(123.97928, 1681.2648, 1324.8679)
+material = SubResource("FogMaterial_ho8jm")
+
+[node name="Prototyping" parent="." unique_id=637704344 instance=ExtResource("3_l1cpb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 172.3762, 298.18375, -52.090984)

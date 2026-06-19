@@ -1,8 +1,8 @@
 [gd_scene format=3]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W05D10_Stone_CSG.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W05D10_TimberShop_CSG.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W05D10_GalleryOverhang_CSG.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W05D10_SteepGable_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W08D20_Stone_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W08D20_GrandMerchantOpenFrontLower_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W08D20_MerchantSignGallery_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W08D20_AsymmetricGable_CSG.tscn" id="4"]
 
 [node name="GalakasMidCity_BT_Baker_ShopHouse_W05D10_CSG" type="Node3D"]
 

@@ -45,6 +45,8 @@ namespace Nomad.Game.Infrastructure.Godot
 		/// <param name="cvarSystem"></param>
 		public static void Configure( IServiceLocator locator )
 		{
+			ArgumentGuard.ThrowIfNull( locator, nameof( locator ) );
+
 			var cvarSystem = locator.GetService<ICVarSystemService>();
 			var fileSystem = locator.GetService<IFileSystem>();
 

@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_ROOF_W06D12_ClerestoryMarket_CSG" type="Node3D"]
+
+[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="LowRoofDeck" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(13.2000, 0.3000, 25.2000)
+position = Vector3(0.0000, 0.1800, 0.0000)
+
+[node name="RaisedMonitor_Base" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.5440, 0.7000, 12.0960)
+position = Vector3(0.0000, 0.6200, 0.0000)
+
+[node name="MonitorRoof_Left" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(3.1680, 0.3000, 13.1040)
+position = Vector3(-1.5840, 1.1500, 0.0000)
+rotation = Vector3(0.000000, 0.000000, 0.350000)
+
+[node name="MonitorRoof_Right" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(3.1680, 0.3000, 13.1040)
+position = Vector3(1.5840, 1.1500, 0.0000)
+rotation = Vector3(0.000000, 0.000000, -0.350000)
+
+[node name="MonitorRidge" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(0.2000, 0.1600, 13.8600)
+position = Vector3(0.0000, 1.3800, 0.0000)
+
+[node name="ClerestorySlat_M4_5" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.0160, 0.1000, 0.1200)
+position = Vector3(0.0000, 0.8800, -4.5360)
+
+[node name="ClerestorySlat_0_0" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.0160, 0.1000, 0.1200)
+position = Vector3(0.0000, 0.8800, 0.0000)
+
+[node name="ClerestorySlat_4_5" type="CSGBox3D" parent="Roof_CSG"]
+size = Vector3(5.0160, 0.1000, 0.1200)
+position = Vector3(0.0000, 0.8800, 4.5360)
+

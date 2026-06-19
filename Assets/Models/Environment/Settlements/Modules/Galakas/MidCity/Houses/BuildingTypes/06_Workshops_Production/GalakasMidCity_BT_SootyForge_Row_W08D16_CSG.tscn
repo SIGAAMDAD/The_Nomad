@@ -1,8 +1,8 @@
 [gd_scene format=3]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W08D16_Stone_CSG.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W08D16_WarehouseStone_CSG.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W08D16_StoneUpper_CSG.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W08D16_LongGable_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W08D16_ForgeOpenBayLower_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W08D16_ForgeVentLoft_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W08D16_ForgeVentGable_CSG.tscn" id="4"]
 
 [node name="GalakasMidCity_BT_SootyForge_Row_W08D16_CSG" type="Node3D"]
 

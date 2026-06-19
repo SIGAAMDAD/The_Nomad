@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[node name="GalakasMidCity_EXT_SmithRow_W10D16_CSG" type="Node3D"]
+
+[node name="Exterior_CSG" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="PrimaryShopSign_Frame" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(9.6000, 0.4200, 0.1200)
+position = Vector3(0.0000, 3.0500, -16.1100)
+
+[node name="ShopAwning_Main" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(17.6000, 0.1200, 1.1000)
+position = Vector3(0.0000, 2.5500, -16.5200)
+rotation = Vector3(0.180000, 0.000000, 0.000000)
+
+[node name="AwningFront_Rib" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(18.0000, 0.1200, 0.1200)
+position = Vector3(0.0000, 2.4500, -17.0200)
+
+[node name="AwningBracket_M8_4" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(-8.4000, 2.3700, -16.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="AwningBracket_8_4" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.1200, 0.1200, 0.9500)
+position = Vector3(8.4000, 2.3700, -16.5500)
+rotation = Vector3(0.380000, 0.000000, 0.000000)
+
+[node name="ForgeStreetBay_StoneLip" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(10.0000, 0.4200, 0.7000)
+position = Vector3(0.0000, 0.3500, -16.2700)
+
+[node name="ForgeToolRack_Street" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(8.4000, 1.4000, 0.1400)
+position = Vector3(-5.4000, 1.5500, -16.1500)
+
+[node name="CoalBin_StreetSide" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(5.2000, 0.7000, 0.8000)
+position = Vector3(6.0000, 0.5000, -16.2900)
+
+[node name="VentStack_Front" type="CSGBox3D" parent="Exterior_CSG"]
+size = Vector3(0.5200, 3.2000, 0.5200)
+position = Vector3(7.2000, 3.2500, -15.8300)
+

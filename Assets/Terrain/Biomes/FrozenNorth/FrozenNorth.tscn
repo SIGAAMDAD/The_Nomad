@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://b7t5q7acte7fb"]
+
+[ext_resource type="Terrain3DMaterial" path="res://Assets/Terrain/Assets/WorldTerrainMaterial.tres" id="1_wr74a"]
+[ext_resource type="Terrain3DAssets" path="res://Assets/Terrain/Assets/WorldTerrainAssets.tres" id="2_8y7uc"]
+[ext_resource type="Material" uid="uid://0ib2do5eta6c" path="res://Assets/Textures/Environment/Terrain3D/Ice/Ice_ORM_Material.tres" id="3_wr74a"]
+[ext_resource type="Script" path="res://addons/terrain3d_terrain_shaper/brushes/terrain_shaper_brush.gd" id="4_rn5p2"]
+[ext_resource type="Script" path="res://addons/terrain3d_terrain_shaper/core/terrain_shaper_effect.gd" id="5_nvu10"]
+[ext_resource type="Script" path="res://addons/terrain3d_terrain_shaper/brushes/terrain_shaper_brush_profile.gd" id="6_nvu10"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_lws3w"]
+size = Vector2(1024, 1024)
+subdivide_width = 64
+subdivide_depth = 64
+
+[sub_resource type="Resource" id="Resource_ievfu"]
+script = ExtResource("6_nvu10")
+
+[node name="FrozenNorth" type="Node3D" unique_id=167723304]
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=62296615]
+debug_level = 2
+data_directory = "res://Assets/Terrain/Biomes/FrozenNorth/Baked"
+material = ExtResource("1_wr74a")
+assets = ExtResource("2_8y7uc")
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="Lake" type="MeshInstance3D" parent="." unique_id=684689475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5544128, -4.355812, 0.60583496)
+visible = false
+material_override = ExtResource("3_wr74a")
+mesh = SubResource("PlaneMesh_lws3w")
+
+[node name="TerrainShaperBrush" type="Node3D" parent="." unique_id=1327548436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74.620026, 9.606529, 202.84485)
+script = ExtResource("4_rn5p2")
+terrain_path = NodePath("../Terrain3D")
+profile = SubResource("Resource_ievfu")
+visual_enabled = null
+visual_show_radius_ring = null
+visual_show_paintbrush = null
+visual_ring_segments = null
+visual_ring_width = null
+visual_height_offset = null
+visual_handle_length = null
+visual_handle_radius = null
+visual_opacity = null
+metadata/_custom_type_script = "uid://cg4nn6q4711gp"

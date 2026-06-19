@@ -1,0 +1,28 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_PotteryTableStall_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_GlassTrinketStall_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_BlacksmithToolStall_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_CobblerBootStand_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_LeatherGoodsStall_CSG.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_RopeMakerCoilStall_CSG.tscn" id="6"]
+
+[node name="GalakasMidCity_MARKETCLUSTER_GateMarket_ArtisanSample_Row_CSG" type="Node3D"]
+
+[node name="Stall_01_PotteryTableStall" parent="." instance=ExtResource("1")]
+position = Vector3(-11.0000, 0.0000, 0.0000)
+
+[node name="Stall_02_GlassTrinketStall" parent="." instance=ExtResource("2")]
+position = Vector3(-6.6000, 0.0000, 0.0000)
+
+[node name="Stall_03_BlacksmithToolStall" parent="." instance=ExtResource("3")]
+position = Vector3(-2.2000, 0.0000, 0.0000)
+
+[node name="Stall_04_CobblerBootStand" parent="." instance=ExtResource("4")]
+position = Vector3(2.2000, 0.0000, 0.0000)
+
+[node name="Stall_05_LeatherGoodsStall" parent="." instance=ExtResource("5")]
+position = Vector3(6.6000, 0.0000, 0.0000)
+
+[node name="Stall_06_RopeMakerCoilStall" parent="." instance=ExtResource("6")]
+position = Vector3(11.0000, 0.0000, 0.0000)
+

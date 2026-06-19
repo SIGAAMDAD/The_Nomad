@@ -1,0 +1,64 @@
+// Example integration only. Do not add this file as-is unless it matches your WorldBase class.
+// The streamer remains a plain service. WorldBase owns Godot lifecycle.
+
+using Godot;
+using Nomad.Game.Infrastructure.Streaming;
+using Nomad.Game.Sdk.Events.Player.Movement;
+
+public sealed partial class WorldBase : Node3D
+{
+	[Export] private NodePath _terrainPath;
+	[Export] private NodePath _cameraPath;
+	[Export] private NodePath _regionSceneRootPath;
+	[Export] private string _regionManifestTablePath = "res://World/Regions/RegionManifestTable.tres";
+
+	private WorldChunkStreamer _streamer;
+
+	public override void _Ready()
+	{
+		Node3D regionSceneRoot = GetNode<Node3D>( _regionSceneRootPath );
+
+		var settings = new RegionStreamingSettings {
+			RegionSizeMeters = 512,
+			MinRegionX = -16,
+			MinRegionZ = -16,
+			ActiveRadius = 1,
+			HotRadius = 3,
+			WarmRadius = 5,
+			ColdRadius = 7,
+			DefaultPromotionBudget = 1,
+			DefaultDemotionBudget = 2
+		};
+
+		_streamer = new WorldChunkStreamer( this, regionSceneRoot, settings );
+		_streamer.LoadManifestTable( _regionManifestTablePath );
+
+		// Terrain3D should be configured at the WorldBase/Terrain level, not by WorldChunkStreamer.
+		// Example only; exact property names depend on your Terrain3D C# binding setup.
+		// Node terrain = GetNode( _terrainPath );
+		// Camera3D camera = GetNode<Camera3D>( _cameraPath );
+		// terrain.Call( "set_camera", camera );
+		// terrain.Set( "collision_mode", 1 ); // Dynamic/Game collision in Terrain3D.
+	}
+
+	public override void _Process( double delta )
+	{
+		_streamer?.TickLatest();
+	}
+
+	public override void _ExitTree()
+	{
+		_streamer?.Shutdown();
+		_streamer = null;
+	}
+
+	private void OnPlayerMovementChanged( in PlayerLocomotionCueEventArgs args )
+	{
+		_streamer?.HandlePlayerMovementChanged( args );
+	}
+
+	private void OnPlayerCameraStatusChanged( in PlayerCameraStatusChangedEventArgs args )
+	{
+		_streamer?.HandlePlayerCameraStatusChanged( args );
+	}
+}
