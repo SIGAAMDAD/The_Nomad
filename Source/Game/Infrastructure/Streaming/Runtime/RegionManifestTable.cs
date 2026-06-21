@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Infrastructure.Streaming
 {

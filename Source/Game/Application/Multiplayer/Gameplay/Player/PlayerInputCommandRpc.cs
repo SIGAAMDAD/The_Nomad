@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Numerics;
 using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Multiplayer.PlayerInput
 {

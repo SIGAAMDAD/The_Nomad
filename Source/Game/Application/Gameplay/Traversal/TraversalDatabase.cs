@@ -86,5 +86,5 @@ namespace Nomad.Game.Prefabs
 			error = string.Empty;
 			return true;
 		}
-	};
-};
+	}
+}

@@ -75,7 +75,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		public IPlayerInputSource InputSource { get; set; }
 		public IPlayerStateReader StateReader { get; set; }
 		public IPlayerStateWriter StateWriter { get; set; }
-		public IAimWriter AimWriter { get; set; }
 
 		private float _effectiveMovementSpeed = 0.0f;
 		private float _effectiveDashSpeed = 0.0f;
@@ -219,7 +218,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 			Vector3 previousHorizontalVelocity = _runtime.HorizontalVelocity;
 			PlayerInputFrame input = InputSource != null ? InputSource.ReadFrame( _inputTick++ ) : PlayerInputFrame.Empty;
 
-			AimWriter.SetAimDirection( input.AimDirection, input.Tick );
 			_moveInput = ClampInput( input.Move );
 			_isMoving = _moveInput.LengthSquared() > MOVING_THRESHOLD;
 

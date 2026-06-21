@@ -39,19 +39,8 @@ namespace Nomad.Game.Infrastructure.Streaming
 
 		private ushort _streamTick;
 
-		public WorldChunkStreamer( Node3D worldBase )
-			: this( worldBase, worldBase, new RegionStreamingSettings() )
+		public WorldChunkStreamer( Node3D regionSceneRoot, RegionStreamingSettings settings )
 		{
-		}
-
-		public WorldChunkStreamer( Node3D worldBase, Node3D regionSceneRoot )
-			: this( worldBase, regionSceneRoot, new RegionStreamingSettings() )
-		{
-		}
-
-		public WorldChunkStreamer( Node3D worldBase, Node3D regionSceneRoot, RegionStreamingSettings settings )
-		{
-			_worldBase = worldBase ?? throw new ArgumentNullException( nameof( worldBase ) );
 			_settings = settings ?? throw new ArgumentNullException( nameof( settings ) );
 			_settings.Validate();
 
@@ -70,7 +59,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 			_transitionPlanner = new RegionTransitionPlanner( _promotionQueue, _demotionQueue );
 
 			var loader = new RegionSceneLoader();
-			var instanceController = new RegionInstanceController( _grid, regionSceneRoot ?? worldBase, _settings );
+			var instanceController = new RegionInstanceController( _grid, regionSceneRoot, _settings );
 			_executor = new RegionOperationExecutor(
 				_grid,
 				_settings,

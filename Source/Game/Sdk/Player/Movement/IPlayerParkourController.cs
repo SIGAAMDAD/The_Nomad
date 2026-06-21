@@ -14,16 +14,25 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Numerics;
+using System;
+using Nomad.Game.Sdk.Events.Player.Movement;
 
-namespace Nomad.Game.Sdk.Player.Input
+namespace Nomad.Game.Sdk.Player.Movement
 {
-    public interface IAimWriter
+    public interface IPlayerParkourController : IDisposable
     {
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="serverTick"></param>
-        void SetAimDirection(Vector2 direction, uint serverTick = 0);
+        PlayerParkourState State { get; }
+        bool IsActive { get; }
+        int CurrentAnchorIndex { get; }
+        Vector2 LastMoveInput { get; }
+
+        void RequestAttach();
+        void RequestJump();
+        void RequestDrop();
+        void ForceDetach(bool preserveVelocity = true);
+        void SetTraversalInput(Vector2 moveInput);
+
+        void HandlePlayerCameraStatusChanged(in PlayerCameraStatusChangedEventArgs args);
+        void RebuildRuntimeGraph();
     }
 }

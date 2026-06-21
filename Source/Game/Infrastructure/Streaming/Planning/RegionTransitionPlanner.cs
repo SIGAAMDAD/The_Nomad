@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Nomad.Game.Infrastructure.Streaming
 {
@@ -38,80 +39,128 @@ namespace Nomad.Game.Infrastructure.Streaming
 		public void RefreshRegion( RegionStateTable state, int index )
 		{
 			ref RegionRecord r = ref state.Regions[index];
+
+			RegionFlags flags = r.Flags;
+			RegionFlags queueBits = flags & RegionFlags.QueueMask;
+
+			flags &= ~RegionFlags.PendingMask;
+
 			RegionManifest manifest = state.Manifests[index];
 
-			RegionFlags queueBits = r.Flags & RegionFlags.QueueMask;
-			r.Flags &= ~RegionFlags.PendingMask;
+			if ( !manifest.HasScene ) {
+				r.Flags = RefreshEmptyRegionFlags( flags );
+				EnqueueIfNeeded( ref r, index );
+				return;
+			}
 
-			RegionFlags target = r.Flags & RegionFlags.TargetMask;
+			RegionFlags target = flags & RegionFlags.TargetMask;
 
 			bool wantsWarm = HasAny( target, RegionFlags.TargetWarm | RegionFlags.TargetHot | RegionFlags.TargetActive );
 			bool wantsHot = HasAny( target, RegionFlags.TargetHot | RegionFlags.TargetActive );
 			bool wantsActive = HasAny( target, RegionFlags.TargetActive );
 
-			if ( !manifest.HasScene ) {
-				// Empty regions are valid. They should not keep stale runtime content.
-				if ( HasAny( r.Flags, RegionFlags.HasFullInstance | RegionFlags.HasFullRes | RegionFlags.SceneLoadRequested ) ) {
-					r.Flags |= RegionFlags.NeedsEvict;
-				}
-
-				EnqueueIfNeeded( ref r, index );
-				return;
-			}
-
-			if ( wantsWarm && (r.Flags & RegionFlags.HasFullRes) == 0 && (r.Flags & RegionFlags.SceneLoadFailed) == 0 ) {
-				r.Flags |= RegionFlags.NeedsLoad;
-			}
-
-			if ( wantsHot && (r.Flags & RegionFlags.HasFullRes) != 0 && (r.Flags & RegionFlags.HasFullInstance) == 0 ) {
-				r.Flags |= RegionFlags.NeedsInstantiate;
-			}
-
-			if ( wantsHot && (r.Flags & RegionFlags.HasFullInstance) != 0 && (r.Flags & RegionFlags.VisualFull) == 0 ) {
-				r.Flags |= RegionFlags.NeedsVisual;
-			}
-
-			if ( wantsHot && (r.Flags & RegionFlags.HasFullInstance) != 0 ) {
-				bool wantsFullLight = wantsActive;
-				bool hasRequiredLight = wantsFullLight
-					? (r.Flags & RegionFlags.LightingFull) != 0
-					: HasAny( r.Flags, RegionFlags.LightingNoShadows | RegionFlags.LightingFull );
-
-				if ( !hasRequiredLight ) {
-					r.Flags |= RegionFlags.NeedsLight;
-				}
-			}
-
-			if ( wantsActive && (r.Flags & RegionFlags.HasFullInstance) != 0 && (r.Flags & RegionFlags.PhysicsFull) == 0 ) {
-				r.Flags |= RegionFlags.NeedsPhysics;
-			}
-
-			if ( wantsActive && (r.Flags & RegionFlags.HasFullInstance) != 0 && (r.Flags & RegionFlags.GameplayActive) == 0 ) {
-				r.Flags |= RegionFlags.NeedsGameplay;
-			}
-
-			bool hasActiveRuntime = HasAny( r.Flags, RegionFlags.PhysicsFull | RegionFlags.GameplayActive | RegionFlags.LightingFull );
-			if ( !wantsActive && hasActiveRuntime ) {
-				r.Flags |= RegionFlags.NeedsDowngrade;
-			}
-
-			bool hasHotRuntime = HasAny( r.Flags, RegionFlags.VisualFull | RegionFlags.VisualProxy | RegionFlags.LightingNoShadows | RegionFlags.LightingFull );
-			if ( !wantsHot && hasHotRuntime ) {
-				r.Flags |= RegionFlags.NeedsDowngrade;
-			}
-
-			if ( !wantsHot && (r.Flags & RegionFlags.HasFullInstance) != 0 ) {
-				r.Flags |= RegionFlags.NeedsEvict;
-			}
-
-			if ( !wantsWarm && HasAny( r.Flags, RegionFlags.HasFullRes | RegionFlags.SceneLoadRequested | RegionFlags.SceneLoadFailed ) ) {
-				r.Flags |= RegionFlags.NeedsEvict;
-			}
+			RegionFlags pending =
+				ComputeUpgradeWorkFlags( flags, wantsWarm, wantsHot, wantsActive ) |
+				ComputeDowngradeWorkFlags( flags, wantsWarm, wantsHot, wantsActive );
 
 			// Preserve queue bits that were present before pending recalculation.
-			r.Flags |= queueBits;
+			r.Flags = flags | pending | queueBits;
 
 			EnqueueIfNeeded( ref r, index );
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static RegionFlags RefreshEmptyRegionFlags( RegionFlags flags )
+		{
+			return flags | FlagIf(
+				HasAny( flags, RegionFlags.HasFullInstance | RegionFlags.HasFullRes | RegionFlags.SceneLoadRequested ),
+				RegionFlags.NeedsEvict
+			);
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static RegionFlags ComputeUpgradeWorkFlags(
+			RegionFlags flags,
+			bool wantsWarm,
+			bool wantsHot,
+			bool wantsActive
+		)
+		{
+			bool hasFullRes = HasBit( flags, RegionFlags.HasFullRes );
+			bool hasFullInstance = HasBit( flags, RegionFlags.HasFullInstance );
+			bool sceneLoadFailed = HasBit( flags, RegionFlags.SceneLoadFailed );
+
+			bool needsLoad = wantsWarm && !hasFullRes && !sceneLoadFailed;
+			bool needsInstantiate = wantsHot && hasFullRes && !hasFullInstance;
+			bool needsVisual = wantsHot && hasFullInstance && !HasBit( flags, RegionFlags.VisualFull );
+			bool needsLight = wantsHot && hasFullInstance && !HasRequiredLighting( flags, wantsActive );
+			bool needsPhysics = wantsActive && hasFullInstance && !HasBit( flags, RegionFlags.PhysicsFull );
+			bool needsGameplay = wantsActive && hasFullInstance && !HasBit( flags, RegionFlags.GameplayActive );
+
+			return
+				FlagIf( needsLoad, RegionFlags.NeedsLoad ) |
+				FlagIf( needsInstantiate, RegionFlags.NeedsInstantiate ) |
+				FlagIf( needsVisual, RegionFlags.NeedsVisual ) |
+				FlagIf( needsLight, RegionFlags.NeedsLight ) |
+				FlagIf( needsPhysics, RegionFlags.NeedsPhysics ) |
+				FlagIf( needsGameplay, RegionFlags.NeedsGameplay );
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static RegionFlags ComputeDowngradeWorkFlags(
+			RegionFlags flags,
+			bool wantsWarm,
+			bool wantsHot,
+			bool wantsActive
+		)
+		{
+			bool hasActiveRuntime = HasAny(
+				flags,
+				RegionFlags.PhysicsFull | RegionFlags.GameplayActive | RegionFlags.LightingFull
+			);
+
+			bool hasHotRuntime = HasAny(
+				flags,
+				RegionFlags.VisualFull |
+				RegionFlags.VisualProxy |
+				RegionFlags.LightingNoShadows |
+				RegionFlags.LightingFull
+			);
+
+			bool hasFullInstance = HasBit( flags, RegionFlags.HasFullInstance );
+
+			bool hasWarmRuntime = HasAny(
+				flags,
+				RegionFlags.HasFullRes |
+				RegionFlags.SceneLoadRequested |
+				RegionFlags.SceneLoadFailed
+			);
+
+			return
+				FlagIf( !wantsActive && hasActiveRuntime, RegionFlags.NeedsDowngrade ) |
+				FlagIf( !wantsHot && hasHotRuntime, RegionFlags.NeedsDowngrade ) |
+				FlagIf( !wantsHot && hasFullInstance, RegionFlags.NeedsEvict ) |
+				FlagIf( !wantsWarm && hasWarmRuntime, RegionFlags.NeedsEvict );
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static bool HasRequiredLighting( RegionFlags flags, bool wantsActive )
+		{
+			return wantsActive
+				? HasBit( flags, RegionFlags.LightingFull )
+				: HasAny( flags, RegionFlags.LightingNoShadows | RegionFlags.LightingFull );
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static bool HasBit( RegionFlags flags, RegionFlags bit )
+		{
+			return (flags & bit) != 0;
+		}
+
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		private static RegionFlags FlagIf( bool condition, RegionFlags flag )
+		{
+			return condition ? flag : 0;
 		}
 
 		private void EnqueueIfNeeded( ref RegionRecord r, int index )
@@ -152,5 +201,5 @@ namespace Nomad.Game.Infrastructure.Streaming
 		{
 			return (flags & mask) != 0;
 		}
-	};
-};
+	}
+}

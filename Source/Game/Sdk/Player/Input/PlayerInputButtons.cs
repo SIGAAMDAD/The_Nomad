@@ -25,6 +25,9 @@ namespace Nomad.Game.Sdk.Player.Input
         Dash = 1 << 1,
         Primary = 1 << 2,
         Secondary = 1 << 3,
+        Interact = 1 << 4,
+        Jump = 1 << 5,
+        Drop = 1 << 6,
 
         Count = 1 << 15
     }

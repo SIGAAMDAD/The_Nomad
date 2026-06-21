@@ -14,15 +14,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Nomad.Game.Sdk.Player;
-using Nomad.Game.Application.Gameplay.Player;
 
 namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules
 {
 	/*
 	===================================================================================
-	
+
 	DefaultModule
-	
+
 	===================================================================================
 	*/
 	/// <summary>
@@ -39,28 +38,11 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit.Modules
 		public float DashDuration => 0.65f;
 		public float BurnoutCooldown => 0.30f;
 
-		public float BurnoutResetDuration {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+		public float BurnRate;
 
-		public float DashVelocity {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
-
-		public int BaseIFrames {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
-
-		public float EnginePitchPerChain {
-			get {
-				throw new System.NotImplementedException();
-			}
-		}
+		public float BurnoutResetDuration => 0.0f;
+		public float DashVelocity => 0.0f;
+		public int BaseIFrames => 3;
+		public float EnginePitchPerChain => 1.0f;
 	};
 };

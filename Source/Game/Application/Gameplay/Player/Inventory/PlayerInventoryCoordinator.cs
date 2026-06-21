@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
 using Nomad.Game.Sdk.Inventory;
@@ -40,6 +41,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 	internal sealed class PlayerInventoryCoordinator : InventoryCoordinator, IPlayerInventoryCoordinator
 	{
+		private readonly InternString INVENTORY_BACKPACK_ID = new InternString( "INVENTORY_PLAYER_BACKPACK" );
+		private readonly InternString INVENTORY_BACKPACK_DISPLAYNAME = new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" );
+
 		public IBackpackService Backpack => _backpack;
 		private readonly BackpackService _backpack;
 
@@ -48,27 +52,32 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 
 		private readonly StorageUnitRepository _storageUnitRepository;
 
-		public PlayerInventoryCoordinator( PlayerId playerId, IPlayerBaseStatsRepository baseStatsRepository, IPlayerStateReader stateReader, IGameEventRegistryService eventFactory, IItemCatalog itemCatalog )
+		public PlayerInventoryCoordinator(
+			PlayerId playerId,
+			IPlayerBaseStatsRepository baseStatsRepository,
+			IPlayerStateReader stateReader,
+			IGameEventRegistryService eventFactory,
+			IItemCatalog itemCatalog
+		)
 		{
 			_storageUnitRepository = new StorageUnitRepository( itemCatalog, eventFactory );
 
-			if ( !_storageUnitRepository.TryAddInventory(
-				new StorageUnitDefinition {
-					Id = new InternString( "INVENTORY_PLAYER_BACKPACK" ),
-					DisplayName = new InternString( "INVENTORY_PLAYER_BACKPACK_NAME" ),
-					Rules = new InventoryRules {
-						MaxWeight = baseStatsRepository.GetBaseStatValue( BaseStatType.EncumbranceThreshold ),
-						IgnoreWeight = false,
-						AcceptsItem = _ => true
-					},
-					Type = InventoryContainerType.Backpack,
+			var backpackStorageUnit = new StorageUnitDefinition {
+				Id = INVENTORY_BACKPACK_ID,
+				DisplayName = INVENTORY_BACKPACK_DISPLAYNAME,
+				Rules = new InventoryRules {
+					MaxWeight = baseStatsRepository.GetBaseStatValue( BaseStatType.EncumbranceThreshold ),
+					IgnoreWeight = false,
+					AcceptsItem = _ => true
 				},
-				out var backpackStorage
-			) ) {
-				throw new System.InvalidOperationException( "Failed to create player backpack storage." );
+				Type = InventoryContainerType.Backpack,
+			};
+
+			if ( !_storageUnitRepository.TryAddInventory( backpackStorageUnit, out var backpackStorage ) ) {
+				throw new InvalidOperationException( "Failed to create player backpack storage." );
 			}
 
-			backpackStorage = backpackStorage ?? throw new System.InvalidOperationException( "Player backpack storage was not returned." );
+			backpackStorage = backpackStorage ?? throw new InvalidOperationException( "Player backpack storage was not returned." );
 			AddStorageUnit( backpackStorage );
 
 			_backpack = new BackpackService(

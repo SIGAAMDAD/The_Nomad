@@ -89,5 +89,5 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 				MathF.Max( 0.25f, database.SpatialCellSize )
 			);
 		}
-    };
-};
+    }
+}

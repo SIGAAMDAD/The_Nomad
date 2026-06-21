@@ -59,6 +59,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 		public PlayerInputFrame Current => _current;
 
 		private readonly IDisposable _slideAction;
+		private readonly IDisposable _dashAction;
+		private readonly IDisposable _interactAction;
+		private readonly IDisposable _jumpAction;
+		private readonly IDisposable _dropAction;
 		private readonly IDisposable _moveAction;
 		private readonly IDisposable _lookAction;
 
@@ -108,7 +112,35 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 					$"Slide:{ButtonActionEventArgs.Name}",
 					ButtonActionEventArgs.NameSpace
 				)
-				.Subscribe( OnSlideActionTriggered );
+				.Subscribe( ( in ButtonActionEventArgs args ) => OnButtonActionTriggered( in args, PlayerInputButtons.Slide ) );
+
+			_dashAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Dash:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( ( in ButtonActionEventArgs args ) => OnButtonActionTriggered( in args, PlayerInputButtons.Dash ) );
+
+			_interactAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Interact:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( ( in ButtonActionEventArgs args ) => OnButtonActionTriggered( in args, PlayerInputButtons.Interact ) );
+
+			_jumpAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Jump:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( ( in ButtonActionEventArgs args ) => OnButtonActionTriggered( in args, PlayerInputButtons.Jump ) );
+
+			_dropAction = eventFactory
+				.GetEvent<ButtonActionEventArgs>(
+					$"Drop:{ButtonActionEventArgs.Name}",
+					ButtonActionEventArgs.NameSpace
+				)
+				.Subscribe( ( in ButtonActionEventArgs args ) => OnButtonActionTriggered( in args, PlayerInputButtons.Drop ) );
 
 			_moveAction = eventFactory
 				.GetEvent<AxisActionEventArgs>(
@@ -140,6 +172,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 			}
 
 			_slideAction?.Dispose();
+			_dashAction?.Dispose();
+			_interactAction?.Dispose();
+			_jumpAction?.Dispose();
+			_dropAction?.Dispose();
 			_moveAction?.Dispose();
 			_lookAction?.Dispose();
 			_windowSizeChanged?.Dispose();
@@ -269,27 +305,27 @@ namespace Nomad.Game.Application.Gameplay.Player.Input
 
 		/*
 		===============
-		OnSlideActionTriggered
+		OnButtonActionTriggered
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnSlideActionTriggered( in ButtonActionEventArgs args )
+		private void OnButtonActionTriggered( in ButtonActionEventArgs args, PlayerInputButtons button )
 		{
 			if ( args.LocalSlot != _localSlot ) {
 				return;
 			}
 
 			if ( args.Phase == InputActionPhase.Started ) {
-				_buttonsDown |= PlayerInputButtons.Slide;
-				_buttonsPressed |= PlayerInputButtons.Slide;
+				_buttonsDown |= button;
+				_buttonsPressed |= button;
 				return;
 			}
 
 			if ( args.Phase == InputActionPhase.Canceled ) {
-				_buttonsDown &= ~PlayerInputButtons.Slide;
+				_buttonsDown &= ~button;
 			}
 		}
 

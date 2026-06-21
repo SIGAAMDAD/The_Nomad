@@ -60,21 +60,21 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 		public IDashModule Module => _module;
 		private IDashModule _module = new DefaultModule();
 
-		private readonly DashRuntime _runtime = default;
+		private readonly DashRuntime _runtime = null;
 
 		public IGameEvent<PlayerDashStartEventArgs> DashStarted => _dashStarted;
-		private IGameEvent<PlayerDashStartEventArgs> _dashStarted = default;
+		private IGameEvent<PlayerDashStartEventArgs> _dashStarted = null;
 
 		public IGameEvent<PlayerDashEndedEventArgs> DashEnded => _dashEnded;
-		private IGameEvent<PlayerDashEndedEventArgs> _dashEnded = default;
+		private IGameEvent<PlayerDashEndedEventArgs> _dashEnded = null;
 
 		public IGameEvent<PlayerDashBurnoutEventArgs> DashBurnout => _dashBurnout;
-		private IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = default;
+		private IGameEvent<PlayerDashBurnoutEventArgs> _dashBurnout = null;
 
 		public IGameEvent<PlayerDashRechargedEventArgs> DashRecharged => _dashRecharged;
-		private IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = default;
+		private IGameEvent<PlayerDashRechargedEventArgs> _dashRecharged = null;
 
-		private IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged = default;
+		private IGameEvent<PlayerResourceChangedEventArgs> _resourceChanged = null;
 
 		/*
 		===============
@@ -120,30 +120,35 @@ namespace Nomad.Game.Application.Gameplay.Player.JumpKit
 
 			var eventFactory = GameEventRegistry.Instance;
 
-			_dashBurnout = eventFactory.GetEvent<PlayerDashBurnoutEventArgs>(
-				PlayerDashBurnoutEventArgs.Name,
-				PlayerDashBurnoutEventArgs.NameSpace
-			);
+			_dashBurnout = eventFactory
+				.GetEvent<PlayerDashBurnoutEventArgs>(
+					PlayerDashBurnoutEventArgs.Name,
+					PlayerDashBurnoutEventArgs.NameSpace
+				);
 
-			_dashRecharged = eventFactory.GetEvent<PlayerDashRechargedEventArgs>(
-				PlayerDashRechargedEventArgs.Name,
-				PlayerDashRechargedEventArgs.NameSpace
-			);
+			_dashRecharged = eventFactory
+				.GetEvent<PlayerDashRechargedEventArgs>(
+					PlayerDashRechargedEventArgs.Name,
+					PlayerDashRechargedEventArgs.NameSpace
+				);
 
-			_dashStarted = eventFactory.GetEvent<PlayerDashStartEventArgs>(
-				PlayerDashStartEventArgs.Name,
-				PlayerDashStartEventArgs.NameSpace
-			);
+			_dashStarted = eventFactory
+				.GetEvent<PlayerDashStartEventArgs>(
+					PlayerDashStartEventArgs.Name,
+					PlayerDashStartEventArgs.NameSpace
+				);
 
-			_dashEnded = eventFactory.GetEvent<PlayerDashEndedEventArgs>(
-				PlayerDashEndedEventArgs.Name,
-				PlayerDashEndedEventArgs.NameSpace
-			);
+			_dashEnded = eventFactory
+				.GetEvent<PlayerDashEndedEventArgs>(
+					PlayerDashEndedEventArgs.Name,
+					PlayerDashEndedEventArgs.NameSpace
+				);
 
-			_resourceChanged = eventFactory.GetEvent<PlayerResourceChangedEventArgs>(
-				PlayerResourceChangedEventArgs.Name,
-				PlayerResourceChangedEventArgs.NameSpace
-			);
+			_resourceChanged = eventFactory
+				.GetEvent<PlayerResourceChangedEventArgs>(
+					PlayerResourceChangedEventArgs.Name,
+					PlayerResourceChangedEventArgs.NameSpace
+				);
 		}
 
 		/*

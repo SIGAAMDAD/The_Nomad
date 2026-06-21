@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Nomad.Game.Sdk.Multiplayer;
 
 namespace Nomad.Game.Sdk.Player.Input
@@ -55,7 +56,16 @@ namespace Nomad.Game.Sdk.Player.Input
         public bool IsMoving => Move.LengthSquared() > 0.0001f;
         public bool SlidePressed => IsPressed(PlayerInputButtons.Slide);
         public bool SlideDown => IsDown(PlayerInputButtons.Slide);
+        public bool DashPressed => IsPressed(PlayerInputButtons.Dash);
+        public bool DashDown => IsDown(PlayerInputButtons.Dash);
+        public bool InteractPressed => IsPressed(PlayerInputButtons.Interact);
+        public bool InteractDown => IsDown(PlayerInputButtons.Interact);
+        public bool JumpPressed => IsPressed(PlayerInputButtons.Jump);
+        public bool JumpDown => IsDown(PlayerInputButtons.Jump);
+        public bool DropPressed => IsPressed(PlayerInputButtons.Drop);
+        public bool DropDown => IsDown(PlayerInputButtons.Drop);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public PlayerInputFrame(
             PlayerId playerId,
             uint tick,
@@ -77,16 +87,19 @@ namespace Nomad.Game.Sdk.Player.Input
             ButtonsPressed = buttonsPressed;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsDown(PlayerInputButtons button)
         {
             return (ButtonsDown & button) != 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsPressed(PlayerInputButtons button)
         {
             return (ButtonsPressed & button) != 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public PlayerInputFrame WithPeer(PlayerId playerId)
         {
             return new PlayerInputFrame(
@@ -101,6 +114,7 @@ namespace Nomad.Game.Sdk.Player.Input
             );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public PlayerInputFrame WithTick(uint tick)
         {
             return new PlayerInputFrame(
@@ -115,6 +129,7 @@ namespace Nomad.Game.Sdk.Player.Input
             );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public PlayerInputFrame WithoutTransientButtons(uint tick)
         {
             return new PlayerInputFrame(

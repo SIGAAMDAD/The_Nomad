@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Audio.Interfaces;
 using Nomad.Core.CVars;
 using Nomad.Core.Engine.SceneManagement;
@@ -21,6 +22,7 @@ using Nomad.Core.Events;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Globals;
 using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Infrastructure.Streaming;
 using Nomad.Game.Presentation.Screens.Gameplay;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Scene.GameObjects;
@@ -40,10 +42,18 @@ namespace Nomad.Game.Prefabs
 
 	public partial class WorldBase : EngineSceneObject
 	{
-		private PlayerSpawnService _spawnService;
-		private PlayerRepository _playerRepository;
-		private ISceneManager _sceneManager;
+		[Export]
+		private Node3D _regionRoot;
+
+		[Export]
+		private RegionManifestTable _regionManifestTable;
+
+		private readonly PlayerSpawnService _spawnService;
+		private readonly PlayerRepository _playerRepository;
+		private readonly ISceneManager _sceneManager;
 		private GameplayScreen _gameOverlay;
+
+		private readonly WorldChunkStreamer _streamer;
 
 		public WorldBase()
 		{
@@ -81,23 +91,35 @@ namespace Nomad.Game.Prefabs
 			var gameOverlayScene = _sceneManager.LoadPrefab( "Source/Game/Presentation/Screens/Gameplay/GameplayScreen.tscn" );
 			_gameOverlay = gameOverlayScene.Root.CastAs<GameplayScreen>();
 			CallDeferred( MethodName.AddChild, _gameOverlay );
+
+			var streamerSettings = new RegionStreamingSettings {
+				RegionSizeMeters = 512,
+				MinRegionX = -16,
+				MinRegionZ = -16,
+				ActiveRadius = 1,
+				HotRadius = 2,
+				WarmRadius = 3,
+				ColdRadius = 5,
+				DefaultPromotionBudget = 1,
+				DefaultDemotionBudget = 2
+			};
+
+			_streamer = new WorldChunkStreamer( _regionRoot, streamerSettings );
+			_streamer.LoadManifestTable( _regionManifestTable );
 		}
 
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		protected override void OnInit()
+		protected override void OnUpdate( float delta )
 		{
+			base.OnUpdate( delta );
+
+			_streamer.TickLatest();
 		}
 
 		protected override void OnShutdown()
 		{
 			base.OnShutdown();
+
+			_streamer?.Shutdown();
 
 			_spawnService?.Dispose();
 			_playerRepository?.Dispose();

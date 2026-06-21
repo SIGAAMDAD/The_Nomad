@@ -17,11 +17,16 @@ namespace Nomad.Game.Sdk.Player.Input
 {
     public enum PlayerLocomotionDirection : byte
     {
-        Idle = 0,
-
-        Forward,
+        Idle,
         Backward,
         StrafeLeft,
-        StrafeRight
+        StrafeRight,
+        Forward,
+        Running180,
+
+        Count,
+
+        Min = Idle,
+        Max = Running180
     }
 }

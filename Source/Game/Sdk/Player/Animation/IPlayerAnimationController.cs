@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Events.Player;
 
 namespace Nomad.Game.Sdk.Player.Animation
@@ -23,8 +24,9 @@ namespace Nomad.Game.Sdk.Player.Animation
     public interface IPlayerAnimationController : IDisposable
     {
         [Event(nameSpace: "Nomad.Game.Sdk.Events.Player", PayloadName = "PlayerAnimationStateChangedEventArgs")]
-        [EventPayload("OldState", typeof(PlayerAnimationState), Order = 1)]
-        [EventPayload("NewState", typeof(PlayerAnimationState), Order = 2)]
+        [EventPayload("PlayerId", typeof(PlayerId), Order = 1)]
+        [EventPayload("OldState", typeof(PlayerAnimationState), Order = 2)]
+        [EventPayload("NewState", typeof(PlayerAnimationState), Order = 3)]
         IGameEvent<PlayerAnimationStateChangedEventArgs> AnimationStateChanged { get; }
     }
 }

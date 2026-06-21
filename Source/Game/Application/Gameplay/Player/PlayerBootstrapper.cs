@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using Godot;
 using Nomad.Core.CVars;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
@@ -33,6 +34,7 @@ using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Input.Interfaces;
 using Nomad.Game.Application.Gameplay.Player.Movement;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -50,6 +52,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal static class PlayerBootstrapper
 	{
+		private const string TraversalDatabasePath = "res://Traversal/GeneratedTraversalDatabase.tres";
+
 		/*
 		===============
 		Bootstrap
@@ -69,7 +73,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var inputDeviceSlots = ServiceLocator.GetService<IInputDeviceSlotService>();
 			var timeService = ServiceLocator.GetService<ITimeService>();
 
-			var aimCoordinator = new PlayerAimCoordinator( playerId, eventFactory );
 			var statsRepository = new PlayerBaseStatsRepository( playerId, eventFactory, logger );
 			var dependencyGraph = PlayerStatDependencyGraph.CreateDefault();
 			var derivedStatService = new PlayerDerivedStatService( playerId, statsRepository, dependencyGraph, eventFactory );
@@ -79,6 +82,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var saveCoordinator = new PlayerSaveCoordinator( derivedStatService, resourceService, stateCoordinator, prefab, eventFactory );
 			var inventoryCoordinator = new PlayerInventoryCoordinator( playerId, statsRepository, stateCoordinator, eventFactory, ServiceLocator.GetService<IWorldContentCache>().Items );
 			var weaponCoordinator = new PlayerWeaponCoordinator( playerId, inventoryCoordinator, eventFactory );
+			IPlayerInputSource inputSource = new LocalPlayerInputSource( playerId, localPlayerIndex, cvarSystem, inputDeviceSlots, eventFactory );
 
 			ApplyBaseStats( prefab, statsRepository );
 			derivedStatService.FlushDirty();
@@ -89,8 +93,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				comp.Id = playerId;
 				comp.StateReader = stateCoordinator;
 				comp.StateWriter = stateCoordinator;
-				comp.AimWriter = aimCoordinator;
-				comp.InputSource = new LocalPlayerInputSource( playerId, localPlayerIndex, cvarSystem, inputDeviceSlots, eventFactory );
+				comp.InputSource = inputSource;
 			} );
 
 			var jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
@@ -102,12 +105,19 @@ namespace Nomad.Game.Application.Gameplay.Player
 				comp.FlagService = flagService;
 			} );
 
-			var animator = new PlayerAnimationController(
+			var animator = new PlayerAnimationCoordinator(
 				playerId,
 				prefab,
 				movementController,
-				aimCoordinator,
 				stateCoordinator,
+				eventFactory
+			);
+
+			var parkourController = new PlayerParkourController(
+				prefab,
+				inputSource,
+				LoadTraversalDatabase(),
+				prefab.GetNodeOrNull<AnimationTree>( "AnimationTree" ),
 				eventFactory
 			);
 
@@ -119,10 +129,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 			} );
 
 			return new PlayerRuntime(
-				aimCoordinator,
 				jumpKit,
 				animator,
 				movementController,
+				parkourController,
 				audioService,
 				bulletTime,
 				stateCoordinator,
@@ -135,6 +145,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 				weaponCoordinator,
 				inventoryCoordinator
 			);
+		}
+
+		private static TraversalDatabase LoadTraversalDatabase()
+		{
+			return ResourceLoader.Exists( TraversalDatabasePath )
+				? ResourceLoader.Load<TraversalDatabase>( TraversalDatabasePath )
+				: null;
 		}
 
 		private static void ApplyBaseStats( PlayerPrefab prefab, PlayerBaseStatsRepository statsRepository )

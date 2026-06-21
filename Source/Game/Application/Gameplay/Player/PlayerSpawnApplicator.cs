@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using Godot;
 using Nomad.Game.Sdk.Player;
+using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Player.Stats;
 using Nomad.Game.Prefabs;
 using NumericsVector3 = System.Numerics.Vector3;

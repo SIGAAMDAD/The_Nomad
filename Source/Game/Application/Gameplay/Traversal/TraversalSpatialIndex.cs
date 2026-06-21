@@ -45,6 +45,12 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 
 				list.Add( i );
 			}
+
+			_cells = new Dictionary<TraversalCell, int[]>( buildCells.Count );
+
+			foreach ( (TraversalCell cell, List<int> indices) in buildCells ) {
+				_cells[cell] = indices.ToArray();
+			}
 		}
 
 		public TraversalCell PositionToCell( Vector3 position )
@@ -90,5 +96,5 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 				}
 			}
 		}
-	};
-};
+	}
+}

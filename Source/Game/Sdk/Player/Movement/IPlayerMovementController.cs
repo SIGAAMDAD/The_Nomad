@@ -17,6 +17,7 @@ using System.Numerics;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Events.Player.Movement;
 using Nomad.Game.Sdk.Multiplayer;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Sdk.Player.Movement
 {

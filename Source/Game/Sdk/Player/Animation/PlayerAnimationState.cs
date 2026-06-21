@@ -18,17 +18,24 @@ namespace Nomad.Game.Sdk.Player.Animation
     /// <summary>
     /// The player's global animation state.
     /// </summary>
-    public enum PlayerAnimationState : uint
+    public enum PlayerAnimationState : ushort
     {
         Idle,
         Running,
         Sliding,
 
         RestingAtCheckpoint,
+        DrinkingCheckpoint,
+
         Dying,
 
-        TrueIdle,
+        IdleStart,
+        IdleMiddle,
+        IdleFull,
 
-        Count
+        Count,
+
+        Min = Idle,
+        Max = IdleFull
     }
 }

@@ -171,6 +171,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <returns></returns>
 		public bool IsOccupied( WeaponSlotIndex slot )
 		{
+			if ( slot < WeaponSlotIndex.Min || slot > WeaponSlotIndex.Max ) {
+				return false;
+			}
+
 			return _slots[(int)slot].IsValid;
 		}
 
@@ -187,8 +191,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <returns></returns>
 		public bool TryGetSlot( WeaponSlotIndex slot, out ItemInstanceId weapon )
 		{
-			int index = (int)slot;
-			weapon = _slots[index];
+			weapon = ItemInstanceId.Invalid;
+
+			if ( slot < WeaponSlotIndex.Min || slot > WeaponSlotIndex.Max ) {
+				return false;
+			}
+
+			weapon = _slots[(int)slot];
+
 			return weapon.IsValid;
 		}
 
@@ -205,6 +215,12 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <returns></returns>
 		public bool TrySetSlot( WeaponSlotIndex slot, ItemInstanceId weapon )
 		{
+			if ( slot < WeaponSlotIndex.Min || slot > WeaponSlotIndex.Max ) {
+				return false;
+			}
+
+			_slots[(int)slot] = weapon;
+
 			return true;
 		}
 
@@ -219,8 +235,6 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <param name="slot"></param>
 		private void SetActiveSlot( WeaponSlotIndex slot )
 		{
-			RangeGuard.ThrowIfOutOfRange( (int)slot, (int)WeaponSlotIndex.Min, (int)WeaponSlotIndex.Max, nameof( slot ) );
-
 			WeaponSlotIndex previousSlot = _activeSlot;
 			_activeSlot = slot;
 
@@ -346,9 +360,9 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		/// <returns></returns>
 		public bool TrySwapSlots( WeaponSlotIndex a, WeaponSlotIndex b )
 		{
-			var tmp = _slots[ (int)b ];
+			ItemInstanceId tmp = _slots[(int)b];
 
-			if ( !TrySetSlot( b, _slots[ (int)a ] ) ) {
+			if ( !TrySetSlot( b, _slots[(int)a] ) ) {
 				return false;
 			}
 
@@ -371,6 +385,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Inventory
 		public bool TryClearSlots()
 		{
 			Array.Fill( _slots, ItemInstanceId.Invalid );
+
 			return true;
 		}
 	};

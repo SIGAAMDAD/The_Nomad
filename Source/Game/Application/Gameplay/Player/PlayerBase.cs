@@ -95,6 +95,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			}
 			base.Dispose( disposing );
 
+			_runtime?.Dispose();
 			_die?.Dispose();
 		}
 

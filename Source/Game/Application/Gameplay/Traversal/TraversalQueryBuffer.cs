@@ -25,7 +25,7 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 
 		public TraversalQueryBuffer( int capacity )
 		{
-			Items = ArrayPool<int>.Shared.Rent( Math.Max( capacity, 0 ) );
+			Items = ArrayPool<int>.Shared.Rent( Math.Max( capacity, 8 ) );
 			Count = 0;
 		}
 
@@ -42,5 +42,5 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 			}
 			Items[Count++] = value;
 		}
-	};
-};
+	}
+}

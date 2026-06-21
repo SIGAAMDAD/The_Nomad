@@ -18,13 +18,18 @@ namespace Nomad.Game.Sdk.Player.Movement
     public enum PlayerParkourState : byte
     {
         /// <summary>
-        /// On the ground.
+        /// Normal locomotion owns the player body.
         /// </summary>
-        Grounded,
+        Inactive,
 
         /// <summary>
-        ///
+        /// Player is latched to a traversal anchor.
         /// </summary>
-        Latched,
+        Attached,
+
+        /// <summary>
+        /// Player is moving along a traversal edge.
+        /// </summary>
+        TraversingEdge,
     }
 }

@@ -20,6 +20,7 @@ using Nomad.Events.Globals;
 using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Player.Stats;
+using Nomad.Game.Sdk.Player.State;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;
 using Nomad.Game.Application.Gameplay.Player;

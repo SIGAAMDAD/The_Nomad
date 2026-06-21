@@ -13,9 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using Nomad.Game.Application.Gameplay.Player.Animation;
 using Nomad.Game.Application.Gameplay.Player.Combat;
-using Nomad.Game.Application.Gameplay.Player.Input;
 using Nomad.Game.Application.Gameplay.Player.Inventory;
 using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
@@ -35,12 +35,12 @@ namespace Nomad.Game.Application.Gameplay.Player
 	/// Holds the player services and prefab components created during player bootstrap.
 	/// </summary>
 
-	internal sealed class PlayerRuntime
+	internal sealed class PlayerRuntime : IDisposable
 	{
-		public PlayerAimCoordinator AimCoordinator { get; }
 		public PlayerJumpKit JumpKit { get; }
-		public PlayerAnimationController Animator { get; }
+		public PlayerAnimationCoordinator Animator { get; }
 		public PlayerMovementController MovementController { get; }
+		public PlayerParkourController ParkourController { get; }
 		public PlayerAudioService AudioService { get; }
 		public PlayerBulletTime BulletTime { get; }
 
@@ -56,10 +56,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerInventoryCoordinator InventoryCoordinator { get; }
 
 		public PlayerRuntime(
-			PlayerAimCoordinator aimCoordinator,
 			PlayerJumpKit jumpKit,
-			PlayerAnimationController animator,
+			PlayerAnimationCoordinator animator,
 			PlayerMovementController movementController,
+			PlayerParkourController parkourController,
 			PlayerAudioService audioService,
 			PlayerBulletTime bulletTime,
 			PlayerStateCoordinator stateCoordinator,
@@ -73,10 +73,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 			PlayerInventoryCoordinator inventoryCoordinator
 		)
 		{
-			AimCoordinator = aimCoordinator;
 			JumpKit = jumpKit;
 			Animator = animator;
 			MovementController = movementController;
+			ParkourController = parkourController;
 			AudioService = audioService;
 			BulletTime = bulletTime;
 			StateCoordinator = stateCoordinator;
@@ -89,5 +89,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 			WeaponCoordinator = weaponCoordinator;
 			InventoryCoordinator = inventoryCoordinator;
 		}
-	};
-};
+
+		public void Dispose()
+		{
+			ParkourController?.Dispose();
+			Animator?.Dispose();
+		}
+	}
+}

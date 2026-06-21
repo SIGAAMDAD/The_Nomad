@@ -30,6 +30,7 @@ metadata/_edit_lock_ = true
 occluder = ExtResource("4_6unn5")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain3D" unique_id=1277178455]
+visible = false
 mesh = ExtResource("4_3c3sv")
 
 [node name="BorderFog0" type="FogVolume" parent="." unique_id=1765913081]

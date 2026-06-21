@@ -131,7 +131,7 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 			float bestScore = 0.35f;
 
 			int start = from.FirstEdge;
-			int end = from.EdgeCount;
+			int end = start + from.EdgeCount;
 
 			for ( int i = start; i < end; i++ ) {
 				ref readonly TraversalEdge edge = ref _graph.Edges[i];
@@ -204,8 +204,8 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 			return moveType switch {
 				TraversalMoveType.ClimbUp when input.Y > 0.5f => 0.25f,
 				TraversalMoveType.ClimbDown when input.Y < -0.5f => 0.25f,
-				TraversalMoveType.ShimmyLeft when input.X > 0.5f => 0.20f,
-				TraversalMoveType.ShimmyRight when input.X < -0.5f => 0.20f,
+				TraversalMoveType.ShimmyLeft when input.X < -0.5f => 0.20f,
+				TraversalMoveType.ShimmyRight when input.X > 0.5f => 0.20f,
 				TraversalMoveType.Mantle when input.Y > 0.65f => 0.35f,
 				TraversalMoveType.Drop when input.Y < -0.65f => 0.20f,
 				_ => 0.0f
@@ -218,5 +218,5 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 			float lenSq = value.LengthSquared();
 			return lenSq < 0.0001f ? fallback : value / MathF.Sqrt( lenSq );
 		}
-	};
-};
+	}
+}
