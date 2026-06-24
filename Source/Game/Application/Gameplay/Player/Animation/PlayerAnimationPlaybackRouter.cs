@@ -32,12 +32,24 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 		StrafeRightRun,
 		Running180,
 		SuddenStop,
+
 		CheckpointResting,
 		CheckpointDrinking,
+
 		Dying,
+
 		IdleStart,
 		IdleMiddle,
 		IdleFull,
+
+		WallAttach,
+		ClimpUp,
+		ClimbDown,
+		ShimmyLeft,
+		ShimmyRight,
+		Mantle,
+		Vault,
+		Drop,
 
 		Count
 	};
@@ -147,6 +159,14 @@ namespace Nomad.Game.Application.Gameplay.Player.Animation
 			names[(int)PlayerAnimationClip.IdleStart] = "IdleStart";
 			names[(int)PlayerAnimationClip.IdleMiddle] = "IdleMiddle";
 			names[(int)PlayerAnimationClip.IdleFull] = "IdleFull";
+			names[(int)PlayerAnimationClip.WallAttach] = "WallAttach";
+			names[(int)PlayerAnimationClip.ClimpUp] = "ClimbUp";
+			names[(int)PlayerAnimationClip.ClimpUp] = "ClimbDown";
+			names[(int)PlayerAnimationClip.ShimmyLeft] = "ShimmyLeft";
+			names[(int)PlayerAnimationClip.ShimmyRight] = "ShimmyRight";
+			names[(int)PlayerAnimationClip.Mantle] = "Mantle";
+			names[(int)PlayerAnimationClip.Vault] = "Vault";
+			names[(int)PlayerAnimationClip.Drop] = "Drop";
 			return names;
 		}
 

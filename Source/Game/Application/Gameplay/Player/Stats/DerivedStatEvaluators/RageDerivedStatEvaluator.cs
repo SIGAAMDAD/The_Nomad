@@ -28,7 +28,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats.DerivedStatEvaluators
 		public float Evaluate( DerivedStatType type, in PlayerDerivedStatEvaluationContext context )
 		{
 			return type switch {
-				DerivedStatType.EffectiveRageMax => Math.Max( 0.0f, context.GetBaseStat( BaseStatType.BaseRage ) ),
+				DerivedStatType.EffectiveRageMax => MathF.Max( 0.0f, context.GetBaseStat( BaseStatType.BaseRage ) ),
+				DerivedStatType.BulletTimeDrainRate => 1.0f,
 				_ => throw new ArgumentOutOfRangeException( nameof( type ) )
 			};
 		}

@@ -36,6 +36,9 @@ namespace Nomad.Game.Infrastructure.Streaming
 		public string LightScenePath { get; set; } = string.Empty;
 
 		[Export]
+		public string TraversalDatabasePath { get; set; } = string.Empty;
+
+		[Export]
 		public Aabb LocalBounds { get; set; }
 
 		[Export]
@@ -57,6 +60,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 				ScenePath,
 				ProxyScenePath,
 				LightScenePath,
+				TraversalDatabasePath,
 				LocalBounds,
 				EstimatedCPUBytes,
 				EstimatedGPUBytes,

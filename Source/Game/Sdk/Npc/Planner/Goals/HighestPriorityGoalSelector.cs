@@ -19,14 +19,13 @@ namespace Nomad.Game.Sdk.Npc.Planner.Goals
 {
     public sealed class HighestPriorityGoalSelector : IGoalSelector
     {
-        public GoalDef SelectBestGoal(INpcAgent agent, GoalDef[] goals)
+        public GoalDef SelectBestGoal(INpcAgent agent, GoalDef[] goals, PlanningContext context)
         {
             if (goals == null || goals.Length == 0)
             {
                 throw new InvalidOperationException("No goals available.");
             }
 
-            PlanningContext context = new PlanningContext(agent.Memory);
             GoalDef best = goals[0];
             int bestScore = best.GetPriority(context);
 

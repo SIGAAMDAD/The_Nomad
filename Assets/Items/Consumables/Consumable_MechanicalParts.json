@@ -1,0 +1,11 @@
+{
+	"BaseType": "Consumable",
+	"Id": "CONSUMABLE_MECHANICALPARTS_ID",
+	"Name": "CONSUMABLE_MECHANICALPARTS_NAME",
+	"JournalEntry": "CONSUMABLE_MECHANICALPARTS_JOURNALENTRY",
+	"BehaviorId": "gdr.nomadmain.mechanical_parts",
+	"BaseCost": 1.0,
+	"Weight": 0.5,
+	"IsStackable": true,
+	"Amount": 1.0
+}

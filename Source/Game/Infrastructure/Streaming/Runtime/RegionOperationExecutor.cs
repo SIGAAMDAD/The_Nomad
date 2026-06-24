@@ -189,8 +189,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 				return;
 			}
 
-			RegionId id = _grid.FromIndex( index );
-			StreamedRegionChunk instance = _instances.Instantiate( scene, id );
+			StreamedRegionChunk instance = _instances.Instantiate( scene, state.Manifests[index] );
 			state.Instances[index] = instance;
 
 			r.Flags |= RegionFlags.HasFullInstance | RegionFlags.PhysicsOff | RegionFlags.IsResident;

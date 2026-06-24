@@ -15,15 +15,16 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Nomad.Core.Engine.Services;
-using Nomad.EngineUtils;
 using Nomad.Events.Globals;
-using Nomad.Game.Sdk.Player;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Player.Stats;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Input;
 using Nomad.Input.ValueObjects;
-using Nomad.Game.Application.Gameplay.Player;
+using Nomad.Game.Prefabs;
+using Nomad.Core.Events;
+using Nomad.Core.Compatibility.Guards;
+using System.Runtime.CompilerServices;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -38,86 +39,75 @@ namespace Nomad.Game.Application.Gameplay.Player
 	///
 	/// </summary>
 
-	internal sealed class PlayerBulletTime : NomadBehaviour
+	internal sealed class PlayerBulletTime : IDisposable
 	{
-		public IPlayerResourceService ResourceService { get; set; }
-		public IPlayerDerivedStatService DerivedStatService { get; set; }
-		public IPlayerFlagService FlagService { get; set; }
-		public ITimeService TimeService { get; set; }
+		private readonly IPlayerResourceService _resourceService;
+		private readonly IPlayerDerivedStatService _derivedStatService;
+		private readonly IPlayerFlagService _flagService;
+		private readonly ITimeService _timeService;
+
+		private readonly IDisposable _bulletTimeAction = null;
+		private readonly IDisposable _derivedStatChanged = null;
+
+		private float _effectiveRageMax = 0.0f;
+		private float _bulletTimeRageDepletionRate = 0.0f;
 
 		private float _maxRage = 0.0f;
-		private float _bulletTimeRageDepletionRate = 2.5f;
 		private bool _isActive = false;
 
-		/*
-		===============
-		OnInit
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		public override void OnInit()
+		private bool _isDisposed = false;
+
+		public PlayerBulletTime(
+			PlayerPrefab prefab,
+			ITimeService timeService,
+			IPlayerResourceService resourceService,
+			IPlayerDerivedStatService derivedStatService,
+			IPlayerFlagService flagService,
+			IGameEventRegistryService eventFactory
+		)
 		{
-			base.OnInit();
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 
-			var eventFactory = GameEventRegistry.Instance;
+			_timeService = timeService ?? throw new ArgumentNullException( nameof( timeService ) );
+			_resourceService = resourceService ?? throw new ArgumentNullException( nameof( resourceService ) );
+			_derivedStatService = derivedStatService ?? throw new ArgumentNullException( nameof( derivedStatService ) );
+			_flagService = flagService ?? throw new ArgumentNullException( nameof( flagService ) );
 
-			eventFactory
+			_derivedStatChanged = derivedStatService.DerivedStatChanged.Subscribe( OnDerivedStatChanged );
+
+			_bulletTimeAction = eventFactory
 				.GetEvent<ButtonActionEventArgs>(
 					$"BulletTime:{ButtonActionEventArgs.Name}",
 					ButtonActionEventArgs.NameSpace
 				)
 				.Subscribe( OnBulletTimeTriggered );
-
-			DerivedStatService.DerivedStatChanged.Subscribe( OnDerivedStatChanged );
 		}
 
-		/*
-		===============
-		OnUpdate
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="delta"></param>
-		public override void OnUpdate( float delta )
+		public void Dispose()
 		{
-			base.OnUpdate( delta );
-
-			if ( _isActive ) {
-				float value = ResourceService.GetValue( PlayerResourceType.Rage );
-				value = Math.Clamp( value - (_bulletTimeRageDepletionRate * delta), 0.0f, DerivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
-				ResourceService.SetValue( PlayerResourceType.Rage, value );
-				if ( value == 0.0f ) {
-					Toggle( false );
-				}
+			if ( _isDisposed ) {
+				return;
 			}
+
+			_bulletTimeAction.Dispose();
+			_derivedStatChanged.Dispose();
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
-		/*
-		===============
-		OnShutdown
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		public override void OnShutdown()
+		public void UpdateFrame( float delta )
 		{
-			base.OnShutdown();
+			if ( !_isActive ) {
+				return;
+			}
 
-			var eventFactory = GameEventRegistry.Instance;
-
-			eventFactory
-				.GetEvent<ButtonActionEventArgs>(
-					$"BulletTime:{ButtonActionEventArgs.Name}",
-					ButtonActionEventArgs.NameSpace
-				)
-				.Unsubscribe( OnBulletTimeTriggered );
-
-			DerivedStatService.DerivedStatChanged.Unsubscribe( OnDerivedStatChanged );
+			float value = _resourceService.GetValue( PlayerResourceType.Rage );
+			value = Math.Clamp( value - (_bulletTimeRageDepletionRate * delta), 0.0f, _derivedStatService.GetValue( DerivedStatType.EffectiveRageMax ) );
+			_resourceService.SetValue( PlayerResourceType.Rage, value );
+			if ( value == 0.0f ) {
+				Toggle( false );
+			}
 		}
 
 		/*
@@ -129,9 +119,10 @@ namespace Nomad.Game.Application.Gameplay.Player
 		///
 		/// </summary>
 		/// <returns></returns>
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private bool ValidateState()
 		{
-			return ResourceService.GetValue( PlayerResourceType.Rage ) > 0.0f;
+			return _resourceService.GetValue( PlayerResourceType.Rage ) > 0.0f;
 		}
 
 		/*
@@ -148,13 +139,15 @@ namespace Nomad.Game.Application.Gameplay.Player
 			if ( !ValidateState() ) {
 				return;
 			}
+
 			_isActive = value;
+
 			if ( !_isActive ) {
-				FlagService.RemoveFlags( PlayerFlags.BulletTime );
-				TimeService.SetTimeScale( 0.5f );
+				_flagService.RemoveFlags( PlayerFlags.BulletTime );
+				_timeService.SetTimeScale( 0.5f );
 			} else {
-				FlagService.AddFlags( PlayerFlags.BulletTime );
-				TimeService.SetTimeScale( 1.0f );
+				_flagService.AddFlags( PlayerFlags.BulletTime );
+				_timeService.SetTimeScale( 1.0f );
 			}
 		}
 

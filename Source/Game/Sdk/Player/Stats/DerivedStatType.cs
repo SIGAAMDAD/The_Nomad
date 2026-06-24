@@ -27,9 +27,10 @@ namespace Nomad.Game.Sdk.Player.Stats
         EffectiveRageMax,
         EffectiveSanityMax,
         SanityDrainMultiplier,
+        BulletTimeDrainRate,
 
-        Max,
+        Max = BulletTimeDrainRate,
 
-        Count = Max
+        Count
     }
 }

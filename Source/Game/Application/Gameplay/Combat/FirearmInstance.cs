@@ -50,6 +50,7 @@ namespace Nomad.Game.Application.Gameplay.Combat
 	/// several granular cartridges while rejecting others.
 	/// </para>
 	/// </remarks>
+
 	internal sealed class FirearmInstance : WeaponInstance<FirearmDefinition>, IFirearmInstance
 	{
 		public FirearmDefinition FirearmDefinition => definition;

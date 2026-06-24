@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Game.Application.Gameplay.Traversal;
 
 namespace Nomad.Game.Infrastructure.Streaming
 {
@@ -23,19 +24,24 @@ namespace Nomad.Game.Infrastructure.Streaming
 		private readonly RegionGrid _grid;
 		private readonly Node3D _regionSceneRoot;
 		private readonly RegionStreamingSettings _settings;
+		private readonly ITraversalDatabaseRegistry _traversalRegistry;
 
-		public RegionInstanceController( RegionGrid grid, Node3D regionSceneRoot, RegionStreamingSettings settings )
+		public RegionInstanceController( RegionGrid grid, Node3D regionSceneRoot, RegionStreamingSettings settings, ITraversalDatabaseRegistry traversalRegistry = null )
 		{
 			_grid = grid ?? throw new ArgumentNullException( nameof( grid ) );
 			_regionSceneRoot = regionSceneRoot ?? throw new ArgumentNullException( nameof( regionSceneRoot ) );
 			_settings = settings ?? throw new ArgumentNullException( nameof( settings ) );
+			_traversalRegistry = traversalRegistry;
 		}
 
-		public StreamedRegionChunk Instantiate( PackedScene scene, RegionId id )
+		public StreamedRegionChunk Instantiate( PackedScene scene, RegionManifest manifest )
 		{
 			StreamedRegionChunk instance = scene.Instantiate<StreamedRegionChunk>();
+			RegionId id = manifest.Id;
 
 			instance.Initialize( id );
+			instance.SetTraversalRegistry( _traversalRegistry );
+			instance.SetTraversalDatabasePath( manifest.TraversalDatabasePath );
 			instance.Name = $"Region_{id.X}_{id.Z}";
 			instance.Position = _grid.RegionOrigin( id );
 

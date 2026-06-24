@@ -22,18 +22,18 @@ namespace Nomad.Game.Sdk.Npc.Planner
     {
         public InternString Name { get; }
         public int BaseCost { get; }
-        public WorldCondition[] Preconditions { get; }
-        public WorldEffect[] Effects { get; }
+        public WorldStateMask Preconditions { get; }
+        public WorldStatePatch Effects { get; }
         public Func<PlanningContext, bool> ValidateContext { get; }
         public Func<PlanningContext, int> GetDynamicCost { get; }
         public IActionRunner Runner { get; }
 
-        public PlannerAction(string name, int baseCost, WorldCondition[] preconditions, WorldEffect[] effects, IActionRunner runner, Func<PlanningContext, bool> validateContext = null, Func<PlanningContext, int> getDynamicCost = null)
+        public PlannerAction(string name, int baseCost, WorldStateMask preconditions, WorldStatePatch effects, IActionRunner runner, Func<PlanningContext, bool> validateContext = null, Func<PlanningContext, int> getDynamicCost = null)
         {
             Name = new InternString(name);
             BaseCost = baseCost;
-            Preconditions = preconditions ?? Array.Empty<WorldCondition>();
-            Effects = effects ?? Array.Empty<WorldEffect>();
+            Preconditions = preconditions;
+            Effects = effects;
             Runner = runner;
             ValidateContext = validateContext;
             GetDynamicCost = getDynamicCost;

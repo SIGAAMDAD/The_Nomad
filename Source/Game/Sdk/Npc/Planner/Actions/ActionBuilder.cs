@@ -42,9 +42,9 @@ namespace Nomad.Game.Sdk.Npc.Planner.Actions
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WorldCondition[] GetPreconditions()
+        public WorldStateMask GetPreconditions()
         {
-            return _preconditions.ToArray();
+            return WorldStateMask.FromConditions(_preconditions.ToArray());
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace Nomad.Game.Sdk.Npc.Planner.Actions
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WorldEffect[] GetEffects()
+        public WorldStatePatch GetEffects()
         {
-            return _effects.ToArray();
+            return WorldStatePatch.FromEffects(_effects.ToArray());
         }
     }
 }

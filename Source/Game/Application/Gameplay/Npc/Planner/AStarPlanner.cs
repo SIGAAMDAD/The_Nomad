@@ -13,6 +13,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Nomad.Core.Compatibility.Guards;
@@ -48,6 +49,7 @@ namespace Nomad.Game.Application.Gameplay.Npc.Planner
 			WorldState start,
 			GoalDef goal,
 			PlanningContext context,
+			PlannerScratch scratch,
 			PlannerAction[] actions,
 			int maxExpansions,
 			out Plan plan
@@ -57,16 +59,10 @@ namespace Nomad.Game.Application.Gameplay.Npc.Planner
 			ArgumentGuard.ThrowIfNull( goal, nameof( goal ) );
 			ArgumentGuard.ThrowIfNull( actions, nameof( actions ) );
 #endif
-
 			if ( goal.IsSatisfied( start ) ) {
 				plan = Plan.Empty;
 				return true;
 			}
-
-			// FIXME: mayhaps use a Span<int> with actions.Length + maxExpansions length?
-			List<PlannerNode> nodes = new List<PlannerNode>( 64 );
-			List<int> open = new List<int>( 64 );
-			Dictionary<WorldState, int> bestG = new Dictionary<WorldState, int>();
 
 			PlannerNode startNode = new PlannerNode {
 				State = start,
@@ -76,21 +72,33 @@ namespace Nomad.Game.Application.Gameplay.Npc.Planner
 				H = Heuristic( start, goal )
 			};
 
-			nodes.Add( startNode );
-			open.Add( 0 );
-			bestG[start] = 0;
+			scratch.Prepare( actions.Length );
+
+			for ( int i = 0; i < actions.Length; i++ ) {
+				PlannerAction action = actions[i];
+
+				scratch.ActionContextValid[i] =
+					action.ValidateContext == null || action.ValidateContext.Invoke( context );
+
+				scratch.ActionCosts[i] =
+					action.BaseCost + (action.GetDynamicCost != null ? action.GetDynamicCost.Invoke( context ) : 0);
+			}
+
+			scratch.Nodes.Add( startNode );
+			scratch.Open.Add( 0 );
+			scratch.BestG[start] = 0;
 
 			int expansions = 0;
 
-			while ( open.Count > 0 && expansions < maxExpansions ) {
-				int openListIndex = FindLowestFIndex( open, nodes );
-				int currentNodeIndex = open[openListIndex];
-				open.RemoveAt( openListIndex );
+			while ( scratch.Open.Count > 0 && expansions < maxExpansions ) {
+				int openListIndex = FindLowestFIndex( scratch.Open, scratch.Nodes );
+				int currentNodeIndex = scratch.Open[openListIndex];
+				scratch.Open.RemoveAt( openListIndex );
 
-				PlannerNode current = nodes[currentNodeIndex];
+				PlannerNode current = scratch.Nodes[currentNodeIndex];
 
 				if ( goal.IsSatisfied( current.State ) ) {
-					plan = ReconstructPlan( nodes, currentNodeIndex, actions );
+					plan = ReconstructPlan( scratch.Nodes, currentNodeIndex, actions );
 					return true;
 				}
 
@@ -108,30 +116,21 @@ namespace Nomad.Game.Application.Gameplay.Npc.Planner
 					}
 
 					WorldState nextState = current.State.Apply( action.Effects );
+					int nextG = current.G + scratch.ActionCosts[i];
 
-					int stepCost = action.BaseCost;
-					if ( action.GetDynamicCost != null ) {
-						stepCost += action.GetDynamicCost( context );
-					}
-
-					int nextG = current.G + stepCost;
-
-					if ( bestG.TryGetValue( nextState, out int knownG ) && nextG >= knownG ) {
+					if ( scratch.BestG.TryGetValue( nextState, out int knownG ) && nextG >= knownG ) {
 						continue;
 					}
 
-					bestG[nextState] = nextG;
-
-					PlannerNode nextNode = new PlannerNode {
+					scratch.BestG[nextState] = nextG;
+					scratch.Nodes.Add( new PlannerNode {
 						State = nextState,
 						ParentIndex = currentNodeIndex,
 						ActionIndex = i,
 						G = nextG,
 						H = Heuristic( nextState, goal )
-					};
-
-					nodes.Add( nextNode );
-					open.Add( nodes.Count - 1 );
+					} );
+					scratch.Open.Add( scratch.Nodes.Count - 1 );
 				}
 			}
 
@@ -150,10 +149,10 @@ namespace Nomad.Game.Application.Gameplay.Npc.Planner
 		/// <param name="state"></param>
 		/// <param name="goal"></param>
 		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl( MethodImplOptions.AggressiveInlining )]
 		private static int Heuristic( WorldState state, GoalDef goal )
 		{
-			return state.CountUnmet( goal.DesiredState );
+			return state.CountUnmet( goal.DesiredMask );
 		}
 
 		/*

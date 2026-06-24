@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Collections.Generic;
+using Godot;
 using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Configuration;
@@ -27,6 +28,7 @@ using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HealthBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.InteractionMenu;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.RageBar;
 using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.HotSlotContainer;
+using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Crosshair;
 using Nomad.Game.Sdk.Player.Inventory;
 using Nomad.Core.CVars;
 using Nomad.CVars;
@@ -101,9 +103,46 @@ namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 			_combatGroup = new ComponentGroup(
 				cvarSystem.GetCVarOrThrow( GameplayCVarRegistry.CombatHUDPreset ).Value,
 				new List<IHudComponentPresenter> {
-					new HotSlotContainerPresenter( playerId, root.GetNode<HotSlotsContainerView>( "CombatHUD/HotSlotsContainer" ), slotsService, itemRegistry )
+					new HotSlotContainerPresenter( playerId, root.GetNode<HotSlotsContainerView>( "CombatHUD/HotSlotsContainer" ), slotsService, itemRegistry ),
+					new CrosshairPresenter( playerId, ResolveCrosshairView( root ), eventFactory )
 				}
 			);
+		}
+
+		private static CrosshairView ResolveCrosshairView( HeadsUpDisplayView root )
+		{
+			CrosshairView existing = root.GetNodeOrNull<CrosshairView>( "CombatHUD/Crosshair" );
+			if ( existing != null ) {
+				return existing;
+			}
+
+			Control parent = root.GetNodeOrNull<Control>( "CombatHUD" )
+				?? throw new InvalidOperationException( "HeadsUpDisplay requires a CombatHUD Control to host the Crosshair view." );
+
+			CrosshairView view = CreateCrosshairView();
+			parent.AddChild( view );
+
+			return view;
+		}
+
+		private static CrosshairView CreateCrosshairView()
+		{
+			const string scenePath = "res://Source/Game/Presentation/UserInterface/HeadsUpDisplay/Components/Crosshair/CrosshairView.tscn";
+			if ( ResourceLoader.Exists( scenePath ) ) {
+				var scene = ResourceLoader.Load<PackedScene>( scenePath );
+				if ( scene.Instantiate() is CrosshairView instancedView ) {
+					return instancedView;
+				}
+			}
+
+			var view = new CrosshairView {
+				Name = "Crosshair",
+				MouseFilter = Control.MouseFilterEnum.Ignore
+			};
+			view.SetAnchorsPreset( Control.LayoutPreset.FullRect );
+			view.SetOffsetsPreset( Control.LayoutPreset.FullRect );
+
+			return view;
 		}
 
 		/*

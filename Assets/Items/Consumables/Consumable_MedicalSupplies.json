@@ -1,0 +1,11 @@
+{
+	"BaseType": "Consumable",
+	"Id": "CONSUMABLE_MEDICALSUPPLIES_ID",
+	"Name": "CONSUMABLE_MEDICALSUPPLIES_NAME",
+	"JournalEntry": "CONSUMABLE_MEDICALSUPPLIES_JOURNALENTRY",
+	"BehaviorId": "gdr.nomadmain.medical_supplies",
+	"BaseCost": 1.0,
+	"Weight": 0.5,
+	"IsStackable": true,
+	"Amount": 1.0
+}

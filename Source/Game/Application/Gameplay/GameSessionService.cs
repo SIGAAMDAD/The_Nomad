@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Game.Sdk.Events.Gameplay;
 using Nomad.Game.Sdk.Gameplay;
@@ -51,31 +52,33 @@ namespace Nomad.Game.Application.Gameplay
 
 		public GameSessionService( IGameStateService gameStateService, ISaveDataProvider dataProvider, IGameEventRegistryService eventFactory )
 		{
+			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
 			_gameStateService = gameStateService ?? throw new ArgumentNullException( nameof( gameStateService ) );
 			_dataProvider = dataProvider ?? throw new ArgumentNullException( nameof( dataProvider ) );
-			if ( eventFactory == null ) {
-				throw new ArgumentNullException( nameof( eventFactory ) );
-			}
 
-			_transitionStarted = eventFactory.GetEvent<GameSessionTransitionStartedEventArgs>(
-				GameSessionTransitionStartedEventArgs.Name,
-				GameSessionTransitionStartedEventArgs.NameSpace
-			);
+			_transitionStarted = eventFactory
+				.GetEvent<GameSessionTransitionStartedEventArgs>(
+					GameSessionTransitionStartedEventArgs.Name,
+					GameSessionTransitionStartedEventArgs.NameSpace
+				);
 
-			_transitionCompleted = eventFactory.GetEvent<GameSessionTransitionCompletedEventArgs>(
-				GameSessionTransitionCompletedEventArgs.Name,
-				GameSessionTransitionCompletedEventArgs.NameSpace
-			);
+			_transitionCompleted = eventFactory
+				.GetEvent<GameSessionTransitionCompletedEventArgs>(
+					GameSessionTransitionCompletedEventArgs.Name,
+					GameSessionTransitionCompletedEventArgs.NameSpace
+				);
 
-			_transitionProgressChanged = eventFactory.GetEvent<GameSessionTransitionProgressChangedEventArgs>(
-				GameSessionTransitionProgressChangedEventArgs.Name,
-				GameSessionTransitionProgressChangedEventArgs.NameSpace
-			);
+			_transitionProgressChanged = eventFactory
+				.GetEvent<GameSessionTransitionProgressChangedEventArgs>(
+					GameSessionTransitionProgressChangedEventArgs.Name,
+					GameSessionTransitionProgressChangedEventArgs.NameSpace
+				);
 
-			_worldBootstrapRequested = eventFactory.GetEvent<WorldBootstrapRequestEventArgs>(
-				WorldBootstrapRequestEventArgs.Name,
-				WorldBootstrapRequestEventArgs.NameSpace
-			);
+			_worldBootstrapRequested = eventFactory
+				.GetEvent<WorldBootstrapRequestEventArgs>(
+					WorldBootstrapRequestEventArgs.Name,
+					WorldBootstrapRequestEventArgs.NameSpace
+				);
 
 			_worldBootstrapSucceeded = eventFactory
 				.GetEvent<WorldBootstrapSucceededEventArgs>(
@@ -98,6 +101,10 @@ namespace Nomad.Game.Application.Gameplay
 				return;
 			}
 
+			_transitionCompleted.Dispose();
+			_transitionStarted.Dispose();
+			_transitionProgressChanged.Dispose();
+			_worldBootstrapRequested.Dispose();
 			_worldBootstrapFailed.Dispose();
 			_worldBootstrapSucceeded.Dispose();
 

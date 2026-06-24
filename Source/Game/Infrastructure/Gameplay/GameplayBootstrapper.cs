@@ -18,6 +18,7 @@ using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
 using Nomad.Core.Logger;
 using Nomad.Core.ServiceRegistry.Interfaces;
+using Nomad.Game.Application.Gameplay.Traversal;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Save.Services;
 
@@ -27,6 +28,7 @@ namespace Nomad.Game.Infrastructure.Gameplay
 	{
 		private IWorldContentCache? _worldContentCache;
 		private INomadBehaviorRegistry? _behaviorRegistry;
+		private TraversalDatabaseProvider? _traversalDatabaseProvider;
 
 		public void Initialize( IServiceRegistry registry, IServiceLocator locator )
 		{
@@ -43,9 +45,12 @@ namespace Nomad.Game.Infrastructure.Gameplay
 			);
 
 			_behaviorRegistry = new NomadBehaviorRegistry();
+			_traversalDatabaseProvider = new TraversalDatabaseProvider();
 
 			registry.AddSingleton( _worldContentCache );
 			registry.AddSingleton( _behaviorRegistry );
+			registry.AddSingleton<ITraversalDatabaseRegistry>( _traversalDatabaseProvider );
+			registry.AddSingleton<ITraversalGraphProvider>( _traversalDatabaseProvider );
 		}
 
 		public void Shutdown()

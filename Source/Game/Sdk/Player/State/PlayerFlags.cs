@@ -64,5 +64,10 @@ namespace Nomad.Game.Sdk.Player.State
         /// The player's input is currently blocked.
         /// </summary>
         BlockedInput = 1 << 8,
+
+        /// <summary>
+        /// Player is currently wall-running or wall-climbing through dynamic movement.
+        /// </summary>
+        WallRunning = 1 << 9,
     }
 }

@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System.Numerics;
 using System;
 using Nomad.Game.Sdk.Events.Player.Movement;
+using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Sdk.Player.Movement
 {
@@ -25,6 +26,9 @@ namespace Nomad.Game.Sdk.Player.Movement
         bool IsActive { get; }
         int CurrentAnchorIndex { get; }
         Vector2 LastMoveInput { get; }
+
+        void ApplyInput(in PlayerInputFrame input);
+        void PhysicsUpdate(float dt);
 
         void RequestAttach();
         void RequestJump();

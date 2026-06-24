@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System;
+using System.Collections.Generic;
 using Nomad.Core.Util;
 using Nomad.Game.Sdk.Inventory;
 using Nomad.Game.Sdk.Items;
@@ -32,11 +33,17 @@ namespace Nomad.Game.Sdk.Inventory
         InventoryRules Rules { get; }
         float CurrentWeight { get; }
 
+        IReadOnlyList<ItemStack> Stacks { get; }
+
         bool TryAdd(ItemDefinitionId itemType, int amount);
-        bool TryRemove(ItemDefinitionId itemType, int amount);
+        bool TryRemove(ItemDefinitionId itemType, int amount, out int removed);
 
         bool TryAddInstance(ItemInstanceId instance);
         bool TryRemoveInstance(ItemInstanceId instance);
         bool ContainsInstance(ItemInstanceId instance);
+
+        bool MoveStacksTo(IStorageUnit storageUnit);
+        int GetStackAmount(ItemDefinitionId itemType);
+        bool ContainsStack(ItemDefinitionId itemType);
     }
 }

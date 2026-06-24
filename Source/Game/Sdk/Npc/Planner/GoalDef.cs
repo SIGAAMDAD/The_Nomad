@@ -22,14 +22,14 @@ namespace Nomad.Game.Sdk.Npc.Planner.Goals
     {
         public string Name { get; }
         public int BasePriority { get; }
-        public WorldCondition[] DesiredState { get; }
+        public WorldStateMask DesiredMask { get; }
         public Func<PlanningContext, int> ScoreModifier { get; }
 
         public GoalDef(string name, int basePriority, WorldCondition[] desiredState, Func<PlanningContext, int> scoreModifier = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             BasePriority = basePriority;
-            DesiredState = desiredState ?? Array.Empty<WorldCondition>();
+            DesiredMask = WorldStateMask.FromConditions(desiredState ?? Array.Empty<WorldCondition>());
             ScoreModifier = scoreModifier;
         }
 
@@ -42,7 +42,7 @@ namespace Nomad.Game.Sdk.Npc.Planner.Goals
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsSatisfied(WorldState state)
         {
-            return state.Meets(DesiredState);
+            return state.Meets(DesiredMask);
         }
     }
 }

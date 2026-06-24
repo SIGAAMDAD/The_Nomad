@@ -41,7 +41,7 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 
 	internal sealed class PlayerDerivedStatService : IPlayerDerivedStatService
 	{
-		private readonly IPlayerBaseStatsRepository _baseStats;
+		private readonly PlayerBaseStatsRepository _baseStats;
 		private readonly PlayerStatDependencyGraph _graph;
 		private readonly List<IPlayerDerivedStatEvaluator> _evaluators = new();
 
@@ -68,12 +68,10 @@ namespace Nomad.Game.Application.Gameplay.Player.Stats
 		/// <param name="baseStats">Repository providing access to base player statistics.</param>
 		/// <param name="graph">Dependency graph defining relationships between derived stats.</param>
 		/// <param name="eventFactory">Factory for creating game events.</param>
-		public PlayerDerivedStatService( PlayerId playerId, IPlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
+		public PlayerDerivedStatService( PlayerId playerId, PlayerBaseStatsRepository baseStats, PlayerStatDependencyGraph graph, IGameEventRegistryService eventFactory )
 		{
 			ArgumentGuard.ThrowIfNull( eventFactory, nameof( eventFactory ) );
-			if ( playerId == PlayerId.Invalid ) {
-				throw new InvalidOperationException( "PlayerDerivedStatsService given an invalid PlayerId!" );
-			}
+			playerId.ThrowIfInvalid( nameof( PlayerDerivedStatService ) );
 
 			_playerId = playerId;
 

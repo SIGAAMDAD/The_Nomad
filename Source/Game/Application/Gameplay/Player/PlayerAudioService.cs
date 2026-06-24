@@ -20,9 +20,11 @@ using Nomad.EngineUtils;
 using Nomad.Events.Globals;
 using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Events.Player;
+using Nomad.Game.Sdk.Events.Player.JumpKit;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Sdk.Multiplayer;
 using Nomad.Game.Sdk.Audio;
+using Nomad.Game.Sdk.Player.JumpKit;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -92,25 +94,11 @@ namespace Nomad.Game.Application.Gameplay.Player
 			var eventFactory = GameEventRegistry.Instance;
 
 			eventFactory
-				.GetEvent<PlayerDashStartEventArgs>(
-					PlayerDashStartEventArgs.Name,
-					PlayerDashStartEventArgs.NameSpace
+				.GetEvent<PlayerJumpKitStatusChangedEventArgs>(
+					PlayerJumpKitStatusChangedEventArgs.Name,
+					PlayerJumpKitStatusChangedEventArgs.NameSpace
 				)
-				.Subscribe( OnDashStarted );
-
-			eventFactory
-				.GetEvent<PlayerDashBurnoutEventArgs>(
-					PlayerDashBurnoutEventArgs.Name,
-					PlayerDashBurnoutEventArgs.NameSpace
-				)
-				.Subscribe( OnDashBurnout );
-
-			eventFactory
-				.GetEvent<PlayerDashRechargedEventArgs>(
-					PlayerDashRechargedEventArgs.Name,
-					PlayerDashRechargedEventArgs.NameSpace
-				)
-				.Subscribe( OnDashRecharged );
+				.Subscribe( OnJumpKitStatusChanged );
 
 			eventFactory
 				.GetEvent<WeaponSlotChangedEventArgs>(
@@ -144,48 +132,36 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 		/*
 		===============
-		OnDashStarted
+		OnJumpKitStatusChanged
 		===============
 		*/
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="args"></param>
-		private void OnDashStarted( in PlayerDashStartEventArgs args )
+		private void OnJumpKitStatusChanged( in PlayerJumpKitStatusChangedEventArgs args )
 		{
-			_dashEffectEmitter.Pitch = 1.0f + args.BurnoutAmount;
-			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashActivate ).Path );
-		}
+			if ( !args.PlayerId.Equals( Id ) ) {
+				return;
+			}
 
-		/*
-		===============
-		OnDashBurnout
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnDashBurnout( in PlayerDashBurnoutEventArgs args )
-		{
-			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashBurnout ).Path );
-		}
+			PlayerJumpKitFlags flags = args.NewStatus.Flags;
 
-		/*
-		===============
-		OnDashRecharged
-		===============
-		*/
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="args"></param>
-		private void OnDashRecharged( in PlayerDashRechargedEventArgs args )
-		{
-			_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
-			_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
+			if ( (flags & PlayerJumpKitFlags.DashStarted) != 0 ) {
+				_dashEffectEmitter.Pitch = 1.0f + args.NewStatus.BurnoutAmount;
+				_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
+				_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashActivate ).Path );
+			}
+
+			if ( (flags & PlayerJumpKitFlags.BurnoutEntered) != 0 ) {
+				_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
+				_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashBurnout ).Path );
+			}
+
+			if ( (flags & PlayerJumpKitFlags.Recharged) != 0 ) {
+				_dashEffectEmitter.Position = _prefab.GlobalPosition.ToSystem();
+				_dashEffectEmitter.PlaySound( AudioEventIdConstants.GetEvent( AudioEventId.SoundEffectsFXPlayerDashRecharge ).Path );
+			}
 		}
 
 		/*

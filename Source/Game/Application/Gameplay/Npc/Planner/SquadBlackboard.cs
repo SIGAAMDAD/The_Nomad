@@ -13,14 +13,14 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
-using System.Numerics;
-using Nomad.Scene.GameObjects;
+using Godot;
+using Nomad.Game.Application.Gameplay.Entity;
 
 namespace Nomad.Game.Application.Gameplay.Npc.Planner
 {
 	internal sealed class SquadBlackboard
 	{
-		public EngineCharacter2D? SharedTarget = null;
+		public EntityBase? SharedTarget = null;
 		public Vector2 LastKnownEnemyPosition;
 	};
 };

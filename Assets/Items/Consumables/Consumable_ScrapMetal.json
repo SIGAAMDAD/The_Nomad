@@ -1,0 +1,11 @@
+{
+	"BaseType": "Consumable",
+	"Id": "CONSUMABLE_SCRAPMETAL_ID",
+	"Name": "CONSUMABLE_SCRAPMETAL_NAME",
+	"JournalEntry": "CONSUMABLE_SCRAPMETAL_JOURNALENTRY",
+	"BehaviorId": "gdr.nomadmain.scrap_metal",
+	"BaseCost": 1.0,
+	"Weight": 0.5,
+	"IsStackable": true,
+	"Amount": 1.0
+}

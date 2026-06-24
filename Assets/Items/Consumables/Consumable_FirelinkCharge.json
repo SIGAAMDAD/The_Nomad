@@ -1,7 +1,7 @@
 {
 	"BaseType": "Consumable",
 	"Id": "CONSUMABLE_FIRELINKCHARGE_ID",
-	"Name": "Firelink Charge",
+	"Name": "CONSUMABLE_FIRELINKCHARGE_NAME",
 	"JournalEntry": "CONSUMABLE_FIRELINKCHARGE_JOURNALENTRY",
 	"BehaviorId": "gdr.nomadmain.firelink_charge",
 	"BaseCost": 0.0,

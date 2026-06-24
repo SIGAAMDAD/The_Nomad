@@ -18,7 +18,7 @@ using System.Buffers;
 
 namespace Nomad.Game.Application.Gameplay.Traversal
 {
-	internal sealed class TraversalQueryBuffer
+	internal sealed class TraversalQueryBuffer : IDisposable
 	{
 		public int[] Items;
 		public int Count;
@@ -37,10 +37,24 @@ namespace Nomad.Game.Application.Gameplay.Traversal
 		public void Add( int value )
 		{
 			if ( Count >= Items.Length ) {
-				ArrayPool<int>.Shared.Return( Items );
-				Items = ArrayPool<int>.Shared.Rent( Items.Length * 2 );
+				int[] oldItems = Items;
+				Items = ArrayPool<int>.Shared.Rent( oldItems.Length * 2 );
+				Array.Copy( oldItems, Items, Count );
+				ArrayPool<int>.Shared.Return( oldItems );
 			}
+
 			Items[Count++] = value;
+		}
+
+		public void Dispose()
+		{
+			if ( Items == null ) {
+				return;
+			}
+
+			ArrayPool<int>.Shared.Return( Items );
+			Items = null;
+			Count = 0;
 		}
 	}
 }

@@ -49,6 +49,9 @@ namespace Nomad.Game.Application.Gameplay.Npc
 		public bool HasPlan => _currentPlan != null && !_currentPlan.IsFinished;
 		public bool IsExecutingAction => _runningAction != null;
 
+		private readonly PlannerScratch _plannerScratch = new PlannerScratch();
+		private readonly PlanningContext _context;
+
 		private readonly ReplanController _replanController;
 		private readonly IStateCompiler _stateCompiler;
 		private readonly IGoalSelector _goalSelector;
@@ -78,6 +81,8 @@ namespace Nomad.Game.Application.Gameplay.Npc
 			_sensors = behavior.Archetype.Sensors ?? Array.Empty<ISensor>();
 			_actions = behavior.Archetype.Actions ?? Array.Empty<PlannerAction>();
 			_goals = behavior.Archetype.Goals ?? Array.Empty<GoalDef>();
+
+			_context = new PlanningContext( Memory );
 		}
 
 		/*
@@ -94,8 +99,7 @@ namespace Nomad.Game.Application.Gameplay.Npc
 			TickSensors( dt );
 			CurrentState = _stateCompiler.BuildState( this );
 
-			PlanningContext context = new PlanningContext( Memory );
-			GoalDef bestGoal = _goalSelector.SelectBestGoal( this, _goals );
+			GoalDef bestGoal = _goalSelector.SelectBestGoal( this, _goals, _context );
 
 			if ( !ReferenceEquals( bestGoal, _currentGoal ) ) {
 				_currentGoal = bestGoal;
@@ -103,10 +107,10 @@ namespace Nomad.Game.Application.Gameplay.Npc
 			}
 
 			_replanController.Tick( dt );
-			bool currentStepStillValid = IsCurrentStepStillValid( context );
+			bool currentStepStillValid = IsCurrentStepStillValid( _context );
 
 			if ( _replanController.ShouldReplan( HasPlan, currentStepStillValid ) ) {
-				BuildPlan( context );
+				BuildPlan( _context );
 			}
 
 			ExecuteCurrentStep( dt );
@@ -166,7 +170,7 @@ namespace Nomad.Game.Application.Gameplay.Npc
 				return;
 			}
 
-			if ( AStarPlanner.TryPlan( CurrentState, _currentGoal, context, _actions, GetPlanningBudget(), out Plan plan ) ) {
+			if ( AStarPlanner.TryPlan( CurrentState, _currentGoal, context, _plannerScratch, _actions, GetPlanningBudget(), out Plan plan ) ) {
 				CancelRunningActionIfAny();
 				_currentPlan = plan;
 				_replanController.OnPlanBuilt();

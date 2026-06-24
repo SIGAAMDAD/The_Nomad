@@ -54,9 +54,9 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		private readonly CheckpointDefinition _definition;
 		private readonly CheckpointInstanceId _instanceId;
 
-		private readonly IGameEvent<CheckpointActivationRequestedEventArgs>? _activationRequested;
-		private readonly IGameEvent<CheckpointRestRequestedEventArgs>? _restRequested;
-		private readonly IGameEvent<CheckpointLeaveRequestedEventArgs>? _leaveRequested;
+		private readonly IGameEvent<CheckpointActivationRequestedEventArgs> _activationRequested = null;
+		private readonly IGameEvent<CheckpointRestRequestedEventArgs> _restRequested = null;
+		private readonly IGameEvent<CheckpointLeaveRequestedEventArgs> _leaveRequested = null;
 
 		/*
 		===============
@@ -167,11 +167,13 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		{
 			playerId.ThrowIfInvalid( nameof( RequestActivate ) );
 
-			if ( _activationRequested == null ) {
-				return false;
-			}
+			_activationRequested.Publish(
+				new CheckpointActivationRequestedEventArgs(
+					playerId,
+					_instanceId
+				)
+			);
 
-			_activationRequested.Publish( new CheckpointActivationRequestedEventArgs( playerId, _instanceId ) );
 			return true;
 		}
 
@@ -189,16 +191,13 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		{
 			playerId.ThrowIfInvalid( nameof( RequestRest ) );
 
-			if ( _restRequested == null ) {
-				return false;
-			}
-
 			_restRequested.Publish(
 				new CheckpointRestRequestedEventArgs(
 					playerId,
 					_instanceId
 				)
 			);
+
 			return true;
 		}
 
@@ -216,15 +215,12 @@ namespace Nomad.Game.Application.Gameplay.Interactables
 		{
 			playerId.ThrowIfInvalid( nameof( RequestLeave ) );
 
-			if ( _leaveRequested == null ) {
-				return false;
-			}
-
 			_leaveRequested.Publish(
 				new CheckpointLeaveRequestedEventArgs(
 					playerId
 				)
 			);
+
 			return true;
 		}
 

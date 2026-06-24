@@ -15,6 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Game.Application.Gameplay.Traversal;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Infrastructure.Streaming
 {
@@ -35,6 +37,15 @@ namespace Nomad.Game.Infrastructure.Streaming
 		[Export]
 		private Node3D _audioRoot;
 
+		[Export]
+		private TraversalDatabase _traversalDatabase;
+
+		[Export]
+		private string _traversalDatabasePath = string.Empty;
+
+		private ITraversalDatabaseRegistry _traversalRegistry;
+		private int _traversalRegistrationId = -1;
+
 		private CollisionShape3D[] _shapes = Array.Empty<CollisionShape3D>();
 		private Light3D[] _lights = Array.Empty<Light3D>();
 		private AudioStreamPlayer3D[] _audioPlayers = Array.Empty<AudioStreamPlayer3D>();
@@ -44,6 +55,16 @@ namespace Nomad.Game.Infrastructure.Streaming
 		public void Initialize( RegionId id )
 		{
 			RegionId = id;
+		}
+
+		public void SetTraversalRegistry( ITraversalDatabaseRegistry registry )
+		{
+			_traversalRegistry = registry;
+		}
+
+		public void SetTraversalDatabasePath( string path )
+		{
+			_traversalDatabasePath = path ?? string.Empty;
 		}
 
 		public override void _Ready()
@@ -92,6 +113,12 @@ namespace Nomad.Game.Infrastructure.Streaming
 
 		public void SetGameplayEnabled( bool enabled )
 		{
+			if ( enabled ) {
+				RegisterTraversalDatabase();
+			} else {
+				UnregisterTraversalDatabase();
+			}
+
 			if ( _gameplayRoot == null ) {
 				return;
 			}
@@ -120,6 +147,45 @@ namespace Nomad.Game.Infrastructure.Streaming
 					player.Stop();
 				}
 			}
+		}
+
+		private void RegisterTraversalDatabase()
+		{
+			if ( _traversalRegistrationId >= 0 || _traversalRegistry == null ) {
+				return;
+			}
+
+			TraversalDatabase database = ResolveTraversalDatabase();
+			if ( database == null ) {
+				return;
+			}
+
+			_traversalRegistrationId = _traversalRegistry.Register( RegionId, database );
+		}
+
+		private void UnregisterTraversalDatabase()
+		{
+			if ( _traversalRegistrationId < 0 || _traversalRegistry == null ) {
+				_traversalRegistrationId = -1;
+				return;
+			}
+
+			_traversalRegistry.Unregister( _traversalRegistrationId );
+			_traversalRegistrationId = -1;
+		}
+
+		private TraversalDatabase ResolveTraversalDatabase()
+		{
+			if ( _traversalDatabase != null ) {
+				return _traversalDatabase;
+			}
+
+			if ( string.IsNullOrEmpty( _traversalDatabasePath ) || !ResourceLoader.Exists( _traversalDatabasePath ) ) {
+				return null;
+			}
+
+			_traversalDatabase = ResourceLoader.Load<TraversalDatabase>( _traversalDatabasePath );
+			return _traversalDatabase;
 		}
 
 		private static T[] Collect<T>( Node root ) where T : Node

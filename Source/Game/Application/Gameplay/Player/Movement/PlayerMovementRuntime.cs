@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using Godot;
+using Nomad.Game.Sdk.Player.Movement;
 
 namespace Nomad.Game.Application.Gameplay.Player.Movement
 {
@@ -25,7 +26,8 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 	===================================================================================
 	*/
 	/// <summary>
-	/// A runtime shared data object class for the player movement subsystem.
+	/// Shared mutable runtime state for cooperating movement controllers. This object is
+	/// intentionally data-only except for coarse reset helpers.
 	/// </summary>
 
 	internal sealed class PlayerMovementRuntime
@@ -34,5 +36,15 @@ namespace Nomad.Game.Application.Gameplay.Player.Movement
 		public Vector3 LastPlanarWishDirection = new Vector3( 0.0f, 0.0f, -1.0f );
 		public Vector3 DashDirection = new Vector3( 0.0f, 0.0f, -1.0f );
 		public Vector3 SlideDirection = new Vector3( 0.0f, 0.0f, -1.0f );
+		public Vector3 WallNormal = Vector3.Zero;
+		public Vector3 WallRunDirection = Vector3.Zero;
+		public WallMountedMoveMode WallMountedMode = WallMountedMoveMode.None;
+
+		public void ClearWallRun()
+		{
+			WallNormal = Vector3.Zero;
+			WallRunDirection = Vector3.Zero;
+			WallMountedMode = WallMountedMoveMode.None;
+		}
 	};
 };

@@ -17,13 +17,35 @@ using System;
 
 namespace Nomad.Game.Sdk.Player.JumpKit
 {
+    /// <summary>
+    /// Bitfield for persistent jump-kit state and one-shot transition signals.
+    /// Persistent state bits may be observed through <see cref="JumpKitStatus" />;
+    /// transition bits are only valid for the event payload that carries them.
+    /// </summary>
     [Flags]
-    public enum PlayerJumpKitFlags : byte
+    public enum PlayerJumpKitFlags : ushort
     {
-        IsBurnedOut = 1 << 0,
-        IsDashing = 1 << 1,
-        DashEnded = 1 << 2,
-        BurnedOutThisFrame = 1 << 3,
-        RechargedThisFrame = 1 << 4
+        None = 0,
+
+        DashInProgress = 1 << 0,
+        BurnedOut = 1 << 1,
+        Cooling = 1 << 2,
+        CanDash = 1 << 3,
+        BurnoutPending = 1 << 4,
+
+        DashStarted = 1 << 5,
+        DashEnded = 1 << 6,
+        DashRejected = 1 << 7,
+        BurnoutEntered = 1 << 8,
+        BurnoutChanged = 1 << 9,
+        CoolingStarted = 1 << 10,
+        Recharged = 1 << 11,
+        ModuleChanged = 1 << 12,
+
+        // Compatibility aliases for older call sites.
+        IsDashing = DashInProgress,
+        IsBurnedOut = BurnedOut,
+        BurnedOutThisFrame = BurnoutEntered,
+        RechargedThisFrame = Recharged
     }
 }

@@ -17,6 +17,6 @@ namespace Nomad.Game.Sdk.Npc.Planner.Goals
 {
     public interface IGoalSelector
     {
-        GoalDef SelectBestGoal(INpcAgent agent, GoalDef[] goals);
+        GoalDef SelectBestGoal(INpcAgent agent, GoalDef[] goals, PlanningContext context);
     }
 }

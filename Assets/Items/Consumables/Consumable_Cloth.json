@@ -1,0 +1,11 @@
+{
+	"BaseType": "Consumable",
+	"Id": "CONSUMABLE_CLOTH_ID",
+	"Name": "CONSUMABLE_CLOTH_NAME",
+	"JournalEntry": "CONSUMABLE_CLOTH_JOURNALENTRY",
+	"BehaviorId": "gdr.nomadmain.cloth",
+	"BaseCost": 1.0,
+	"Weight": 0.5,
+	"IsStackable": true,
+	"Amount": 1.0
+}

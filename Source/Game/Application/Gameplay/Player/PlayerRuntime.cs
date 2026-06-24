@@ -21,6 +21,7 @@ using Nomad.Game.Application.Gameplay.Player.JumpKit;
 using Nomad.Game.Application.Gameplay.Player.State;
 using Nomad.Game.Application.Gameplay.Player.Stats;
 using Nomad.Game.Application.Gameplay.Player.Movement;
+using Nomad.Game.Prefabs;
 
 namespace Nomad.Game.Application.Gameplay.Player
 {
@@ -37,6 +38,8 @@ namespace Nomad.Game.Application.Gameplay.Player
 
 	internal sealed class PlayerRuntime : IDisposable
 	{
+		public readonly PlayerPrefab Prefab;
+
 		public PlayerJumpKit JumpKit { get; }
 		public PlayerAnimationCoordinator Animator { get; }
 		public PlayerMovementController MovementController { get; }
@@ -56,6 +59,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 		public PlayerInventoryCoordinator InventoryCoordinator { get; }
 
 		public PlayerRuntime(
+			PlayerPrefab prefab,
 			PlayerJumpKit jumpKit,
 			PlayerAnimationCoordinator animator,
 			PlayerMovementController movementController,
@@ -73,6 +77,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 			PlayerInventoryCoordinator inventoryCoordinator
 		)
 		{
+			Prefab = prefab;
 			JumpKit = jumpKit;
 			Animator = animator;
 			MovementController = movementController;
@@ -88,12 +93,28 @@ namespace Nomad.Game.Application.Gameplay.Player
 			SaveCoordinator = saveCoordinator;
 			WeaponCoordinator = weaponCoordinator;
 			InventoryCoordinator = inventoryCoordinator;
+
+			Prefab.GetTree().ProcessFrame += OnProcessFrame;
+			Prefab.GetTree().PhysicsFrame += OnPhysicsFrame;
+		}
+
+		public void OnProcessFrame()
+		{
+			float deltaTime = (float)Prefab.GetProcessDeltaTime();
+		}
+
+		public void OnPhysicsFrame()
+		{
+			float deltaTime = (float)Prefab.GetPhysicsProcessDeltaTime();
 		}
 
 		public void Dispose()
 		{
+			Prefab.GetTree().ProcessFrame -= OnProcessFrame;
+			Prefab.GetTree().PhysicsFrame -= OnPhysicsFrame;
+
 			ParkourController?.Dispose();
 			Animator?.Dispose();
 		}
-	}
-}
+	};
+};

@@ -1,0 +1,15 @@
+{
+	"BaseType": "Consumable",
+	"Id": "CONSUMABLE_STIMSTICK_ID",
+	"Name": "CONSUMABLE_STIMSTICK_NAME",
+	"JournalEntry": "CONSUMABLE_STIMSTICK_JOURNALENTRY",
+	"BehaviorId": "gdr.nomadmain.stimstick",
+	"BaseCost": 10.0,
+	"Weight": 1.5,
+	"IsStackable": true,
+	"Amount": 1.0,
+	"Recipe": [
+		"CONSUMABLE_SCRAPMETAL_ID",
+		"CONSUMABLE_"
+	]
+}

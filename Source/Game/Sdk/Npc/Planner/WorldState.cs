@@ -13,6 +13,9 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Numerics;
+using System.Runtime.CompilerServices;
+
 namespace Nomad.Game.Sdk.Npc.Planner
 {
     public readonly struct WorldState
@@ -49,27 +52,18 @@ namespace Nomad.Game.Sdk.Npc.Planner
             if (index < 64)
             {
                 ulong mask = 1UL << index;
-                if (value)
-                {
-                    lo |= mask;
-                }
-                else
-                {
-                    lo &= ~mask;
-                }
+
+                lo = value
+                    ? lo | mask
+                    : lo & ~mask;
             }
             else
             {
                 index -= 64;
                 ulong mask = 1UL << index;
-                if (value)
-                {
-                    hi |= mask;
-                }
-                else
-                {
-                    hi &= ~mask;
-                }
+                hi = value
+                    ? hi | mask
+                    : hi & ~mask;
             }
 
             return new WorldState(lo, hi);
@@ -88,6 +82,13 @@ namespace Nomad.Game.Sdk.Npc.Planner
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Meets(WorldStateMask mask)
+        {
+            return (((_lo ^ mask.LoValues) & mask.LoMask) == 0L)
+                && (((_hi ^ mask.HiValues) & mask.HiMask) == 0L);
+        }
+
         public WorldState Apply(WorldEffect[] effects)
         {
             WorldState state = this;
@@ -98,6 +99,15 @@ namespace Nomad.Game.Sdk.Npc.Planner
             }
 
             return state;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldState Apply(WorldStatePatch patch)
+        {
+            ulong lo = (_lo & ~patch.LoMask) | (patch.LoValues & patch.LoMask);
+            ulong hi = (_hi & ~patch.HiMask) | (patch.HiValues & patch.HiMask);
+
+            return new WorldState(lo, hi);
         }
 
         public int CountUnmet(WorldCondition[] conditions)
@@ -115,16 +125,28 @@ namespace Nomad.Game.Sdk.Npc.Planner
             return count;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int CountUnmet(WorldStateMask mask)
+        {
+            ulong loUnmet = (_lo ^ mask.LoValues) & mask.LoMask;
+            ulong hiUnmet = (_hi ^ mask.HiValues) & mask.HiMask;
+
+            return BitOperations.PopCount(loUnmet) + BitOperations.PopCount(hiUnmet);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(WorldState other)
         {
             return _lo == other._lo && _hi == other._hi;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
             return obj is WorldState other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             unchecked
@@ -133,7 +155,16 @@ namespace Nomad.Game.Sdk.Npc.Planner
             }
         }
 
-        public static bool operator ==(WorldState left, WorldState right) => left.Equals(right);
-        public static bool operator !=(WorldState left, WorldState right) => !left.Equals(right);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(WorldState left, WorldState right)
+        {
+            return left.Equals(right);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(WorldState left, WorldState right)
+        {
+            return !left.Equals(right);
+        }
     }
 }

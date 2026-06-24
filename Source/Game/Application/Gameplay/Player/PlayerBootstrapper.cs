@@ -34,6 +34,8 @@ using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Player;
 using Nomad.Input.Interfaces;
 using Nomad.Game.Application.Gameplay.Player.Movement;
+using Nomad.Game.Application.Gameplay.Player.Movement.Parkour;
+using Nomad.Game.Application.Gameplay.Traversal;
 using Nomad.Game.Sdk.Player.Input;
 
 namespace Nomad.Game.Application.Gameplay.Player
@@ -87,6 +89,20 @@ namespace Nomad.Game.Application.Gameplay.Player
 			ApplyBaseStats( prefab, statsRepository );
 			derivedStatService.FlushDirty();
 
+			ITraversalDatabaseRegistry traversalRegistry = ResolveTraversalDatabaseRegistry();
+			traversalRegistry.SetFallbackDatabase( LoadTraversalDatabase() );
+
+			var parkourAnimation = new PlayerParkourAnimationState(
+				prefab.GetTree(),
+				prefab.GetNodeOrNull<AnimationTree>( "AnimationTree" )
+			);
+
+			var parkourController = new PlayerParkourController(
+				prefab,
+				traversalRegistry,
+				parkourAnimation
+			);
+
 			var movementController = prefab.AddComponent<PlayerMovementController>( comp => {
 				comp.Stats = derivedStatService;
 				comp.Flags = flagService;
@@ -94,6 +110,7 @@ namespace Nomad.Game.Application.Gameplay.Player
 				comp.StateReader = stateCoordinator;
 				comp.StateWriter = stateCoordinator;
 				comp.InputSource = inputSource;
+				comp.ParkourController = parkourController;
 			} );
 
 			var jumpKit = prefab.AddComponent<PlayerJumpKit>( comp => {
@@ -110,14 +127,6 @@ namespace Nomad.Game.Application.Gameplay.Player
 				prefab,
 				movementController,
 				stateCoordinator,
-				eventFactory
-			);
-
-			var parkourController = new PlayerParkourController(
-				prefab,
-				inputSource,
-				LoadTraversalDatabase(),
-				prefab.GetNodeOrNull<AnimationTree>( "AnimationTree" ),
 				eventFactory
 			);
 
@@ -145,6 +154,13 @@ namespace Nomad.Game.Application.Gameplay.Player
 				weaponCoordinator,
 				inventoryCoordinator
 			);
+		}
+
+		private static ITraversalDatabaseRegistry ResolveTraversalDatabaseRegistry()
+		{
+			return ServiceLocator.TryGetService( out ITraversalDatabaseRegistry registry )
+				? registry
+				: new TraversalDatabaseProvider();
 		}
 
 		private static TraversalDatabase LoadTraversalDatabase()

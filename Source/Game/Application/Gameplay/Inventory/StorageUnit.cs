@@ -18,9 +18,10 @@ using System.Collections.Generic;
 using Nomad.Core.Compatibility.Guards;
 using Nomad.Core.Events;
 using Nomad.Core.Util;
+using Nomad.Game.Infrastructure.Gameplay.Items;
 using Nomad.Game.Sdk.Inventory;
 using Nomad.Game.Sdk.Items;
-using Nomad.Game.Sdk.Player.Inventory;
+using Nomad.Save.Extensions;
 using Nomad.Save.Services;
 
 namespace Nomad.Game.Application.Gameplay.Inventory
@@ -44,15 +45,29 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		public InventoryContainerType ContainerType => _definition.Type;
 		public InventoryRules Rules => _definition.Rules;
 
+		public IReadOnlyList<ItemStack> Stacks {
+			get {
+				var stacks = new List<ItemStack>( _stacks.Count );
+
+				foreach ( var stack in _stacks ) {
+					stacks.Add( new ItemStack( stack.Key, stack.Value ) );
+				}
+
+				return stacks;
+			}
+		}
+
 		private readonly StorageUnitDefinition _definition;
-		private readonly IItemCatalog _catalog;
-		private readonly IItemInstanceRepository? _instanceRepository;
+		private readonly ItemCatalog _catalog;
+		private readonly ItemInstanceRepository _instanceRepository;
 
 		private readonly Dictionary<ItemDefinitionId, int> _stacks = new();
 		private readonly HashSet<ItemInstanceId> _instances = new();
 
 		private readonly IDisposable _saveBegin;
 		private readonly IDisposable _loadBegin;
+
+		private bool _isDisposed = false;
 
 		public float CurrentWeight {
 			get {
@@ -94,10 +109,16 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <param name="type"></param>
 		/// <param name="catalog"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public StorageUnit( StorageUnitDefinition definition, IItemCatalog catalog, IGameEventRegistryService eventFactory )
+		public StorageUnit(
+			StorageUnitDefinition definition,
+			ItemCatalog catalog,
+			ItemInstanceRepository instanceRepository,
+			IGameEventRegistryService eventFactory
+		)
 		{
 			_definition = definition ?? throw new ArgumentNullException( nameof( definition ) );
 			_catalog = catalog ?? throw new ArgumentNullException( nameof( catalog ) );
+			_instanceRepository = instanceRepository ?? throw new ArgumentNullException( nameof( instanceRepository ) );
 
 			_saveBegin = eventFactory
 				.GetEvent<SaveBeginEventArgs>(
@@ -116,6 +137,15 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 		public void Dispose()
 		{
+			if ( _isDisposed ) {
+				return;
+			}
+
+			_saveBegin?.Dispose();
+			_loadBegin?.Dispose();
+
+			GC.SuppressFinalize( this );
+			_isDisposed = true;
 		}
 
 		/*
@@ -168,8 +198,10 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <param name="itemType"></param>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		public bool TryRemove( ItemDefinitionId itemType, int amount )
+		public bool TryRemove( ItemDefinitionId itemType, int amount, out int removed )
 		{
+			removed = 0;
+
 			if ( amount <= 0 ) {
 				return false;
 			}
@@ -179,10 +211,12 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			}
 
 			if ( stackSize < amount ) {
+				removed = stackSize;
 				return false;
 			}
 
 			stackSize -= amount;
+			removed = amount;
 			if ( stackSize == 0 ) {
 				_stacks.Remove( itemType );
 			} else {
@@ -237,6 +271,35 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			return _instances.Contains( instanceId );
 		}
 
+		public bool MoveStacksTo( IStorageUnit storageUnit )
+		{
+			ArgumentGuard.ThrowIfNull( storageUnit, nameof( storageUnit ) );
+
+			if ( _stacks.Count == 0 ) {
+				return false;
+			}
+
+			foreach ( var stack in _stacks ) {
+				if ( !storageUnit.TryAdd( stack.Key, stack.Value ) ) {
+					return false;
+				}
+			}
+
+			_stacks.Clear();
+
+			return true;
+		}
+
+		public int GetStackAmount( ItemDefinitionId itemType )
+		{
+			return _stacks.TryGetValue( itemType, out int stackSize ) ? stackSize : 0;
+		}
+
+		public bool ContainsStack( ItemDefinitionId itemType )
+		{
+			return _stacks.ContainsKey( itemType );
+		}
+
 		/*
 		===============
 		OnSaveBegin
@@ -251,21 +314,12 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			lock ( this ) {
 				var writer = args.Writer.AddSection( $"StorageUnit#{(string)StorageId}:{(string)DisplayName}" );
 
-				writer.AddField( "StackCount", _stacks.Count );
-
-				int index = 0;
-				foreach ( var stack in _stacks ) {
-					writer.AddField( $"Stack{index}:Type", (string)stack.Key.Value );
-					writer.AddField( $"Stack{index}:Amount", stack.Value );
-					index++;
-				}
+				writer.WriteDictionary(
+					"Stacks",
+					_stacks
+				);
 
 				writer.AddField( "InstanceCount", _instances.Count );
-
-				index = 0;
-				foreach ( var instance in _instances ) {
-					index++;
-				}
 			}
 		}
 

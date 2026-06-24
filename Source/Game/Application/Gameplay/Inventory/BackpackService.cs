@@ -24,7 +24,6 @@ using Nomad.Game.Sdk.Player.State;
 using Nomad.Game.Sdk.Events.Player;
 using Nomad.Game.Sdk.Items;
 using Nomad.Game.Sdk.Entities;
-using Nomad.Game.Sdk;
 using Nomad.Game.Prefabs;
 using Nomad.Game.Application.Gameplay.Items;
 
@@ -43,12 +42,7 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 
 	internal sealed class BackpackService : ItemInstance, IBackpackService
 	{
-		private sealed record BackpackItemDefinition : ItemDefinition
-		{
-			public override ItemType BaseType => ItemType.QuestItem;
-		}
-
-		private static readonly ItemDefinition BackpackDefinition = new BackpackItemDefinition {
+		private static readonly ItemDefinition BackpackDefinition = new ItemDefinition {
 			Id = new ItemDefinitionId( new InternString( "ITEM_PLAYER_BACKPACK" ) ),
 			Name = new InternString( "ITEM_PLAYER_BACKPACK_NAME" ),
 			JournalEntry = InternString.Empty,
@@ -120,15 +114,17 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 			_status = initialStatus;
 			_inventory = inventory ?? throw new ArgumentNullException( nameof( inventory ) );
 
-			_statusChanged = eventFactory.GetEvent<BackpackStatusChangedEventArgs>(
-				BackpackStatusChangedEventArgs.Name,
-				BackpackStatusChangedEventArgs.NameSpace
-			);
+			_statusChanged = eventFactory
+				.GetEvent<BackpackStatusChangedEventArgs>(
+					BackpackStatusChangedEventArgs.Name,
+					BackpackStatusChangedEventArgs.NameSpace
+				);
 
-			_unequipRequested = eventFactory.GetEvent<BackpackUnequipRequestedEventArgs>(
-				BackpackUnequipRequestedEventArgs.Name,
-				BackpackUnequipRequestedEventArgs.NameSpace
-			);
+			_unequipRequested = eventFactory
+				.GetEvent<BackpackUnequipRequestedEventArgs>(
+					BackpackUnequipRequestedEventArgs.Name,
+					BackpackUnequipRequestedEventArgs.NameSpace
+				);
 
 			_unequippedPrefab = prefab ?? throw new ArgumentNullException( nameof( prefab ) );
 
@@ -166,6 +162,10 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <returns></returns>
 		public bool TryEquip()
 		{
+			if ( _status == BackpackStatus.Equipped ) {
+				return false;
+			}
+
 			return false;
 		}
 
@@ -232,9 +232,9 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		/// <param name="itemType"></param>
 		/// <param name="amount"></param>
 		/// <returns></returns>
-		public bool TryRemove( ItemDefinitionId itemType, int amount )
+		public bool TryRemove( ItemDefinitionId itemType, int amount, out int removed )
 		{
-			return _inventory.TryRemove( itemType, amount );
+			return _inventory.TryRemove( itemType, amount, out removed );
 		}
 
 		public bool TryAddInstance( ItemInstanceId instanceId )
@@ -250,6 +250,21 @@ namespace Nomad.Game.Application.Gameplay.Inventory
 		public bool ContainsInstance( ItemInstanceId instanceId )
 		{
 			return _inventory.ContainsInstance( instanceId );
+		}
+
+		public bool MoveStacksTo( IStorageUnit storageUnit )
+		{
+			return _inventory.MoveStacksTo( storageUnit );
+		}
+
+		public int GetStackAmount( ItemInstanceId itemType )
+		{
+			return _inventory.GetStackAmount( itemType );
+		}
+
+		public bool ContainsStack( ItemInstanceId itemType )
+		{
+			return _inventory.ContainsStack( itemType );
 		}
 
 		private void SetBackpackStatus( BackpackStatus status )

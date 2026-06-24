@@ -15,6 +15,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using Godot;
+using Nomad.Core.ServiceRegistry.Globals;
+using Nomad.Game.Application.Gameplay.Traversal;
 using Nomad.Game.Sdk.Events.Player.Movement;
 
 namespace Nomad.Game.Infrastructure.Streaming
@@ -40,6 +42,11 @@ namespace Nomad.Game.Infrastructure.Streaming
 		private ushort _streamTick;
 
 		public WorldChunkStreamer( Node3D regionSceneRoot, RegionStreamingSettings settings )
+			: this( regionSceneRoot, settings, ResolveTraversalRegistry() )
+		{
+		}
+
+		public WorldChunkStreamer( Node3D regionSceneRoot, RegionStreamingSettings settings, ITraversalDatabaseRegistry traversalRegistry )
 		{
 			_settings = settings ?? throw new ArgumentNullException( nameof( settings ) );
 			_settings.Validate();
@@ -59,7 +66,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 			_transitionPlanner = new RegionTransitionPlanner( _promotionQueue, _demotionQueue );
 
 			var loader = new RegionSceneLoader();
-			var instanceController = new RegionInstanceController( _grid, regionSceneRoot, _settings );
+			var instanceController = new RegionInstanceController( _grid, regionSceneRoot, _settings, traversalRegistry );
 			_executor = new RegionOperationExecutor(
 				_grid,
 				_settings,
@@ -69,6 +76,13 @@ namespace Nomad.Game.Infrastructure.Streaming
 				loader,
 				instanceController
 			);
+		}
+
+		private static ITraversalDatabaseRegistry ResolveTraversalRegistry()
+		{
+			return ServiceLocator.TryGetService( out ITraversalDatabaseRegistry registry )
+				? registry
+				: null;
 		}
 
 		public void HandlePlayerMovementChanged( in PlayerLocomotionCueEventArgs args )

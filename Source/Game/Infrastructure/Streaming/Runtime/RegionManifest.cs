@@ -24,6 +24,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 		public readonly string ScenePath;
 		public readonly string ProxyScenePath;
 		public readonly string LightScenePath;
+		public readonly string TraversalDatabasePath;
 		public readonly Aabb LocalBounds;
 		public readonly int EstimatedCPUBytes;
 		public readonly int EstimatedGPUBytes;
@@ -33,12 +34,14 @@ namespace Nomad.Game.Infrastructure.Streaming
 		public bool HasScene => IsDefined && !string.IsNullOrEmpty( ScenePath );
 		public bool HasProxyScene => IsDefined && !string.IsNullOrEmpty( ProxyScenePath );
 		public bool HasLightScene => IsDefined && !string.IsNullOrEmpty( LightScenePath );
+		public bool HasTraversalDatabase => IsDefined && !string.IsNullOrEmpty( TraversalDatabasePath );
 
 		public RegionManifest(
 			RegionId id,
 			string scenePath,
 			string proxyScenePath = "",
 			string lightScenePath = "",
+			string traversalDatabasePath = "",
 			Aabb localBounds = default,
 			int estimatedCPUBytes = 0,
 			int estimatedGPUBytes = 0,
@@ -51,6 +54,7 @@ namespace Nomad.Game.Infrastructure.Streaming
 			ScenePath = scenePath ?? string.Empty;
 			ProxyScenePath = proxyScenePath ?? string.Empty;
 			LightScenePath = lightScenePath ?? string.Empty;
+			TraversalDatabasePath = traversalDatabasePath ?? string.Empty;
 			LocalBounds = localBounds;
 			EstimatedCPUBytes = estimatedCPUBytes;
 			EstimatedGPUBytes = estimatedGPUBytes;
