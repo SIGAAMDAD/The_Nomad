@@ -1,29 +1,26 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cac3ast4aj6sq"]
 
-[node name="GalakasMidCity_ROOF_W04D12_LongGable_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W04D12_LongGable_CSG" type="Node3D" unique_id=1484361603]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=1492640801]
 use_collision = true
 
-[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(9.0780, 0.3400, 13.8917)
-position = Vector3(-0.0121, 2.9003, -6.2549)
-rotation = Vector3(-0.427597, 0.000000, 0.000000)
+[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=2117657028]
+transform = Transform3D(1, 0, 0, 0, 0.90996486, 0.41468534, 0, -0.41468534, 0.90996486, -0.0121, 2.9003, -6.2549)
+size = Vector3(9.078, 0.34, 13.8917)
 
-[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(9.1147, 0.3400, 13.9576)
-position = Vector3(0.0081, 2.9793, 6.2589)
-rotation = Vector3(0.437906, 0.000000, 0.000000)
+[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=1629289318]
+transform = Transform3D(1, 0, 0, 0, 0.9056416, -0.42404398, 0, 0.42404398, 0.9056416, 0.0081, 2.9793, 6.2589)
+size = Vector3(9.1147, 0.34, 13.9576)
 
-[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(9.1400, 0.2000, 0.8200)
-position = Vector3(0.0000, 5.9586, -0.0121)
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG" unique_id=967617692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.9586, -0.0121)
+size = Vector3(9.14, 0.2, 0.82)
 
-[node name="Eave_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(9.1600, 0.1800, 0.2400)
-position = Vector3(0.0000, 0.1000, -12.5700)
+[node name="Eave_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=445520134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -12.57)
+size = Vector3(9.16, 0.18, 0.24)
 
-[node name="Eave_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(9.1600, 0.1800, 0.2400)
-position = Vector3(0.0000, 0.1000, 12.5700)
-
+[node name="Eave_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=1725622385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 12.57)
+size = Vector3(9.16, 0.18, 0.24)

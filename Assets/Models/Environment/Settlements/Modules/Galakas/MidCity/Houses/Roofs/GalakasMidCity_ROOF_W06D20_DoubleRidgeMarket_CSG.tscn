@@ -1,39 +1,34 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cubuehvek34w5"]
 
-[node name="GalakasMidCity_ROOF_W06D20_DoubleRidgeMarket_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W06D20_DoubleRidgeMarket_CSG" type="Node3D" unique_id=1939467742]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=1832738480]
 use_collision = true
 
-[node name="Left_Plane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.3000, 23.8377)
-position = Vector3(-1.6500, 5.9222, -10.3000)
-rotation = Vector3(-0.520000, 0.000000, 0.000000)
+[node name="Left_Plane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=1275899046]
+transform = Transform3D(1, 0, 0, 0, 0.8678192, 0.4968801, 0, -0.4968801, 0.8678192, -1.65, 5.9222, -10.3)
+size = Vector3(6.7, 0.3, 23.8377)
 
-[node name="Left_Plane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.3000, 23.8377)
-position = Vector3(-1.6500, 5.9222, 10.3000)
-rotation = Vector3(0.520000, 0.000000, 0.000000)
+[node name="Left_Plane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=1545937007]
+transform = Transform3D(1, 0, 0, 0, 0.8678192, -0.4968801, 0, 0.4968801, 0.8678192, -1.65, 5.9222, 10.3)
+size = Vector3(6.7, 0.3, 23.8377)
 
-[node name="Left_Ridge" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.1800, 0.2200)
-position = Vector3(-1.6500, 11.8445, 0.0000)
+[node name="Left_Ridge" type="CSGBox3D" parent="Roof_CSG" unique_id=21869210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.65, 11.8445, 0)
+size = Vector3(6.7, 0.18, 0.22)
 
-[node name="Right_Plane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.3000, 23.8377)
-position = Vector3(1.6500, 5.9222, -10.3000)
-rotation = Vector3(-0.520000, 0.000000, 0.000000)
+[node name="Right_Plane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=1876059911]
+transform = Transform3D(1, 0, 0, 0, 0.8678192, 0.4968801, 0, -0.4968801, 0.8678192, 1.65, 5.9222, -10.3)
+size = Vector3(6.7, 0.3, 23.8377)
 
-[node name="Right_Plane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.3000, 23.8377)
-position = Vector3(1.6500, 5.9222, 10.3000)
-rotation = Vector3(0.520000, 0.000000, 0.000000)
+[node name="Right_Plane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=2018042350]
+transform = Transform3D(1, 0, 0, 0, 0.8678192, -0.4968801, 0, 0.4968801, 0.8678192, 1.65, 5.9222, 10.3)
+size = Vector3(6.7, 0.3, 23.8377)
 
-[node name="Right_Ridge" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(6.7000, 0.1800, 0.2200)
-position = Vector3(1.6500, 11.8445, 0.0000)
+[node name="Right_Ridge" type="CSGBox3D" parent="Roof_CSG" unique_id=1700609223]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.65, 11.8445, 0)
+size = Vector3(6.7, 0.18, 0.22)
 
-[node name="CenterRainGutter" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.2200, 0.1800, 41.3000)
-position = Vector3(0.0000, 0.2200, 0.0000)
-
+[node name="CenterRainGutter" type="CSGBox3D" parent="Roof_CSG" unique_id=1688953195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0)
+size = Vector3(0.22, 0.18, 41.3)

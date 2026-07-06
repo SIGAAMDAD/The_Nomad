@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://40esex053ado"]
 
 [ext_resource type="ArrayMesh" uid="uid://kr5cv7ujob4v" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/dry_scrub_bush_small.obj" id="1_mesh"]
 
-[node name="dry_scrub_bush_small" type="MeshInstance3D"]
+[node name="dry_scrub_bush_small" type="MeshInstance3D" unique_id=737168405]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

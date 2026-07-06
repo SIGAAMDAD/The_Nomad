@@ -1,53 +1,50 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://df66q5pykpmd0"]
 
-[node name="GalakasMidCity_ROOF_W08D20_MerchantSteppedGable_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W08D20_MerchantSteppedGable_CSG" type="Node3D" unique_id=1086847320]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=1116127315]
 use_collision = true
 
-[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(17.2000, 0.3000, 23.3245)
-position = Vector3(0.0000, 5.3854, -10.3000)
-rotation = Vector3(-0.480000, 0.000000, 0.000000)
+[node name="RoofPlane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=1551736191]
+transform = Transform3D(1, 0, 0, 0, 0.8869949, 0.46177918, 0, -0.46177918, 0.8869949, 0, 5.3854, -10.3)
+size = Vector3(17.2, 0.3, 23.3245)
 
-[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(17.2000, 0.3000, 23.3245)
-position = Vector3(0.0000, 5.3854, 10.3000)
-rotation = Vector3(0.480000, 0.000000, 0.000000)
+[node name="RoofPlane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=294877679]
+transform = Transform3D(1, 0, 0, 0, 0.8869949, -0.46177918, 0, 0.46177918, 0.8869949, 0, 5.3854, 10.3)
+size = Vector3(17.2, 0.3, 23.3245)
 
-[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(17.3000, 0.1800, 0.2600)
-position = Vector3(0.0000, 10.7708, 0.0000)
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG" unique_id=1042145402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.7708, 0)
+size = Vector3(17.3, 0.18, 0.26)
 
-[node name="FrontStepGable_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(17.2000, 0.3400, 0.2400)
-position = Vector3(0.0000, 0.3800, -20.6400)
+[node name="FrontStepGable_00" type="CSGBox3D" parent="Roof_CSG" unique_id=2063175686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, -20.64)
+size = Vector3(17.2, 0.34, 0.24)
 
-[node name="BackStepGable_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(17.2000, 0.3400, 0.2400)
-position = Vector3(0.0000, 0.3800, 20.6400)
+[node name="BackStepGable_00" type="CSGBox3D" parent="Roof_CSG" unique_id=1446205192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 20.64)
+size = Vector3(17.2, 0.34, 0.24)
 
-[node name="FrontStepGable_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(12.9000, 0.3400, 0.2400)
-position = Vector3(0.0000, 0.7300, -20.6400)
+[node name="FrontStepGable_01" type="CSGBox3D" parent="Roof_CSG" unique_id=997995827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, -20.64)
+size = Vector3(12.9, 0.34, 0.24)
 
-[node name="BackStepGable_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(12.9000, 0.3400, 0.2400)
-position = Vector3(0.0000, 0.7300, 20.6400)
+[node name="BackStepGable_01" type="CSGBox3D" parent="Roof_CSG" unique_id=744217632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, 20.64)
+size = Vector3(12.9, 0.34, 0.24)
 
-[node name="FrontStepGable_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(8.6000, 0.3400, 0.2400)
-position = Vector3(0.0000, 1.0800, -20.6400)
+[node name="FrontStepGable_02" type="CSGBox3D" parent="Roof_CSG" unique_id=436131041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, -20.64)
+size = Vector3(8.6, 0.34, 0.24)
 
-[node name="BackStepGable_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(8.6000, 0.3400, 0.2400)
-position = Vector3(0.0000, 1.0800, 20.6400)
+[node name="BackStepGable_02" type="CSGBox3D" parent="Roof_CSG" unique_id=1912221920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, 20.64)
+size = Vector3(8.6, 0.34, 0.24)
 
-[node name="FrontStepGable_03" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(4.3000, 0.3400, 0.2400)
-position = Vector3(0.0000, 1.4300, -20.6400)
+[node name="FrontStepGable_03" type="CSGBox3D" parent="Roof_CSG" unique_id=420409224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43, -20.64)
+size = Vector3(4.3, 0.34, 0.24)
 
-[node name="BackStepGable_03" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(4.3000, 0.3400, 0.2400)
-position = Vector3(0.0000, 1.4300, 20.6400)
-
+[node name="BackStepGable_03" type="CSGBox3D" parent="Roof_CSG" unique_id=1280482684]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43, 20.64)
+size = Vector3(4.3, 0.34, 0.24)

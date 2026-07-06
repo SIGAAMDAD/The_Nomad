@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bxycmi1q80n28"]
 
-[ext_resource type="Script" uid="uid://cfy1dycp0i4i8" path="res://Assets/Prefabs/HeadsUpDisplay/HudGroupView.cs" id="1_6emt0"]
+[ext_resource type="Script" uid="uid://5h2g74ep5dh" path="res://Assets/Prefabs/HeadsUpDisplay/HudGroupView.cs" id="1_6emt0"]
 
 [node name="HudGroupView" type="Control" unique_id=2111998507]
 layout_mode = 3

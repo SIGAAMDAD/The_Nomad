@@ -1,0 +1,69 @@
+{
+	"Schema": "nomad.sdk.definitions.v1",
+	"Version": 1,
+	"Metadata": {
+		"Project": "The Nomad",
+		"CreatedUnix": 1783021137.266,
+		"ModifiedUnix": 1783021318.157,
+		"DefinitionCatalog": "res://addons/nomad_worldfacts_database/definition_catalog.json",
+		"Notes": "SDK-aligned WorldFacts definition catalog. This is an editor-authored res:// project asset, not runtime save data.",
+		"QuestTreeEditor": {
+			"Positions": {
+				"quest_tree.new": {}
+			}
+		}
+	},
+	"Definitions": {
+		"Nomad.Game.Sdk.Entities.StatusEffectDefinition": [],
+		"Nomad.Game.Sdk.Hazards.HazardDefinition": [],
+		"Nomad.Game.Sdk.Interactables.CheckpointDefinition": [],
+		"Nomad.Game.Sdk.Inventory.StorageUnitDefinition": [],
+		"Nomad.Game.Sdk.Items.AmmoDefinition": [],
+		"Nomad.Game.Sdk.Items.ConsumableDefinition": [],
+		"Nomad.Game.Sdk.Items.FirearmDefinition": [],
+		"Nomad.Game.Sdk.Items.FirearmModDefinition": [],
+		"Nomad.Game.Sdk.Multiplayer.Lobby.GameModeDefinition": [],
+		"Nomad.Game.Sdk.Multiplayer.Lobby.MapDefinition": [],
+		"Nomad.Game.Sdk.Multiplayer.Profile.Badges.BadgeDefinition": [],
+		"Nomad.Game.Sdk.Multiplayer.Profile.FactionDefinition": [],
+		"Nomad.Game.Sdk.Player.ArmAttachmentDefinition": [],
+		"Nomad.Game.Sdk.Player.Inventory.TotemDefinition": [],
+		"Nomad.Game.Sdk.Player.PlayerArchetypeDefinition": [],
+		"Nomad.Game.Sdk.Player.PlayerSpawnProfileDefinition": [],
+		"Nomad.Game.Sdk.Player.Stats.PlayerInitializationDefinition": [],
+		"Nomad.Game.Sdk.Player.Stats.PlayerStatBlockDefinition": [],
+		"Nomad.Game.Sdk.Renown.Contract.ContractDefinition": [
+			{
+				"Id": "contract.new",
+				"Flags": []
+			}
+		],
+		"Nomad.Game.Sdk.Renown.Faction.FactionDefinition": [],
+		"Nomad.Game.Sdk.Renown.RenownTierDefinition": [],
+		"Nomad.Game.Sdk.Story.QuestDefinition": [],
+		"Nomad.Game.Sdk.Story.QuestObjectiveDefinition": [],
+		"Nomad.Game.Sdk.Story.QuestTree.QuestTreeDefinition": [
+			{
+				"StorylineId": "quest_tree.new",
+				"Nodes": [],
+				"Edges": [],
+				"Conditions": [],
+				"EntryQuests": []
+			}
+		],
+		"Nomad.Game.Sdk.Story.StorylineDefinition": [],
+		"Nomad.Game.Sdk.World.BiomeDefinition": [],
+		"Nomad.Game.Sdk.World.CalendarDefinition": [],
+		"Nomad.Game.Sdk.World.RegionDefinition": [
+			{
+				"Id": "region.new",
+				"Name": "",
+				"WikiId": "",
+				"JournalEntryDiscoveredId": "",
+				"JournalEntryUndiscoveredId": ""
+			}
+		],
+		"Nomad.Game.Sdk.World.SeasonDefinition": [],
+		"Nomad.Game.Sdk.World.WorldDefinition": []
+	}
+}

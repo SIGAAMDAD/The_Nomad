@@ -17,8 +17,19 @@ namespace Nomad.Game.Sdk.Crafting
 {
     public enum CraftFailureReason : byte
     {
+        /// <summary>
+        /// No such recipe exists for the item requested.
+        /// </summary>
         NoSuchRecipe,
+
+        /// <summary>
+        /// There is not enough materials within the storage unit given to the recipe crafter to make the requested item.
+        /// </summary>
         NotEnoughMaterials,
+
+        /// <summary>
+        /// The recipe for said item hasn't been unlocked yet.
+        /// </summary>
         NotUnlocked
     }
 }

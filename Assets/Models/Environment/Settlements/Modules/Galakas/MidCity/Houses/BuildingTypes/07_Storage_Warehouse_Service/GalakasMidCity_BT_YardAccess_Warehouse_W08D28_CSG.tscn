@@ -1,18 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dum0nhycp4yf0"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W08D28_SidePassageSteps_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W08D28_SidePassage_DoubleDoors_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W08D28_StoneUpper_CSG.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W08D28_WalkableParapet_CSG.tscn" id="4"]
 
-[node name="GalakasMidCity_BT_YardAccess_Warehouse_W08D28_CSG" type="Node3D"]
+[node name="GalakasMidCity_BT_YardAccess_Warehouse_W08D28_CSG" type="Node3D" unique_id=220719390]
 
-[node name="Foundation" parent="." instance=ExtResource("1")]
-[node name="LowerModule_LongSideDoor" parent="." instance=ExtResource("2")]
-position = Vector3(0.0000, 0.6000, 0.0000)
+[node name="Foundation" parent="." unique_id=1115983046 instance=ExtResource("1")]
 
-[node name="UpperModule_01" parent="." instance=ExtResource("3")]
-position = Vector3(0.0000, 5.4000, 0.0000)
+[node name="LowerModule_LongSideDoor" parent="." unique_id=439613949 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="Roof" parent="." instance=ExtResource("4")]
-position = Vector3(0.0000, 9.6000, 0.0000)
+[node name="UpperModule_01" parent="." unique_id=981298576 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 0)
 
+[node name="Roof" parent="." unique_id=895353473 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.6, 0)

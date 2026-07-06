@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cvdvt0gjoe8p5"]
 
 [ext_resource type="ArrayMesh" uid="uid://d1mismtuv1f05" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/young_date_palm.obj" id="1_mesh"]
 
-[node name="young_date_palm" type="MeshInstance3D"]
+[node name="young_date_palm" type="MeshInstance3D" unique_id=1404921800]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

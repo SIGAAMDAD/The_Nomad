@@ -13,6 +13,11 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
+using System.Collections.Generic;
+using Nomad.Core.Events;
+using Nomad.Game.Sdk.Events.Story;
+
 namespace Nomad.Game.Sdk.Story
 {
     /// <summary>
@@ -20,8 +25,34 @@ namespace Nomad.Game.Sdk.Story
     /// </summary>
     public interface IStorylineService
     {
-        StorylineDefinition? Current { get; }
+        StorylineDefinitionId CurrentStorylineId { get; }
+        IStorylineInstance? Current { get; }
 
-        bool TrySetStoryline(StorylineDefinitionId storylineId);
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Story")]
+        [EventPayload("StorylineId", typeof(StorylineDefinitionId), Order = 1)]
+        [EventPayload("OldStatus", typeof(StorylineStatus), Order = 2)]
+        [EventPayload("NewStatus", typeof(StorylineStatus), Order = 3)]
+        IGameEvent<StorylineStatusChangedEventArgs> StorylineStatusChanged { get; }
+
+        [Event(nameSpace: "Nomad.Game.Sdk.Events.Story")]
+        [EventPayload("OldStorylineId", typeof(StorylineDefinitionId), Order = 1)]
+        [EventPayload("NewStorylineId", typeof(StorylineDefinitionId), Order = 2)]
+        IGameEvent<StorylineChangedEventArgs> StorylineChanged { get; }
+
+        bool TryGetCurrentStoryline(out IStorylineInstance storyline);
+
+        bool TryActivateStoryline(StorylineDefinitionId storylineId);
+        bool TryClearCurrentStoryline();
+
+        bool TryGetStorylineStatus(StorylineDefinitionId storylineId, out StorylineStatus status);
+        bool TrySetStorylineStatus(StorylineDefinitionId storylineId, StorylineStatus status);
+
+        bool IsStorylineAvailable(StorylineDefinitionId storylineId);
+        bool IsStorylineCompleted(StorylineDefinitionId storylineId);
+        bool IsStorylineFailed(StorylineDefinitionId storylineId);
+
+        int CopyAvailableStorylines(Span<StorylineDefinitionId> destination);
+        int CopyCompletedStorylines(Span<StorylineDefinitionId> destination);
+        int CopyFailedStorylines(Span<StorylineDefinitionId> destination);
     }
 }

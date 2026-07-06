@@ -15,9 +15,13 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System.Collections.Generic;
 using Nomad.Game.Sdk.Npc;
+using Nomad.Game.Sdk.Renown.Contract;
 
 namespace Nomad.Game.Sdk.Renown.Faction
 {
+    /// <summary>
+    ///
+    /// </summary>
     public interface IFactionInstance
     {
         FactionInstanceId Id { get; }
@@ -25,6 +29,10 @@ namespace Nomad.Game.Sdk.Renown.Faction
         FactionDefinition Definition { get; }
 
         IMercenaryMaster Owner { get; }
+
+        int ContractCount { get; }
+
+        ContractDefinition TryGetContract(int index);
 
         /// <summary>
         /// Contracts created by the guild.

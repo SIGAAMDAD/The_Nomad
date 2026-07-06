@@ -1,75 +1,74 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bvwak4wvpvrw3"]
 
-[node name="GalakasMidCity_TRAV_RoofStair_L18H09_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_RoofStair_L18H09_CSG" type="Node3D" unique_id=991580738]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=2060945580]
 use_collision = true
 
-[node name="Step_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 0.3000, -8.4000)
+[node name="Step_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=904194686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -8.4)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 0.9000, -7.2000)
+[node name="Step_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=1342719951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -7.2)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 1.5000, -6.0000)
+[node name="Step_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=2093945553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -6)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 2.1000, -4.8000)
+[node name="Step_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=1218136387]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, -4.8)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 2.7000, -3.6000)
+[node name="Step_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=2104006538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, -3.6)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_05" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 3.3000, -2.4000)
+[node name="Step_05" type="CSGBox3D" parent="Traversal_CSG" unique_id=945579224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, -2.4)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_06" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 3.9000, -1.2000)
+[node name="Step_06" type="CSGBox3D" parent="Traversal_CSG" unique_id=1900117895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, -1.2)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_07" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 4.5000, 0.0000)
+[node name="Step_07" type="CSGBox3D" parent="Traversal_CSG" unique_id=2065819952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_08" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 5.1000, 1.2000)
+[node name="Step_08" type="CSGBox3D" parent="Traversal_CSG" unique_id=1325477682]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.1, 1.2)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_09" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 5.7000, 2.4000)
+[node name="Step_09" type="CSGBox3D" parent="Traversal_CSG" unique_id=1507828425]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.7, 2.4)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_10" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 6.3000, 3.6000)
+[node name="Step_10" type="CSGBox3D" parent="Traversal_CSG" unique_id=229066946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.3, 3.6)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_11" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 6.9000, 4.8000)
+[node name="Step_11" type="CSGBox3D" parent="Traversal_CSG" unique_id=1461171630]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.9, 4.8)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_12" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 7.5000, 6.0000)
+[node name="Step_12" type="CSGBox3D" parent="Traversal_CSG" unique_id=1945444828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 6)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_13" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 8.1000, 7.2000)
+[node name="Step_13" type="CSGBox3D" parent="Traversal_CSG" unique_id=499065926]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.1, 7.2)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="Step_14" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6000, 0.1800, 1.0800)
-position = Vector3(0.0000, 8.7000, 8.4000)
+[node name="Step_14" type="CSGBox3D" parent="Traversal_CSG" unique_id=1013670236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.7, 8.4)
+size = Vector3(1.6, 0.18, 1.08)
 
-[node name="LeftRail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 9.0000, 0.1400)
-position = Vector3(-0.9000, 4.5000, 0.0000)
+[node name="LeftRail" type="CSGBox3D" parent="Traversal_CSG" unique_id=719807301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 4.5, 0)
+size = Vector3(0.14, 9, 0.14)
 
-[node name="RightRail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 9.0000, 0.1400)
-position = Vector3(0.9000, 4.5000, 0.0000)
-
+[node name="RightRail" type="CSGBox3D" parent="Traversal_CSG" unique_id=566818505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 4.5, 0)
+size = Vector3(0.14, 9, 0.14)

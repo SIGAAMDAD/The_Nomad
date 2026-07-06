@@ -1,42 +1,38 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dkun0r14y6n02"]
 
-[node name="GalakasMidCity_ROOF_W06D20_SawtoothWorkshop_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W06D20_SawtoothWorkshop_CSG" type="Node3D" unique_id=2080548604]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=610906465]
 use_collision = true
 
-[node name="Sawtooth_Slope_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.3000, 9.8880)
-position = Vector3(0.0000, 0.7800, -13.8533)
-rotation = Vector3(0.420000, 0.000000, 0.000000)
+[node name="Sawtooth_Slope_00" type="CSGBox3D" parent="Roof_CSG" unique_id=495069103]
+transform = Transform3D(1, 0, 0, 0, 0.9130889, -0.40776044, 0, 0.40776044, 0.9130889, 0, 0.78, -13.8533)
+size = Vector3(13.2, 0.3, 9.888)
 
-[node name="Sawtooth_VertFace_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.9500, 0.1800)
-position = Vector3(0.0000, 0.7200, -9.8880)
+[node name="Sawtooth_VertFace_00" type="CSGBox3D" parent="Roof_CSG" unique_id=658806103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -9.888)
+size = Vector3(13.2, 0.95, 0.18)
 
-[node name="Sawtooth_Slope_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.3000, 9.8880)
-position = Vector3(0.0000, 0.7800, -0.1200)
-rotation = Vector3(0.420000, 0.000000, 0.000000)
+[node name="Sawtooth_Slope_01" type="CSGBox3D" parent="Roof_CSG" unique_id=1165480073]
+transform = Transform3D(1, 0, 0, 0, 0.9130889, -0.40776044, 0, 0.40776044, 0.9130889, 0, 0.78, -0.12)
+size = Vector3(13.2, 0.3, 9.888)
 
-[node name="Sawtooth_VertFace_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.9500, 0.1800)
-position = Vector3(0.0000, 0.7200, 3.8453)
+[node name="Sawtooth_VertFace_01" type="CSGBox3D" parent="Roof_CSG" unique_id=1367411944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 3.8453)
+size = Vector3(13.2, 0.95, 0.18)
 
-[node name="Sawtooth_Slope_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.3000, 9.8880)
-position = Vector3(0.0000, 0.7800, 13.6133)
-rotation = Vector3(0.420000, 0.000000, 0.000000)
+[node name="Sawtooth_Slope_02" type="CSGBox3D" parent="Roof_CSG" unique_id=1527264022]
+transform = Transform3D(1, 0, 0, 0, 0.9130889, -0.40776044, 0, 0.40776044, 0.9130889, 0, 0.78, 13.6133)
+size = Vector3(13.2, 0.3, 9.888)
 
-[node name="Sawtooth_VertFace_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.9500, 0.1800)
-position = Vector3(0.0000, 0.7200, 17.5787)
+[node name="Sawtooth_VertFace_02" type="CSGBox3D" parent="Roof_CSG" unique_id=911672447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 17.5787)
+size = Vector3(13.2, 0.95, 0.18)
 
-[node name="SawtoothSideTie_Left" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.2200, 0.8000, 41.2000)
-position = Vector3(-6.6000, 0.5000, 0.0000)
+[node name="SawtoothSideTie_Left" type="CSGBox3D" parent="Roof_CSG" unique_id=1220541080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 0.5, 0)
+size = Vector3(0.22, 0.8, 41.2)
 
-[node name="SawtoothSideTie_Right" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.2200, 0.8000, 41.2000)
-position = Vector3(6.6000, 0.5000, 0.0000)
-
+[node name="SawtoothSideTie_Right" type="CSGBox3D" parent="Roof_CSG" unique_id=1711817072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 0.5, 0)
+size = Vector3(0.22, 0.8, 41.2)

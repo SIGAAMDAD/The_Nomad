@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ctp6hjx2ic3hn"]
 
-[ext_resource type="Script" uid="uid://cjfhepllsjf3u" path="res://Assets/Prefabs/SingleWorld/SingleWorld.cs" id="1_gohso"]
+[ext_resource type="Script" uid="uid://ckfbqpgaykg7b" path="res://Source/Game/Prefabs/World/Scenes/SingleWorld.cs" id="1_gohso"]
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_fek2r"]
 [ext_resource type="Environment" uid="uid://hadlmr477pu7" path="res://Assets/Prefabs/SingleWorld/SinglePlayerWorldEnvironment.tres" id="3_xrhpx"]
 

@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cpr07c061u4e2"]
 
 [ext_resource type="ArrayMesh" uid="uid://21br2i5khmmw" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/dune_grass_sparse.obj" id="1_mesh"]
 
-[node name="dune_grass_sparse" type="MeshInstance3D"]
+[node name="dune_grass_sparse" type="MeshInstance3D" unique_id=1430770416]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

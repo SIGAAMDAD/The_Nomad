@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://c50jjhx7yhrhg"]
 
-[ext_resource type="Material" path="../Materials/DeadBarkMaterial.tres" id="dead"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/DeadBarkMaterial.tres" id="dead"]
 
 [sub_resource type="CylinderMesh" id="Trunk"]
 top_radius = 0.05
@@ -10,27 +10,25 @@ radial_segments = 6
 rings = 1
 
 [sub_resource type="BoxMesh" id="Branch"]
-size = Vector3(1, 1, 1)
 
-[node name="Tree_Dead_Small" type="Node3D"]
+[node name="Tree_Dead_Small" type="Node3D" unique_id=717385792]
 
-[node name="Trunk" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.85, 0)
+[node name="Trunk" type="MeshInstance3D" parent="." unique_id=1052355229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
 mesh = SubResource("Trunk")
 surface_material_override/0 = ExtResource("dead")
 
-[node name="Branch_01" type="MeshInstance3D" parent="."]
+[node name="Branch_01" type="MeshInstance3D" parent="." unique_id=400307687]
 transform = Transform3D(0.0351809, -0.323544, 0.0282321, 0.0261344, 0.639393, 0, -0.0240686, 0.221349, 0.0412668, 0.02, 1.55, 0)
 mesh = SubResource("Branch")
 surface_material_override/0 = ExtResource("dead")
 
-[node name="Branch_02" type="MeshInstance3D" parent="."]
+[node name="Branch_02" type="MeshInstance3D" parent="." unique_id=1489935569]
 transform = Transform3D(0.0279863, 0.148708, -0.0391663, -0.0217483, 0.495246, 0, 0.0352672, 0.187396, 0.0310805, -0.02, 1.35, 0)
 mesh = SubResource("Branch")
 surface_material_override/0 = ExtResource("dead")
 
-[node name="Branch_03" type="MeshInstance3D" parent="."]
+[node name="Branch_03" type="MeshInstance3D" parent="." unique_id=2017064302]
 transform = Transform3D(-0.00605165, 0.0198812, 0.0495832, 0.0171449, 0.422718, 0, -0.0465771, 0.153018, -0.00644222, 0, 1.05, 0)
 mesh = SubResource("Branch")
 surface_material_override/0 = ExtResource("dead")
-

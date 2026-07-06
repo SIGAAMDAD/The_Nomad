@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bj5kkvauv7l3u"
+path="res://.godot/imported/Asturion.dialogue-936005978716e74a2025c5198bbbb60a.tres"
+
+[deps]
+
+source_file="res://Assets/Story/Dialogue/Asturion.dialogue"
+dest_files=["res://.godot/imported/Asturion.dialogue-936005978716e74a2025c5198bbbb60a.tres"]
+
+[params]
+
+defaults=true

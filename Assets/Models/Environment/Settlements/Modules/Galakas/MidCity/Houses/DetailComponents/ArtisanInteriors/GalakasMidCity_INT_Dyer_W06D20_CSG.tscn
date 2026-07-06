@@ -1,37 +1,36 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bkm41i0umq48a"]
 
-[node name="GalakasMidCity_INT_Dyer_W06D20_CSG" type="Node3D"]
+[node name="GalakasMidCity_INT_Dyer_W06D20_CSG" type="Node3D" unique_id=60085572]
 
-[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Interior_CSG" type="CSGCombiner3D" parent="." unique_id=1263145437]
 use_collision = true
 
-[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(6.9600, 0.8600, 0.5000)
-position = Vector3(0.0000, 0.6600, 3.6000)
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG" unique_id=1952438096]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 3.6)
+size = Vector3(6.96, 0.86, 0.5)
 
-[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(8.4000, 1.4500, 0.1800)
-position = Vector3(0.0000, 1.3000, 12.4000)
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG" unique_id=1812775814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 12.4)
+size = Vector3(8.4, 1.45, 0.18)
 
-[node name="DyeVat_00" type="CSGCylinder3D" parent="Interior_CSG"]
-radius = 0.4600
-height = 0.7000
+[node name="DyeVat_00" type="CSGCylinder3D" parent="Interior_CSG" unique_id=745701358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -3)
+radius = 0.46
+height = 0.7
 sides = 16
-position = Vector3(-3.0000, 0.5000, -3.0000)
 
-[node name="DyeVat_01" type="CSGCylinder3D" parent="Interior_CSG"]
-radius = 0.4600
-height = 0.7000
+[node name="DyeVat_01" type="CSGCylinder3D" parent="Interior_CSG" unique_id=1650773298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -3)
+radius = 0.46
+height = 0.7
 sides = 16
-position = Vector3(0.0000, 0.5000, -3.0000)
 
-[node name="DyeVat_02" type="CSGCylinder3D" parent="Interior_CSG"]
-radius = 0.4600
-height = 0.7000
+[node name="DyeVat_02" type="CSGCylinder3D" parent="Interior_CSG" unique_id=611900076]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -3)
+radius = 0.46
+height = 0.7
 sides = 16
-position = Vector3(3.0000, 0.5000, -3.0000)
 
-[node name="DryingRack_Interior" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(8.6400, 1.2000, 0.1400)
-position = Vector3(0.0000, 1.7500, 3.6000)
-
+[node name="DryingRack_Interior" type="CSGBox3D" parent="Interior_CSG" unique_id=1655398290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 3.6)
+size = Vector3(8.64, 1.2, 0.14)

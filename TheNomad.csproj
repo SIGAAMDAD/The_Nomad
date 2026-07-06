@@ -34,8 +34,8 @@
     <Compile Remove="**/obj/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Source/Modding/Nomad.Modding.csproj" />
     <ProjectReference Include="Source/Game/Sdk/Nomad.Game.Sdk.csproj" />
+    <ProjectReference Include="Source/Modding/Nomad.Modding.csproj" />
 
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
 

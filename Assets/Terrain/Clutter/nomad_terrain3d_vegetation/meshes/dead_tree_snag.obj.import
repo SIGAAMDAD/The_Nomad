@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b004p6inetm83"
+path="res://.godot/imported/dead_tree_snag.obj-4b897b69e69164e1a476a817eb7027cf.mesh"
+
+[deps]
+
+files=["res://.godot/imported/dead_tree_snag.obj-4b897b69e69164e1a476a817eb7027cf.mesh"]
+
+source_file="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/dead_tree_snag.obj"
+dest_files=["res://.godot/imported/dead_tree_snag.obj-4b897b69e69164e1a476a817eb7027cf.mesh", "res://.godot/imported/dead_tree_snag.obj-4b897b69e69164e1a476a817eb7027cf.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

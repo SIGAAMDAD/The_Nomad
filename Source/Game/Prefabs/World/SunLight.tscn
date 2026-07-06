@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dfpsmfg427cba"]
+
+[ext_resource type="Script" uid="uid://hd708wwfb6ka" path="res://Source/Game/Prefabs/World/WorldSunLightPrefab.cs" id="1_f6oha"]
+
+[node name="SunLight" type="Node2D" unique_id=35515758 node_paths=PackedStringArray("AmbientLight", "SunLight")]
+script = ExtResource("1_f6oha")
+AmbientLight = NodePath("CanvasModulate")
+SunLight = NodePath("DirectionalLight2D")
+SunOrbitCenter = null
+SunOrbitRadius = null
+ArcStartDegrees = null
+ArcEndDegrees = null
+LightRotationOffsetDegrees = null
+MinuteTweenSeconds = null
+SnapOnFirstApply = null
+DayLightEnergy = null
+TwilightLightEnergy = null
+MoonLightEnergy = null
+MinLightHeight = null
+MaxLightHeight = null
+DayLightColor = null
+DawnLightColor = null
+DuskLightColor = null
+MoonLightColor = null
+BaseShadowColor = null
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="." unique_id=745568933]
+shadow_enabled = true
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1421164924]

@@ -1,0 +1,13 @@
+{
+	"format": "NomadStorylinePack",
+	"id": "STORYLINE_WAR_OF_THE_WASTES",
+	"name": "War of the Wastes",
+	"quests": [
+		{
+			"file": "quests/intro_quest.json",
+			"id": "INTRO_QUEST",
+			"name": "Intro Quest"
+		}
+	],
+	"version": 1
+}

@@ -1,47 +1,46 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bxtcwo0nu2yaa"]
 
-[node name="GalakasMidCity_TRAV_Vertical_WallPegs_H07_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_Vertical_WallPegs_H07_CSG" type="Node3D" unique_id=847279536]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=1179243049]
 use_collision = true
 
-[node name="Peg_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.5800, 0.1200, 0.2000)
-position = Vector3(-0.3500, 0.5500, -0.0800)
+[node name="Peg_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=1465115044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.55, -0.08)
+size = Vector3(0.58, 0.12, 0.2)
 
-[node name="Peg_Bracket_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.2000, 0.1400)
-position = Vector3(-0.3500, 0.5500, 0.0700)
+[node name="Peg_Bracket_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=1843373158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.55, 0.07)
+size = Vector3(0.16, 0.2, 0.14)
 
-[node name="Peg_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.5800, 0.1200, 0.2000)
-position = Vector3(0.3500, 2.0250, -0.0800)
+[node name="Peg_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=1558096321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 2.025, -0.08)
+size = Vector3(0.58, 0.12, 0.2)
 
-[node name="Peg_Bracket_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.2000, 0.1400)
-position = Vector3(0.3500, 2.0250, 0.0700)
+[node name="Peg_Bracket_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=1874607448]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 2.025, 0.07)
+size = Vector3(0.16, 0.2, 0.14)
 
-[node name="Peg_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.5800, 0.1200, 0.2000)
-position = Vector3(-0.3500, 3.5000, -0.0800)
+[node name="Peg_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=1351520746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 3.5, -0.08)
+size = Vector3(0.58, 0.12, 0.2)
 
-[node name="Peg_Bracket_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.2000, 0.1400)
-position = Vector3(-0.3500, 3.5000, 0.0700)
+[node name="Peg_Bracket_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=1262476159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 3.5, 0.07)
+size = Vector3(0.16, 0.2, 0.14)
 
-[node name="Peg_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.5800, 0.1200, 0.2000)
-position = Vector3(0.3500, 4.9750, -0.0800)
+[node name="Peg_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=203004216]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 4.975, -0.08)
+size = Vector3(0.58, 0.12, 0.2)
 
-[node name="Peg_Bracket_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.2000, 0.1400)
-position = Vector3(0.3500, 4.9750, 0.0700)
+[node name="Peg_Bracket_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=543265322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 4.975, 0.07)
+size = Vector3(0.16, 0.2, 0.14)
 
-[node name="Peg_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.5800, 0.1200, 0.2000)
-position = Vector3(-0.3500, 6.4500, -0.0800)
+[node name="Peg_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=488817955]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 6.45, -0.08)
+size = Vector3(0.58, 0.12, 0.2)
 
-[node name="Peg_Bracket_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.2000, 0.1400)
-position = Vector3(-0.3500, 6.4500, 0.0700)
-
+[node name="Peg_Bracket_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=1761517398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 6.45, 0.07)
+size = Vector3(0.16, 0.2, 0.14)

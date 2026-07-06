@@ -1,67 +1,66 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cnjeilr81vqnu"]
 
-[node name="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG" type="Node3D"]
+[node name="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG" type="Node3D" unique_id=499247684]
 
-[node name="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=725088512]
 use_collision = true
 
-[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(3.0000, 2.7500, 0.1800)
-position = Vector3(0.0000, 1.3750, -0.0300)
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=133126934]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.375, -0.03)
+size = Vector3(3, 2.75, 0.18)
 
-[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.1800, 2.9500, 0.2800)
-position = Vector3(-1.5900, 1.4750, 0.0000)
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=1155221187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.59, 1.475, 0)
+size = Vector3(0.18, 2.95, 0.28)
 
-[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.1800, 2.9500, 0.2800)
-position = Vector3(1.5900, 1.4750, 0.0000)
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=158325033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.59, 1.475, 0)
+size = Vector3(0.18, 2.95, 0.28)
 
-[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(3.4320, 0.1800, 0.3000)
-position = Vector3(0.0000, 2.8400, 0.0000)
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=765530008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.84, 0)
+size = Vector3(3.432, 0.18, 0.3)
 
-[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(3.2880, 0.1200, 0.3400)
-position = Vector3(0.0000, 0.0600, 0.0200)
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=1735182582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
+size = Vector3(3.288, 0.12, 0.34)
 
-[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(-1.2600, 1.3750, -0.1450)
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=476853686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.26, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(-0.7560, 1.3750, -0.1450)
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=883909740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.756, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(-0.2520, 1.3750, -0.1450)
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=2052286224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.252, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(0.2520, 1.3750, -0.1450)
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=335904442]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.252, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(0.7560, 1.3750, -0.1450)
+[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=2060275360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.756, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.4200, 0.0550)
-position = Vector3(1.2600, 1.3750, -0.1450)
+[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=272288944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.26, 1.375, -0.145)
+size = Vector3(0.055, 2.42, 0.055)
 
-[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.0600, 2.4750, 0.0700)
-position = Vector3(0.0000, 1.3750, -0.1800)
+[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=1162104891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.375, -0.18)
+size = Vector3(0.06, 2.475, 0.07)
 
-[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 0.6875, -0.2200)
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=1892976790]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 0.6875, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 1.4300, -0.2200)
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=385545150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 1.43, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 2.1450, -0.2200)
-
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Merchant_Double_Wide_CSG_CSG" unique_id=234226513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 2.145, -0.22)
+size = Vector3(0.16, 0.13, 0.09)

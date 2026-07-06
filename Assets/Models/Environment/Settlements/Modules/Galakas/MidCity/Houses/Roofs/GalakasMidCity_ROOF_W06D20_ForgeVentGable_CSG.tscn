@@ -1,37 +1,34 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b5644dotcfw07"]
 
-[node name="GalakasMidCity_ROOF_W06D20_ForgeVentGable_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W06D20_ForgeVentGable_CSG" type="Node3D" unique_id=1002483537]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=1732849476]
 use_collision = true
 
-[node name="ForgePlane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.3000, 24.7275)
-position = Vector3(0.0000, 6.7756, -10.3000)
-rotation = Vector3(-0.580000, 0.000000, 0.000000)
+[node name="ForgePlane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=1526619016]
+transform = Transform3D(1, 0, 0, 0, 0.8364627, 0.54802394, 0, -0.54802394, 0.8364627, 0, 6.7756, -10.3)
+size = Vector3(13.2, 0.3, 24.7275)
 
-[node name="ForgePlane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.2000, 0.3000, 24.7275)
-position = Vector3(0.0000, 6.7756, 10.3000)
-rotation = Vector3(0.580000, 0.000000, 0.000000)
+[node name="ForgePlane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=574596424]
+transform = Transform3D(1, 0, 0, 0, 0.8364627, -0.54802394, 0, 0.54802394, 0.8364627, 0, 6.7756, 10.3)
+size = Vector3(13.2, 0.3, 24.7275)
 
-[node name="ForgeRidgeCap" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(13.3000, 0.1800, 0.2600)
-position = Vector3(0.0000, 13.5513, 0.0000)
+[node name="ForgeRidgeCap" type="CSGBox3D" parent="Roof_CSG" unique_id=2016308898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.5513, 0)
+size = Vector3(13.3, 0.18, 0.26)
 
-[node name="BroadForgeVent_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.7500, 1.6000, 0.7500)
-position = Vector3(-2.9040, 14.3013, -4.9440)
+[node name="BroadForgeVent_00" type="CSGBox3D" parent="Roof_CSG" unique_id=427624999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.904, 14.3013, -4.944)
+size = Vector3(0.75, 1.6, 0.75)
 
-[node name="VentCap_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.2200, 1.0500)
-position = Vector3(-2.9040, 15.2013, -4.9440)
+[node name="VentCap_00" type="CSGBox3D" parent="Roof_CSG" unique_id=303183032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.904, 15.2013, -4.944)
+size = Vector3(1.05, 0.22, 1.05)
 
-[node name="BroadForgeVent_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.7500, 1.6000, 0.7500)
-position = Vector3(2.3760, 14.3013, 3.2960)
+[node name="BroadForgeVent_01" type="CSGBox3D" parent="Roof_CSG" unique_id=1138032764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.376, 14.3013, 3.296)
+size = Vector3(0.75, 1.6, 0.75)
 
-[node name="VentCap_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.2200, 1.0500)
-position = Vector3(2.3760, 15.2013, 3.2960)
-
+[node name="VentCap_01" type="CSGBox3D" parent="Roof_CSG" unique_id=1522721387]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.376, 15.2013, 3.296)
+size = Vector3(1.05, 0.22, 1.05)

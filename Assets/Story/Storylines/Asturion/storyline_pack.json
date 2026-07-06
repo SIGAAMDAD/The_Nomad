@@ -1,0 +1,13 @@
+{
+	"format": "NomadStorylinePack",
+	"id": "STORYLINE_ASTURION_GURNOVIL",
+	"name": "Storyline Asturion Gurnovil",
+	"quests": [
+		{
+			"file": "quests/intro_quest.json",
+			"id": "INTRO_QUEST",
+			"name": "Intro Quest"
+		}
+	],
+	"version": 1
+}

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c64qs1qyfyoi4"]
 
-[ext_resource type="Terrain3DMaterial" uid="uid://dp72f2cyewka8" path="res://Assets/Terrain/Assets/WorldTerrainMaterial.tres" id="1_fcdqo"]
-[ext_resource type="Terrain3DAssets" uid="uid://3vaiqc4ckajo" path="res://Assets/Terrain/Assets/WorldTerrainAssets.tres" id="2_iyfvs"]
+[ext_resource type="Terrain3DMaterial" uid="uid://dp72f2cyewka8" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainMaterial.tres" id="1_fcdqo"]
+[ext_resource type="Terrain3DAssets" uid="uid://3vaiqc4ckajo" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainAssets.tres" id="2_iyfvs"]
 
 [node name="World" type="Node3D" unique_id=1422816872]
 

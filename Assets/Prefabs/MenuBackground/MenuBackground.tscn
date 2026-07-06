@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cjlaujtogos17"]
 
-[ext_resource type="Script" uid="uid://c61reuvyc8u20" path="res://Assets/Prefabs/MenuBackground/EmbersEmitter.cs" id="1_wfdbj"]
+[ext_resource type="Script" uid="uid://d1xkd06s3m8ap" path="res://Assets/Prefabs/MenuBackground/EmbersEmitter.cs" id="1_wfdbj"]
 
 [sub_resource type="Gradient" id="Gradient_chk6h"]
 offsets = PackedFloat32Array(0)

@@ -1,4 +1,5 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bdtb5dscoas8a"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_HerbMedicinalStall_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_ApothecaryShelfStall_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_AlchemistBottleStall_CSG.tscn" id="3"]
@@ -6,26 +7,22 @@
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_DyeVatOpenStall_CSG.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_DriedMushroomStall_CSG.tscn" id="6"]
 
-[node name="GalakasMidCity_MARKETCLUSTER_ApothecaryAndDye_Corner_CSG" type="Node3D"]
+[node name="GalakasMidCity_MARKETCLUSTER_ApothecaryAndDye_Corner_CSG" type="Node3D" unique_id=707898063]
 
-[node name="Stall_01_HerbMedicinalStall" parent="." instance=ExtResource("1")]
-position = Vector3(-6.3000, 0.0000, -3.8000)
+[node name="Stall_01_HerbMedicinalStall" parent="." unique_id=2019626159 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.3, 0, -3.8)
 
-[node name="Stall_02_ApothecaryShelfStall" parent="." instance=ExtResource("2")]
-position = Vector3(-2.1000, 0.0000, -3.8000)
+[node name="Stall_02_ApothecaryShelfStall" parent="." unique_id=863861918 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 0, -3.8)
 
-[node name="Stall_03_AlchemistBottleStall" parent="." instance=ExtResource("3")]
-position = Vector3(2.1000, 0.0000, -3.8000)
+[node name="Stall_03_AlchemistBottleStall" parent="." unique_id=614734426 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0, -3.8)
 
-[node name="Stall_04_DyerSampleStall" parent="." instance=ExtResource("4")]
-position = Vector3(2.1000, 0.0000, 0.0000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="Stall_04_DyerSampleStall" parent="." unique_id=1453266378 instance=ExtResource("4")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 2.1, 0, 0)
 
-[node name="Stall_05_DyeVatOpenStall" parent="." instance=ExtResource("5")]
-position = Vector3(2.1000, 0.0000, 3.8000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="Stall_05_DyeVatOpenStall" parent="." unique_id=137846205 instance=ExtResource("5")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 2.1, 0, 3.8)
 
-[node name="Stall_06_DriedMushroomStall" parent="." instance=ExtResource("6")]
-position = Vector3(2.1000, 0.0000, 7.6000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
-
+[node name="Stall_06_DriedMushroomStall" parent="." unique_id=1130549836 instance=ExtResource("6")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 2.1, 0, 7.6)

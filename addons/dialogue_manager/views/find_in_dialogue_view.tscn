@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://q368fmxxa8sd" path="res://addons/dialogue_manager/views/find_in_dialogue_view.gd" id="1_3xicy"]
 
-[node name="FindInFiles" type="Control" unique_id=501499539]
-layout_mode = 3
+[node name="FindInFiles" type="PanelContainer" unique_id=705304810]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -13,92 +12,87 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_3xicy")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1691272416]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=296905752]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=588637275]
 layout_mode = 2
 
-[node name="FindContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1046074870]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=789222873]
+layout_mode = 2
+
+[node name="FindContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1106456190]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=1268320198]
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=644125253]
 layout_mode = 2
 text = "Find:"
 
-[node name="Input" type="LineEdit" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=290366819]
+[node name="Input" type="LineEdit" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=1946262801]
 unique_name_in_owner = true
 layout_mode = 2
 clear_button_enabled = true
 
-[node name="FindToolbar" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=1412522558]
+[node name="FindToolbar" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/FindContainer" unique_id=872227533]
 layout_mode = 2
 
-[node name="SearchButton" type="Button" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=1079788794]
+[node name="SearchButton" type="Button" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=667930226]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Find all..."
 
-[node name="MatchCaseButton" type="CheckBox" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=634899391]
+[node name="MatchCaseButton" type="CheckBox" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=152832269]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Match case"
 
-[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=468247842]
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=1072708585]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ReplaceToggle" type="CheckButton" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=1279140795]
+[node name="ReplaceToggle" type="CheckButton" parent="VBoxContainer/HBoxContainer/FindContainer/FindToolbar" unique_id=1636801863]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Replace"
 
-[node name="ReplaceContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=93475343]
+[node name="ReplaceContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=960698141]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ReplaceLabel" type="Label" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=1034918302]
+[node name="ReplaceLabel" type="Label" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=1808438777]
 layout_mode = 2
 text = "Replace with:"
 
-[node name="ReplaceInput" type="LineEdit" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=878397756]
+[node name="ReplaceInput" type="LineEdit" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=621715286]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 clear_button_enabled = true
 
-[node name="ReplaceToolbar" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=1374353675]
+[node name="ReplaceToolbar" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ReplaceContainer" unique_id=1014505700]
 layout_mode = 2
 
-[node name="ReplaceSelectedButton" type="Button" parent="VBoxContainer/HBoxContainer/ReplaceContainer/ReplaceToolbar" unique_id=1273701088]
+[node name="ReplaceSelectedButton" type="Button" parent="VBoxContainer/HBoxContainer/ReplaceContainer/ReplaceToolbar" unique_id=1137093995]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Replace selected"
 
-[node name="ReplaceAllButton" type="Button" parent="VBoxContainer/HBoxContainer/ReplaceContainer/ReplaceToolbar" unique_id=1061318551]
+[node name="ReplaceAllButton" type="Button" parent="VBoxContainer/HBoxContainer/ReplaceContainer/ReplaceToolbar" unique_id=1540770339]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Replace all"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=2086714867]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=605451224]
 layout_mode = 2
 
-[node name="ReplaceToolbar" type="HBoxContainer" parent="VBoxContainer/VBoxContainer" unique_id=85478454]
+[node name="ReplaceToolbar" type="HBoxContainer" parent="VBoxContainer/VBoxContainer" unique_id=387078090]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1267793126]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1407099062]
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 
-[node name="ResultsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=780909137]
+[node name="ResultsContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=323245871]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

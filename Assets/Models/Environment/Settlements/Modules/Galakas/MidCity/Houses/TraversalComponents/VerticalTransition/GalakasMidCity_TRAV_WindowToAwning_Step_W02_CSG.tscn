@@ -1,21 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cwhi1e6gakufl"]
 
-[node name="GalakasMidCity_TRAV_WindowToAwning_Step_W02_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_WindowToAwning_Step_W02_CSG" type="Node3D" unique_id=1602252126]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=1786707450]
 use_collision = true
 
-[node name="Window_Sill_Step" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(2.0000, 0.2000, 0.5000)
-position = Vector3(0.0000, 0.1000, -0.0500)
+[node name="Window_Sill_Step" type="CSGBox3D" parent="Traversal_CSG" unique_id=2028341107]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.05)
+size = Vector3(2, 0.2, 0.5)
 
-[node name="Under_Brace_Left" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 0.7200, 0.1400)
-position = Vector3(-0.6500, -0.1800, 0.0000)
-rotation = Vector3(0.400000, 0.000000, 0.000000)
+[node name="Under_Brace_Left" type="CSGBox3D" parent="Traversal_CSG" unique_id=323607334]
+transform = Transform3D(1, 0, 0, 0, 0.921061, -0.38941833, 0, 0.38941833, 0.921061, -0.65, -0.18, 0)
+size = Vector3(0.14, 0.72, 0.14)
 
-[node name="Under_Brace_Right" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 0.7200, 0.1400)
-position = Vector3(0.6500, -0.1800, 0.0000)
-rotation = Vector3(0.400000, 0.000000, 0.000000)
-
+[node name="Under_Brace_Right" type="CSGBox3D" parent="Traversal_CSG" unique_id=1995959462]
+transform = Transform3D(1, 0, 0, 0, 0.921061, -0.38941833, 0, 0.38941833, 0.921061, 0.65, -0.18, 0)
+size = Vector3(0.14, 0.72, 0.14)

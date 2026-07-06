@@ -1,50 +1,46 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c3y5shqmwi4mm"]
 
-[node name="GalakasMidCity_TRAV_CrossBuilding_TimberBridge_L10_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_CrossBuilding_TimberBridge_L10_CSG" type="Node3D" unique_id=1986659481]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=1737402879]
 use_collision = true
 
-[node name="Deck_Center_Plank" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(2.4000, 0.2200, 10.0000)
-position = Vector3(0.0000, 0.1200, 0.0000)
+[node name="Deck_Center_Plank" type="CSGBox3D" parent="Traversal_CSG" unique_id=961445282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+size = Vector3(2.4, 0.22, 10)
 
-[node name="Deck_Left_Plank" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4200, 0.2400, 10.0500)
-position = Vector3(-1.0000, 0.1500, 0.0000)
+[node name="Deck_Left_Plank" type="CSGBox3D" parent="Traversal_CSG" unique_id=1729049938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.15, 0)
+size = Vector3(0.42, 0.24, 10.05)
 
-[node name="Deck_Right_Plank" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4200, 0.2400, 9.8500)
-position = Vector3(1.0200, 0.1800, 0.0600)
+[node name="Deck_Right_Plank" type="CSGBox3D" parent="Traversal_CSG" unique_id=385060336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.02, 0.18, 0.06)
+size = Vector3(0.42, 0.24, 9.85)
 
-[node name="Left_Rail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.5200, 10.0000)
-position = Vector3(-1.3000, 0.5500, 0.0000)
+[node name="Left_Rail" type="CSGBox3D" parent="Traversal_CSG" unique_id=794138910]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.55, 0)
+size = Vector3(0.16, 0.52, 10)
 
-[node name="Right_Rail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.5200, 10.0000)
-position = Vector3(1.3000, 0.5500, 0.0000)
+[node name="Right_Rail" type="CSGBox3D" parent="Traversal_CSG" unique_id=1207366468]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 0.55, 0)
+size = Vector3(0.16, 0.52, 10)
 
-[node name="Left_Handrail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1800, 0.1600, 10.1000)
-position = Vector3(-1.3000, 0.9200, 0.0000)
+[node name="Left_Handrail" type="CSGBox3D" parent="Traversal_CSG" unique_id=1935597177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.92, 0)
+size = Vector3(0.18, 0.16, 10.1)
 
-[node name="Right_Handrail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1800, 0.1600, 10.1000)
-position = Vector3(1.3000, 0.9200, 0.0000)
+[node name="Right_Handrail" type="CSGBox3D" parent="Traversal_CSG" unique_id=248426041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3, 0.92, 0)
+size = Vector3(0.18, 0.16, 10.1)
 
-[node name="Cross_Brace_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(2.8500, 0.1400, 0.1800)
-position = Vector3(0.0000, 0.3800, -3.8000)
-rotation = Vector3(0.000000, 0.000000, 0.100000)
+[node name="Cross_Brace_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=1484466433]
+transform = Transform3D(0.9950042, -0.09983342, 0, 0.09983342, 0.9950042, 0, 0, 0, 1, 0, 0.38, -3.8)
+size = Vector3(2.85, 0.14, 0.18)
 
-[node name="Cross_Brace_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(2.8500, 0.1400, 0.1800)
-position = Vector3(0.0000, 0.3800, 0.0000)
-rotation = Vector3(0.000000, 0.000000, -0.100000)
+[node name="Cross_Brace_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=2064290244]
+transform = Transform3D(0.9950042, 0.09983342, 0, -0.09983342, 0.9950042, 0, 0, 0, 1, 0, 0.38, 0)
+size = Vector3(2.85, 0.14, 0.18)
 
-[node name="Cross_Brace_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(2.8500, 0.1400, 0.1800)
-position = Vector3(0.0000, 0.3800, 3.8000)
-rotation = Vector3(0.000000, 0.000000, 0.100000)
-
+[node name="Cross_Brace_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=1079807862]
+transform = Transform3D(0.9950042, -0.09983342, 0, 0.09983342, 0.9950042, 0, 0, 0, 1, 0, 0.38, 3.8)
+size = Vector3(2.85, 0.14, 0.18)

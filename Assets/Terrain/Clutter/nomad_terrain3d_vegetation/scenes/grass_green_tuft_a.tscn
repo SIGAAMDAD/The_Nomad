@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://irhtj0rpoojy"]
 
 [ext_resource type="ArrayMesh" uid="uid://cddg86x42e4i4" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/grass_green_tuft_a.obj" id="1_mesh"]
 
-[node name="grass_green_tuft_a" type="MeshInstance3D"]
+[node name="grass_green_tuft_a" type="MeshInstance3D" unique_id=574928704]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

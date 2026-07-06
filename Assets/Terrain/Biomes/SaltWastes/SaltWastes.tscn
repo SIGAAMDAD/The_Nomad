@@ -2,7 +2,7 @@
 
 [ext_resource type="Terrain3DMaterial" uid="uid://dp72f2cyewka8" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainMaterial.tres" id="1_l1cpb"]
 [ext_resource type="Terrain3DAssets" uid="uid://3vaiqc4ckajo" path="res://Assets/Terrain/Biomes/Assets/WorldTerrainAssets.tres" id="2_ho8jm"]
-[ext_resource type="PackedScene" uid="uid://c52vxqtr6uvil" path="res://Assets/Models/Player/Prototyping.glb" id="3_l1cpb"]
+[ext_resource type="PackedScene" uid="uid://csbgddanb2lhg" path="res://Assets/Models/Player/Prototyping.glb" id="3_l1cpb"]
 [ext_resource type="ArrayMesh" uid="uid://cd6al241x68fs" path="res://Assets/Terrain/Biomes/SaltWastes/Baked/SaltWastesArrayMesh.res" id="4_3c3sv"]
 [ext_resource type="ArrayOccluder3D" uid="uid://f6wr3vf158x4" path="res://Assets/Terrain/Biomes/SaltWastes/Baked/SaltWastesBakedOccluder.res" id="4_6unn5"]
 

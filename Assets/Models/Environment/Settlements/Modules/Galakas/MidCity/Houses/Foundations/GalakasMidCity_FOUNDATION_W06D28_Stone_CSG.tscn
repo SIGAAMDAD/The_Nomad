@@ -1,35 +1,34 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dllx42p5vgxt2"]
 
-[node name="GalakasMidCity_FOUNDATION_W06D28_Stone_CSG" type="Node3D"]
+[node name="GalakasMidCity_FOUNDATION_W06D28_Stone_CSG" type="Node3D" unique_id=686842959]
 
-[node name="Foundation_CSG" type="CSGCombiner3D" parent="."]
+[node name="Foundation_CSG" type="CSGCombiner3D" parent="." unique_id=1240248573]
 use_collision = true
 
-[node name="Foundation_MainBlock" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(12.0000, 0.6000, 56.0000)
-position = Vector3(0.0000, 0.3000, 0.0000)
+[node name="Foundation_MainBlock" type="CSGBox3D" parent="Foundation_CSG" unique_id=183664793]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+size = Vector3(12, 0.6, 56)
 
-[node name="Foundation_FrontLip" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(12.5000, 0.2000, 0.4000)
-position = Vector3(0.0000, 0.7000, -28.1000)
+[node name="Foundation_FrontLip" type="CSGBox3D" parent="Foundation_CSG" unique_id=869705964]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -28.1)
+size = Vector3(12.5, 0.2, 0.4)
 
-[node name="Foundation_BackLip" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(12.5000, 0.2000, 0.4000)
-position = Vector3(0.0000, 0.7000, 28.1000)
+[node name="Foundation_BackLip" type="CSGBox3D" parent="Foundation_CSG" unique_id=1219482108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 28.1)
+size = Vector3(12.5, 0.2, 0.4)
 
-[node name="Foundation_LeftLip" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(0.4000, 0.2000, 56.5000)
-position = Vector3(-6.1000, 0.7000, 0.0000)
+[node name="Foundation_LeftLip" type="CSGBox3D" parent="Foundation_CSG" unique_id=779529439]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.1, 0.7, 0)
+size = Vector3(0.4, 0.2, 56.5)
 
-[node name="Foundation_RightLip" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(0.4000, 0.2000, 56.5000)
-position = Vector3(6.1000, 0.7000, 0.0000)
+[node name="Foundation_RightLip" type="CSGBox3D" parent="Foundation_CSG" unique_id=2086408874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.1, 0.7, 0)
+size = Vector3(0.4, 0.2, 56.5)
 
-[node name="Foundation_FrontStep_Lower" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(3.0000, 0.1800, 0.8000)
-position = Vector3(0.0000, 0.0900, -28.7000)
+[node name="Foundation_FrontStep_Lower" type="CSGBox3D" parent="Foundation_CSG" unique_id=916697319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -28.7)
+size = Vector3(3, 0.18, 0.8)
 
-[node name="Foundation_FrontStep_Upper" type="CSGBox3D" parent="Foundation_CSG"]
-size = Vector3(2.5200, 0.1800, 0.5500)
-position = Vector3(0.0000, 0.3100, -28.4500)
-
+[node name="Foundation_FrontStep_Upper" type="CSGBox3D" parent="Foundation_CSG" unique_id=679197958]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31, -28.45)
+size = Vector3(2.52, 0.18, 0.55)

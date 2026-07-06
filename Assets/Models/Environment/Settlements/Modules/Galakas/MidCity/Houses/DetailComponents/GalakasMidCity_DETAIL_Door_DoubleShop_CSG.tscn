@@ -1,63 +1,61 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://38cel76lbsrt"]
 
-[node name="GalakasMidCity_DETAIL_Door_DoubleShop_CSG" type="Node3D"]
+[node name="GalakasMidCity_DETAIL_Door_DoubleShop_CSG" type="Node3D" unique_id=1154418887]
 
-[node name="Door_CSG" type="CSGCombiner3D" parent="."]
-use_collision = false
+[node name="Door_CSG" type="CSGCombiner3D" parent="." unique_id=518267734]
 
-[node name="Door_LeftLeaf" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(1.1500, 2.8000, 0.1800)
-position = Vector3(-0.5800, 1.4000, 0.0000)
+[node name="Door_LeftLeaf" type="CSGBox3D" parent="Door_CSG" unique_id=532192782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 1.4, 0)
+size = Vector3(1.15, 2.8, 0.18)
 
-[node name="Door_RightLeaf" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(1.1500, 2.8000, 0.1800)
-position = Vector3(0.5800, 1.4000, 0.0000)
+[node name="Door_RightLeaf" type="CSGBox3D" parent="Door_CSG" unique_id=713846601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 1.4, 0)
+size = Vector3(1.15, 2.8, 0.18)
 
-[node name="Door_CenterSeam" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.0800, 2.9000, 0.2400)
-position = Vector3(0.0000, 1.4500, -0.0200)
+[node name="Door_CenterSeam" type="CSGBox3D" parent="Door_CSG" unique_id=2093574108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.02)
+size = Vector3(0.08, 2.9, 0.24)
 
-[node name="Door_LeftJamb" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1800, 3.0500, 0.2400)
-position = Vector3(-1.2800, 1.5250, -0.0200)
+[node name="Door_LeftJamb" type="CSGBox3D" parent="Door_CSG" unique_id=1101022782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.28, 1.525, -0.02)
+size = Vector3(0.18, 3.05, 0.24)
 
-[node name="Door_RightJamb" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1800, 3.0500, 0.2400)
-position = Vector3(1.2800, 1.5250, -0.0200)
+[node name="Door_RightJamb" type="CSGBox3D" parent="Door_CSG" unique_id=195563805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.28, 1.525, -0.02)
+size = Vector3(0.18, 3.05, 0.24)
 
-[node name="Door_Header" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(2.7400, 0.2200, 0.2400)
-position = Vector3(0.0000, 3.0400, -0.0200)
+[node name="Door_Header" type="CSGBox3D" parent="Door_CSG" unique_id=368002038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.04, -0.02)
+size = Vector3(2.74, 0.22, 0.24)
 
-[node name="Door_Hinge_M1_12" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(-1.1200, 2.1500, -0.1400)
+[node name="Door_Hinge_M1_12" type="CSGBox3D" parent="Door_CSG" unique_id=1769421880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.12, 2.15, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_Lower_M1_12" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(-1.1200, 0.8500, -0.1400)
+[node name="Door_Hinge_Lower_M1_12" type="CSGBox3D" parent="Door_CSG" unique_id=604452033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.12, 0.85, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_M0_06" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(-0.0600, 2.1500, -0.1400)
+[node name="Door_Hinge_M0_06" type="CSGBox3D" parent="Door_CSG" unique_id=1355600336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 2.15, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_Lower_M0_06" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(-0.0600, 0.8500, -0.1400)
+[node name="Door_Hinge_Lower_M0_06" type="CSGBox3D" parent="Door_CSG" unique_id=2046722172]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.85, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_P0_06" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(0.0600, 2.1500, -0.1400)
+[node name="Door_Hinge_P0_06" type="CSGBox3D" parent="Door_CSG" unique_id=184415527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 2.15, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_Lower_P0_06" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(0.0600, 0.8500, -0.1400)
+[node name="Door_Hinge_Lower_P0_06" type="CSGBox3D" parent="Door_CSG" unique_id=505246156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.85, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_P1_12" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(1.1200, 2.1500, -0.1400)
+[node name="Door_Hinge_P1_12" type="CSGBox3D" parent="Door_CSG" unique_id=2082022356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12, 2.15, -0.14)
+size = Vector3(0.12, 0.38, 0.1)
 
-[node name="Door_Hinge_Lower_P1_12" type="CSGBox3D" parent="Door_CSG"]
-size = Vector3(0.1200, 0.3800, 0.1000)
-position = Vector3(1.1200, 0.8500, -0.1400)
-
+[node name="Door_Hinge_Lower_P1_12" type="CSGBox3D" parent="Door_CSG" unique_id=1111815116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12, 0.85, -0.14)
+size = Vector3(0.12, 0.38, 0.1)

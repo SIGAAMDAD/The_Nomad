@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://b7nho265c3gvg"
+path="res://.godot/imported/Prototyping.obj-86170d0d1f11476fa9cda07722cacbfc.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Prototyping.obj-86170d0d1f11476fa9cda07722cacbfc.mesh"]
+
+source_file="res://Assets/Models/Player/Prototyping.obj"
+dest_files=["res://.godot/imported/Prototyping.obj-86170d0d1f11476fa9cda07722cacbfc.mesh", "res://.godot/imported/Prototyping.obj-86170d0d1f11476fa9cda07722cacbfc.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

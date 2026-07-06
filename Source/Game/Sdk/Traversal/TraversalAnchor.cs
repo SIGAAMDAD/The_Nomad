@@ -22,6 +22,7 @@ namespace Nomad.Game.Sdk.Traversal
         public readonly Vector3 Position;
         public readonly Vector3 Normal;
         public readonly Vector3 Up;
+        public readonly Vector3 Right;
 
         public readonly TraversalAnchorFlags Flags;
         public readonly ushort SurfaceId;
@@ -29,15 +30,6 @@ namespace Nomad.Game.Sdk.Traversal
         // Adjancency range into a flat edge array
         public readonly int FirstEdge;
         public readonly ushort EdgeCount;
-
-        public Vector3 Right
-        {
-            get
-            {
-                var right = Vector3.Cross(Up, Normal);
-                return right.LengthSquared() < 0.0001f ? Vector3.UnitX : Vector3.Normalize(right);
-            }
-        }
 
         public TraversalAnchor(
             Vector3 position,
@@ -56,6 +48,9 @@ namespace Nomad.Game.Sdk.Traversal
             SurfaceId = surfaceId;
             FirstEdge = firstEdge;
             EdgeCount = edgeCount;
+
+            Vector3 right = Vector3.Cross(Up, Normal);
+            Right = right.LengthSquared() < 0.0001f ? Vector3.UnitX : Vector3.Normalize(right);
         }
     }
 }

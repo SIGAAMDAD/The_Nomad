@@ -1,83 +1,82 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bn8rd50ur1ct6"]
 
-[node name="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG" type="Node3D"]
+[node name="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG" type="Node3D" unique_id=1029373358]
 
-[node name="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=1179631510]
 use_collision = true
 
-[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(3.0000, 2.4500, 0.1800)
-position = Vector3(0.0000, 1.2250, -0.0300)
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=35878962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.225, -0.03)
+size = Vector3(3, 2.45, 0.18)
 
-[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.1800, 2.6500, 0.2800)
-position = Vector3(-1.5900, 1.3250, 0.0000)
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=431594102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.59, 1.325, 0)
+size = Vector3(0.18, 2.65, 0.28)
 
-[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.1800, 2.6500, 0.2800)
-position = Vector3(1.5900, 1.3250, 0.0000)
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1679800581]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.59, 1.325, 0)
+size = Vector3(0.18, 2.65, 0.28)
 
-[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(3.4320, 0.1800, 0.3000)
-position = Vector3(0.0000, 2.5400, 0.0000)
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1756346737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.54, 0)
+size = Vector3(3.432, 0.18, 0.3)
 
-[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(3.2880, 0.1200, 0.3400)
-position = Vector3(0.0000, 0.0600, 0.0200)
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1450760099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
+size = Vector3(3.288, 0.12, 0.34)
 
-[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(-1.2600, 1.2250, -0.1450)
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1255237103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.26, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(-0.7560, 1.2250, -0.1450)
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=847024659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.756, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(-0.2520, 1.2250, -0.1450)
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=2143108942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.252, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(0.2520, 1.2250, -0.1450)
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1371185627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.252, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(0.7560, 1.2250, -0.1450)
+[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1711502944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.756, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0550, 2.1560, 0.0550)
-position = Vector3(1.2600, 1.2250, -0.1450)
+[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1259624677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.26, 1.225, -0.145)
+size = Vector3(0.055, 2.156, 0.055)
 
-[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.0600, 2.2050, 0.0700)
-position = Vector3(0.0000, 1.2250, -0.1800)
+[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1365205674]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.225, -0.18)
+size = Vector3(0.06, 2.205, 0.07)
 
-[node name="ShutterSlat_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(2.6400, 0.0700, 0.0600)
-position = Vector3(0.0000, 0.6125, -0.1900)
+[node name="ShutterSlat_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1531183520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6125, -0.19)
+size = Vector3(2.64, 0.07, 0.06)
 
-[node name="ShutterSlat_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(2.6400, 0.0700, 0.0600)
-position = Vector3(0.0000, 0.9800, -0.1900)
+[node name="ShutterSlat_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=2043339160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98, -0.19)
+size = Vector3(2.64, 0.07, 0.06)
 
-[node name="ShutterSlat_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(2.6400, 0.0700, 0.0600)
-position = Vector3(0.0000, 1.3475, -0.1900)
+[node name="ShutterSlat_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=388752095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3475, -0.19)
+size = Vector3(2.64, 0.07, 0.06)
 
-[node name="ShutterSlat_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(2.6400, 0.0700, 0.0600)
-position = Vector3(0.0000, 1.7150, -0.1900)
+[node name="ShutterSlat_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=316657247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.715, -0.19)
+size = Vector3(2.64, 0.07, 0.06)
 
-[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 0.6125, -0.2200)
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1446814320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 0.6125, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 1.2740, -0.2200)
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=1791972897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 1.274, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.3800, 1.9110, -0.2200)
-
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Shop_Shutter_Wide_CSG_CSG" unique_id=107152802]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.38, 1.911, -0.22)
+size = Vector3(0.16, 0.13, 0.09)

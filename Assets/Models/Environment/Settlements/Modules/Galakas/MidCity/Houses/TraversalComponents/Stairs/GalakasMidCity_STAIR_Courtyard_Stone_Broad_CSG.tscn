@@ -1,47 +1,46 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bcuthxucgtc3r"]
 
-[node name="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG" type="Node3D"]
+[node name="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG" type="Node3D" unique_id=119156961]
 
-[node name="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=717322991]
 use_collision = true
 
-[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 0.1150, 0.2500)
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=146239391]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.115, 0.25)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 0.3450, 0.7500)
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=1063723681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.345, 0.75)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 0.5750, 1.2500)
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=2132348248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, 1.25)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 0.8050, 1.7500)
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=1792887712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.805, 1.75)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 1.0350, 2.2500)
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=47403092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.035, 2.25)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 1.2650, 2.7500)
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=2145791481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.265, 2.75)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2300, 0.5000)
-position = Vector3(0.0000, 1.4950, 3.2500)
+[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=1489806215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.495, 3.25)
+size = Vector3(3, 0.23, 0.5)
 
-[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(3.0000, 0.2200, 1.6500)
-position = Vector3(0.0000, 1.6300, 4.3250)
+[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=878352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63, 4.325)
+size = Vector3(3, 0.22, 1.65)
 
-[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(0.1200, 1.8100, 5.1500)
-position = Vector3(-1.5800, 0.8050, 2.5750)
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=1347108382]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 0.805, 2.575)
+size = Vector3(0.12, 1.81, 5.15)
 
-[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG"]
-size = Vector3(0.1200, 1.8100, 5.1500)
-position = Vector3(1.5800, 0.8050, 2.5750)
-
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Courtyard_Stone_Broad_CSG_CSG" unique_id=1791176034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58, 0.805, 2.575)
+size = Vector3(0.12, 1.81, 5.15)

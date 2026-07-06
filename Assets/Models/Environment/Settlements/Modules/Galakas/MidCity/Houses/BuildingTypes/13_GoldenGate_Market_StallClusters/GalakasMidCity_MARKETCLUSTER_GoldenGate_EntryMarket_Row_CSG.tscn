@@ -1,4 +1,5 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cdwkdthuu1ld3"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_ProduceCrateStall_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_BreadTableStall_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_WaterCaskStall_CSG.tscn" id="3"]
@@ -8,29 +9,28 @@
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_WeaponRackStall_CSG.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_TaxTokenCounter_CSG.tscn" id="8"]
 
-[node name="GalakasMidCity_MARKETCLUSTER_GoldenGate_EntryMarket_Row_CSG" type="Node3D"]
+[node name="GalakasMidCity_MARKETCLUSTER_GoldenGate_EntryMarket_Row_CSG" type="Node3D" unique_id=67424560]
 
-[node name="Stall_01_ProduceCrateStall" parent="." instance=ExtResource("1")]
-position = Vector3(-15.4000, 0.0000, 0.0000)
+[node name="Stall_01_ProduceCrateStall" parent="." unique_id=1780062147 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.4, 0, 0)
 
-[node name="Stall_02_BreadTableStall" parent="." instance=ExtResource("2")]
-position = Vector3(-11.0000, 0.0000, 0.0000)
+[node name="Stall_02_BreadTableStall" parent="." unique_id=1310210628 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 0, 0)
 
-[node name="Stall_03_WaterCaskStall" parent="." instance=ExtResource("3")]
-position = Vector3(-6.6000, 0.0000, 0.0000)
+[node name="Stall_03_WaterCaskStall" parent="." unique_id=451841120 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 0, 0)
 
-[node name="Stall_04_ContractNoticeStall" parent="." instance=ExtResource("4")]
-position = Vector3(-2.2000, 0.0000, 0.0000)
+[node name="Stall_04_ContractNoticeStall" parent="." unique_id=1146141058 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0, 0)
 
-[node name="Stall_05_SpiceTrayStall" parent="." instance=ExtResource("5")]
-position = Vector3(2.2000, 0.0000, 0.0000)
+[node name="Stall_05_SpiceTrayStall" parent="." unique_id=842917914 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0, 0)
 
-[node name="Stall_06_ClothRollStall" parent="." instance=ExtResource("6")]
-position = Vector3(6.6000, 0.0000, 0.0000)
+[node name="Stall_06_ClothRollStall" parent="." unique_id=1251222197 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 0, 0)
 
-[node name="Stall_07_WeaponRackStall" parent="." instance=ExtResource("7")]
-position = Vector3(11.0000, 0.0000, 0.0000)
+[node name="Stall_07_WeaponRackStall" parent="." unique_id=1697550506 instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 0)
 
-[node name="Stall_08_TaxTokenCounter" parent="." instance=ExtResource("8")]
-position = Vector3(15.4000, 0.0000, 0.0000)
-
+[node name="Stall_08_TaxTokenCounter" parent="." unique_id=1752735117 instance=ExtResource("8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.4, 0, 0)

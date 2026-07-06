@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b661kdn24rtwn"
+
+[deps]
+
+files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.file.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.footprint.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.access.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.placement.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.description.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.components.translation"]
+
+source_file="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.csv"
+dest_files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.file.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.footprint.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.access.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.placement.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.description.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/00_INDEX_AND_GUIDES/BuildingType_Manifest.components.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

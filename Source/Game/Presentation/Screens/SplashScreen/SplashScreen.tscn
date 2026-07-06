@@ -1,0 +1,200 @@
+[gd_scene format=3 uid="uid://lo18vwcn05qx"]
+
+[ext_resource type="Shader" uid="uid://dxjv16nnkg0c" path="res://Assets/Shaders/MenuFade.gdshader" id="1_mkkvq"]
+[ext_resource type="Shader" uid="uid://162d0sfslhhk" path="res://Assets/Shaders/SplashScreenLogosFade.gdshader" id="2_5ao4a"]
+[ext_resource type="Script" uid="uid://i0tua6csxk8b" path="res://Assets/Prefabs/SplashScreen/SplashScreen.cs" id="2_gxtmw"]
+[ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="2_mkkvq"]
+[ext_resource type="Texture2D" uid="uid://boqhrse1rtiog" path="res://Assets/Textures/Logos/Godot mascot with rapier logo.png" id="3_5ao4a"]
+[ext_resource type="Texture2D" uid="uid://bkujojv3i03dm" path="res://Assets/Textures/Logos/FMOD Logo White - Transparent Background.png" id="4_2ybxc"]
+[ext_resource type="Texture2D" uid="uid://btp5520673kjn" path="res://Assets/Textures/Logos/NomadFramework.png" id="6_2ybxc"]
+[ext_resource type="Texture2D" uid="uid://hotdm5yds6gu" path="res://Assets/Textures/Logos/GodotLogo.png" id="6_5ao4a"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ejb01"]
+frequency = 0.51
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ekkg8"]
+noise = SubResource("FastNoiseLite_ejb01")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gxtmw"]
+resource_local_to_scene = true
+shader = ExtResource("1_mkkvq")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_ekkg8")
+shader_parameter/progress = 1.0
+shader_parameter/scale = 17.955
+shader_parameter/edge_softness = 0.050000002375
+shader_parameter/drift_strength = 0.25
+shader_parameter/ember_strength = 0.5
+shader_parameter/dust_opacity = 0.490000023275
+shader_parameter/wind_dir = Vector2(1, -0.25)
+shader_parameter/dust_color = Color(0.82, 0.68, 0.45, 1)
+shader_parameter/ember_color = Color(1, 0.42, 0.1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mkkvq"]
+shader = ExtResource("2_5ao4a")
+shader_parameter/progress = 0.0
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/aspect = 1.538
+shader_parameter/edge_width = 0.0010000000475
+shader_parameter/distortion_strength = 0.015
+shader_parameter/noise_scale = 28.0
+shader_parameter/burn_color = Color(1, 0.45, 0.08, 1)
+shader_parameter/ember_color = Color(1, 0.85, 0.35, 1)
+shader_parameter/char_color = Color(0.06, 0.02, 0.01, 1)
+shader_parameter/pixelate_heat = false
+shader_parameter/virtual_resolution = Vector2(800, 600)
+shader_parameter/time_scale = 4.00000019
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ao4a"]
+viewport_path = NodePath("SubViewport")
+
+[node name="SplashScreen" type="Control" unique_id=1253664552]
+texture_filter = 2
+material = SubResource("ShaderMaterial_gxtmw")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_gxtmw")
+metadata/_edit_use_anchors_ = true
+
+[node name="Timer" type="Timer" parent="." unique_id=850161156]
+wait_time = 2.0
+one_shot = true
+
+[node name="EpilepsyWarning" type="Label" parent="." unique_id=914685969]
+visible = false
+use_parent_material = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.041
+anchor_top = 0.372
+anchor_right = 0.95900005
+anchor_bottom = 0.62700003
+offset_left = -0.29999924
+offset_top = 0.2999878
+offset_right = 0.2999878
+offset_bottom = 0.2999878
+grow_horizontal = 2
+grow_vertical = 2
+text = "Photosensitivity Warning: This game contains flashing lights, rapid visual effects, and high-contrast patterns that may trigger seizures or discomfort in some people. If you or anyone in your family has a history of seizures, epilepsy, migraines, or sensitivity to flashing lights, use caution before playing. Stop playing immediately and consult a doctor if you experience dizziness, altered vision, eye or muscle twitching, disorientation, or any involuntary movements."
+horizontal_alignment = 1
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="GodotLogo" type="TextureRect" parent="." unique_id=82550544]
+material = ExtResource("2_mkkvq")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.09200001
+anchor_top = 0.22666667
+anchor_right = 0.90599996
+anchor_bottom = 0.71466666
+offset_left = 0.3999939
+offset_right = 0.2000122
+offset_bottom = 0.19998169
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_5ao4a")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ThirdPartyLogos" type="TextureRect" parent="." unique_id=68675603]
+material = SubResource("ShaderMaterial_mkkvq")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_5ao4a")
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=272311378]
+size = Vector2i(800, 600)
+render_target_update_mode = 4
+
+[node name="BuiltWithLabel" type="Label" parent="SubViewport" unique_id=634043539]
+anchors_preset = -1
+anchor_left = 0.44125003
+anchor_top = 0.25500003
+anchor_right = 0.55525
+anchor_bottom = 0.293
+offset_left = -3.0517578e-05
+offset_top = -1.5258789e-05
+offset_right = -0.19998169
+offset_bottom = 0.19999695
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "BUILT WITH"
+metadata/_edit_use_anchors_ = true
+
+[node name="Rapier2DLogo" type="TextureRect" parent="SubViewport" unique_id=656898179]
+anchors_preset = -1
+anchor_left = -0.13299999
+anchor_top = 0.19200005
+anchor_right = 0.49575004
+anchor_bottom = 0.72800004
+offset_left = 0.3999939
+offset_top = -0.2000122
+offset_right = -0.100097656
+offset_bottom = 0.19998169
+texture = ExtResource("3_5ao4a")
+expand_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="FMODLogo" type="TextureRect" parent="SubViewport" unique_id=84212596]
+custom_minimum_size = Vector2(272, 72)
+anchors_preset = -1
+anchor_left = 0.33250004
+anchor_top = 0.407
+anchor_right = 0.6725001
+anchor_bottom = 0.527
+offset_left = -3.0517578e-05
+offset_top = -0.19999695
+offset_right = -6.1035156e-05
+offset_bottom = -0.2000122
+texture = ExtResource("4_2ybxc")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="NomadFrameworkLogo" type="TextureRect" parent="SubViewport" unique_id=2068582487]
+anchors_preset = -1
+anchor_left = 0.69150007
+anchor_top = 0.2963333
+anchor_right = 0.9402501
+anchor_bottom = 0.56616676
+offset_left = -0.20007324
+offset_top = 0.2000122
+offset_right = -0.20007324
+offset_bottom = 0.29995728
+texture = ExtResource("6_2ybxc")
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="NomadFrameworkAttribution" type="Label" parent="SubViewport" unique_id=776022294]
+anchors_preset = -1
+anchor_top = 0.83500004
+anchor_right = 1.0
+anchor_bottom = 0.873
+offset_top = -3.0517578e-05
+offset_bottom = 0.2000122
+grow_horizontal = 2
+grow_vertical = 0
+text = "Made using NomadFramework by GDR Software"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="FMODAttribution" type="Label" parent="SubViewport" unique_id=993428563]
+anchors_preset = -1
+anchor_top = 0.873
+anchor_right = 1.0
+anchor_bottom = 0.91200006
+offset_top = 0.2000122
+offset_bottom = -0.2000122
+grow_horizontal = 2
+grow_vertical = 0
+text = "Made using FMOD Studio by Firelight Technologies Pty Ltd."
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

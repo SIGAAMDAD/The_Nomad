@@ -32,7 +32,7 @@ using Nomad.Game.Presentation.UserInterface.HeadsUpDisplay.Components.Crosshair;
 using Nomad.Game.Sdk.Player.Inventory;
 using Nomad.Core.CVars;
 using Nomad.CVars;
-using Nomad.Game.Application.Gameplay;
+using Nomad.Game.Gameplay;
 
 namespace Nomad.Game.Presentation.UserInterface.HeadsUpDisplay
 {

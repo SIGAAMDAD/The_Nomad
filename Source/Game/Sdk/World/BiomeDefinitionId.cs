@@ -2,22 +2,21 @@
 ===========================================================================
 The Nomad MPLv2 Source Code
 Copyright (C) 2025-2026 Noah Van Til
-
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v2. If a copy of the MPL was not distributed with this
-file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
-This software is provided "as is", without warranty of any kind,
-express or implied, including but not limited to the warranties
-of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Nomad.Core.Util;
+using Nomad.Game.Sdk.Biomes;
 
 namespace Nomad.Game.Sdk.World
 {
+    /// <summary>
+    /// Compatibility identifier. Biome definitions now live in Nomad.Game.Sdk.Biomes.
+    /// </summary>
+    [Obsolete("Use Nomad.Game.Sdk.Biomes.BiomeDefinitionId.")]
     public readonly struct BiomeDefinitionId
     {
         public static readonly BiomeDefinitionId Invalid = new BiomeDefinitionId(InternString.Empty);
@@ -26,44 +25,64 @@ namespace Nomad.Game.Sdk.World
 
         public readonly InternString Value;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BiomeDefinitionId(InternString value)
         {
             Value = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public BiomeDefinitionId(Nomad.Game.Sdk.Biomes.BiomeDefinitionId biomeId)
+        {
+            Value = biomeId.Value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             return obj is BiomeDefinitionId other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return Value.ToString();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(BiomeDefinitionId other)
         {
             return other.Value == Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Nomad.Game.Sdk.Biomes.BiomeDefinitionId ToBiomeDefinitionId()
+        {
+            return new Nomad.Game.Sdk.Biomes.BiomeDefinitionId(Value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator InternString(BiomeDefinitionId value)
         {
             return value.Value;
         }
 
-        public static bool operator ==(BiomeDefinitionId left, BiomeDefinitionId right)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Nomad.Game.Sdk.Biomes.BiomeDefinitionId(BiomeDefinitionId value)
         {
-            return left.Equals(right);
+            return new Nomad.Game.Sdk.Biomes.BiomeDefinitionId(value.Value);
         }
 
-        public static bool operator !=(BiomeDefinitionId left, BiomeDefinitionId right)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator BiomeDefinitionId(Nomad.Game.Sdk.Biomes.BiomeDefinitionId value)
         {
-            return !left.Equals(right);
+            return new BiomeDefinitionId(value.Value);
         }
     }
 }

@@ -1,34 +1,33 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://b3finso10vym3"]
 
-[ext_resource type="Material" path="../Materials/VineLeafMaterial.tres" id="vine"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/VineLeafMaterial.tres" id="vine"]
 
 [sub_resource type="PlaneMesh" id="Plane"]
 size = Vector2(1, 1)
 
-[node name="Vine_CreepingPatch" type="Node3D"]
+[node name="Vine_CreepingPatch" type="Node3D" unique_id=148300842]
 
-[node name="GroundVine_01" type="MeshInstance3D" parent="."]
+[node name="GroundVine_01" type="MeshInstance3D" parent="." unique_id=2052638220]
 transform = Transform3D(-0.356014, 0, 0.498079, 0, 1, 0, -0.225802, 0, -0.785304, 0.371337, 0.015, 0.111316)
 mesh = SubResource("Plane")
 surface_material_override/0 = ExtResource("vine")
 
-[node name="GroundVine_02" type="MeshInstance3D" parent="."]
+[node name="GroundVine_02" type="MeshInstance3D" parent="." unique_id=1178829508]
 transform = Transform3D(-0.0373916, 0, -1.17155, 0, 1, 0, 0.519046, 0, -0.0843972, -0.163383, 0.015, -0.179082)
 mesh = SubResource("Plane")
 surface_material_override/0 = ExtResource("vine")
 
-[node name="GroundVine_03" type="MeshInstance3D" parent="."]
+[node name="GroundVine_03" type="MeshInstance3D" parent="." unique_id=1284886236]
 transform = Transform3D(-0.438865, 0, -0.255806, 0, 1, 0, 0.129005, 0, -0.870233, 0.331333, 0.015, -0.00461042)
 mesh = SubResource("Plane")
 surface_material_override/0 = ExtResource("vine")
 
-[node name="GroundVine_04" type="MeshInstance3D" parent="."]
+[node name="GroundVine_04" type="MeshInstance3D" parent="." unique_id=312761766]
 transform = Transform3D(0.00254141, 0, -0.871654, 0, 1, 0, 0.373113, 0, 0.00593716, -0.301432, 0.015, -0.340985)
 mesh = SubResource("Plane")
 surface_material_override/0 = ExtResource("vine")
 
-[node name="GroundVine_05" type="MeshInstance3D" parent="."]
+[node name="GroundVine_05" type="MeshInstance3D" parent="." unique_id=1923741785]
 transform = Transform3D(0.46823, 0, 0.503341, 0, 1, 0, -0.249592, 0, 0.94426, -0.443613, 0.015, -0.248528)
 mesh = SubResource("Plane")
 surface_material_override/0 = ExtResource("vine")
-

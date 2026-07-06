@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dm3j27e4exs8n"]
 
-[ext_resource type="Script" uid="uid://5xrat8u4pg4c" path="res://addons/traversal_baker/Authoring/TraversalLedgeStrip3D.cs" id="1_na6pr"]
+[ext_resource type="Script" uid="uid://bl3amfuoqbx3s" path="res://addons/traversal_baker/Authoring/TraversalLedgeStrip3D.cs" id="1_na6pr"]
 
 [node name="GalakasMidCity_TRAV_CrossBuilding_BrokenPlankGap_L06_CSG" type="Node3D" unique_id=1140858600]
 

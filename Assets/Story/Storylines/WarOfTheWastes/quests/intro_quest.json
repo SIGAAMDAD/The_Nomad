@@ -1,0 +1,19 @@
+{
+	"description": "",
+	"id": "INTRO_QUEST",
+	"name": "Intro Quest",
+	"questTree": {
+		"_editor": {
+			"positions": {},
+			"version": 3
+		},
+		"conditions": [],
+		"edges": [],
+		"entryNodes": [],
+		"entryQuests": [],
+		"nodes": [],
+		"questId": "INTRO_QUEST",
+		"storylineId": "STORYLINE_WAR_OF_THE_WASTES"
+	},
+	"storylineId": "STORYLINE_WAR_OF_THE_WASTES"
+}

@@ -1,27 +1,26 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://7ry6ppxbi7og"]
 
-[node name="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG" type="Node3D"]
+[node name="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG" type="Node3D" unique_id=174033637]
 
-[node name="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=1353648240]
 use_collision = true
 
-[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2800, 0.3800)
-position = Vector3(0.0000, 0.1400, 0.1900)
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" unique_id=379399129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0.19)
+size = Vector3(1.35, 0.28, 0.38)
 
-[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2800, 0.3800)
-position = Vector3(0.0000, 0.4200, 0.5700)
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" unique_id=352429255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.57)
+size = Vector3(1.35, 0.28, 0.38)
 
-[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2800, 0.3800)
-position = Vector3(0.0000, 0.7000, 0.9500)
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" unique_id=96409280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.95)
+size = Vector3(1.35, 0.28, 0.38)
 
-[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2800, 0.3800)
-position = Vector3(0.0000, 0.9800, 1.3300)
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" unique_id=1686503659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98, 1.33)
+size = Vector3(1.35, 0.28, 0.38)
 
-[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2800, 0.3800)
-position = Vector3(0.0000, 1.2600, 1.7100)
-
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Backlane_Rough_5Step_CSG_CSG" unique_id=1485446215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26, 1.71)
+size = Vector3(1.35, 0.28, 0.38)

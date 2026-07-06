@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://xkghavev18ri"]
 
-[ext_resource type="Shader" uid="uid://cw145nm1tq7xr" path="res://Assets/Prefabs/PostProcessing/Upscaling/Upscaling.gdshader" id="1_37bgu"]
+[ext_resource type="Shader" uid="uid://njm4skdbiufi" path="res://Assets/Prefabs/PostProcessing/Upscaling/Upscaling.gdshader" id="1_37bgu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_w1cjw"]
 shader = ExtResource("1_37bgu")

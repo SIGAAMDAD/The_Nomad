@@ -14,7 +14,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Collections.Generic;
-using Nomad.Game.Sdk.Renown;
+using Nomad.Game.Sdk.Renown.Faction;
+using Nomad.Game.Sdk.Renown.Contract;
 
 namespace Nomad.Game.Sdk.Npc
 {

@@ -13,6 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System.Text.Json;
+using Nomad.Core.Util;
 using Nomad.Game.Sdk.Items;
 
 namespace Nomad.Game.Sdk.Crafting

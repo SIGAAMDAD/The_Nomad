@@ -1,34 +1,30 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://blk864kvvrgaa"]
 
-[node name="GalakasMidCity_INT_ClothHall_W10D24_CSG" type="Node3D"]
+[node name="GalakasMidCity_INT_ClothHall_W10D24_CSG" type="Node3D" unique_id=661722538]
 
-[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Interior_CSG" type="CSGCombiner3D" parent="." unique_id=622892728]
 use_collision = true
 
-[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(11.6000, 0.8600, 0.5000)
-position = Vector3(0.0000, 0.6600, 4.3200)
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG" unique_id=2110185569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 4.32)
+size = Vector3(11.6, 0.86, 0.5)
 
-[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(14.0000, 1.4500, 0.1800)
-position = Vector3(0.0000, 1.3000, 14.8800)
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG" unique_id=275785620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 14.88)
+size = Vector3(14, 1.45, 0.18)
 
-[node name="Loom_Blockout" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(9.2000, 1.1500, 0.9000)
-position = Vector3(-3.6000, 0.8500, -1.2000)
+[node name="Loom_Blockout" type="CSGBox3D" parent="Interior_CSG" unique_id=1019027328]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0.85, -1.2)
+size = Vector3(9.2, 1.15, 0.9)
 
-[node name="ClothBolt_Interior_00" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.2400, 0.2400, 13.2000)
-position = Vector3(-5.6000, 1.0800, 5.2800)
-rotation = Vector3(0.000000, 0.000000, 0.000000)
+[node name="ClothBolt_Interior_00" type="CSGBox3D" parent="Interior_CSG" unique_id=189770906]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6, 1.08, 5.28)
+size = Vector3(0.24, 0.24, 13.2)
 
-[node name="ClothBolt_Interior_01" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.2400, 0.2400, 13.2000)
-position = Vector3(0.0000, 1.0800, 5.2800)
-rotation = Vector3(0.000000, 0.000000, 0.040000)
+[node name="ClothBolt_Interior_01" type="CSGBox3D" parent="Interior_CSG" unique_id=1407393468]
+transform = Transform3D(0.9992001, -0.039989334, 0, 0.039989334, 0.9992001, 0, 0, 0, 1, 0, 1.08, 5.28)
+size = Vector3(0.24, 0.24, 13.2)
 
-[node name="ClothBolt_Interior_02" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.2400, 0.2400, 13.2000)
-position = Vector3(5.6000, 1.0800, 5.2800)
-rotation = Vector3(0.000000, 0.000000, 0.080000)
-
+[node name="ClothBolt_Interior_02" type="CSGBox3D" parent="Interior_CSG" unique_id=483856723]
+transform = Transform3D(0.99680173, -0.07991469, 0, 0.07991469, 0.99680173, 0, 0, 0, 1, 5.6, 1.08, 5.28)
+size = Vector3(0.24, 0.24, 13.2)

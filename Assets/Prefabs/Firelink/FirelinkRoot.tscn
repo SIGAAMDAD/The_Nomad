@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d4tlkrbrhhqx"]
 
-[ext_resource type="Script" uid="uid://jhp1udwhs6rt" path="res://Assets/Prefabs/Firelink/TempCheckpointPrefab.cs" id="1_h7wov"]
+[ext_resource type="Script" uid="uid://cu3sqgtn2n5n1" path="res://Assets/Prefabs/Firelink/TempCheckpointPrefab.cs" id="1_h7wov"]
 [ext_resource type="SpriteFrames" uid="uid://b0aq8a35kuldq" path="res://Assets/Animations/Environment/Firelink.tres" id="2_anmak"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c7viu"]

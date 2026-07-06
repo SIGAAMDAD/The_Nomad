@@ -1,47 +1,46 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://byeebijgoasbb"]
 
-[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG" type="Node3D"]
+[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG" type="Node3D" unique_id=1149440215]
 
-[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=160292461]
 use_collision = true
 
-[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 0.1500, 0.1700)
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1334588816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.17)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 0.4500, 0.5100)
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1238553169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.51)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 0.7500, 0.8500)
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1426275312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0.85)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 1.0500, 1.1900)
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1992016539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 1.19)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 1.3500, 1.5300)
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1900317676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 1.53)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 1.6500, 1.8700)
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1408801371]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 1.87)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 1.9500, 2.2100)
+[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1800100239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 2.21)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(1.0500, 0.3000, 0.3400)
-position = Vector3(0.0000, 2.2500, 2.5500)
+[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1830555695]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 2.55)
+size = Vector3(1.05, 0.3, 0.34)
 
-[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(0.1200, 2.6000, 2.7200)
-position = Vector3(-0.6050, 1.2000, 1.3600)
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1296985410]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.605, 1.2, 1.36)
+size = Vector3(0.12, 2.6, 2.72)
 
-[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG"]
-size = Vector3(0.1200, 2.6000, 2.7200)
-position = Vector3(0.6050, 1.2000, 1.3600)
-
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_Alley_Steep_8Step_CSG_CSG" unique_id=1625207482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.605, 1.2, 1.36)
+size = Vector3(0.12, 2.6, 2.72)

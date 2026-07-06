@@ -20,13 +20,13 @@ namespace Nomad.Game.Sdk.Renown.Contract
 {
     public readonly struct ContractInstanceId
     {
-        public static readonly ContractInstanceId Invalid = new ContractInstanceId(Guid.Empty);
+        public static readonly ContractInstanceId Invalid = new ContractInstanceId(-1);
 
-        public bool IsValid => Value != Guid.Empty;
+        public bool IsValid => Value != -1;
 
-        public readonly Guid Value;
+        public readonly int Value;
 
-        public ContractInstanceId(Guid value)
+        public ContractInstanceId(int value)
         {
             Value = value;
         }
@@ -51,7 +51,7 @@ namespace Nomad.Game.Sdk.Renown.Contract
             return other.Value == Value;
         }
 
-        public static implicit operator Guid(ContractInstanceId value)
+        public static implicit operator int(ContractInstanceId value)
         {
             return value.Value;
         }

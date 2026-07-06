@@ -1,80 +1,78 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c2m4b17afqfoj"]
 
-[node name="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG" type="Node3D"]
+[node name="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG" type="Node3D" unique_id=858361602]
 
-[node name="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=1642792014]
 use_collision = true
 
-[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(3.4000, 2.2000, 0.1800)
-position = Vector3(0.0000, 1.1000, -0.0300)
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=447055836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.03)
+size = Vector3(3.4, 2.2, 0.18)
 
-[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.1800, 2.4000, 0.2800)
-position = Vector3(-1.7900, 1.2000, 0.0000)
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=833713798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.79, 1.2, 0)
+size = Vector3(0.18, 2.4, 0.28)
 
-[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.1800, 2.4000, 0.2800)
-position = Vector3(1.7900, 1.2000, 0.0000)
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1692987118]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.79, 1.2, 0)
+size = Vector3(0.18, 2.4, 0.28)
 
-[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(3.8320, 0.1800, 0.3000)
-position = Vector3(0.0000, 2.2900, 0.0000)
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=2067470551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29, 0)
+size = Vector3(3.832, 0.18, 0.3)
 
-[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(3.6880, 0.1200, 0.3400)
-position = Vector3(0.0000, 0.0600, 0.0200)
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=446509781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
+size = Vector3(3.688, 0.12, 0.34)
 
-[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(-1.4280, 1.1000, -0.1450)
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1119984836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.428, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(-0.8568, 1.1000, -0.1450)
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1564415530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8568, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(-0.2856, 1.1000, -0.1450)
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=529357554]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2856, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(0.2856, 1.1000, -0.1450)
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1319801132]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2856, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(0.8568, 1.1000, -0.1450)
+[node name="VerticalPlank_05" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=2113777130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8568, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0550, 1.9360, 0.0550)
-position = Vector3(1.4280, 1.1000, -0.1450)
+[node name="VerticalPlank_06" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1916253938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.428, 1.1, -0.145)
+size = Vector3(0.055, 1.936, 0.055)
 
-[node name="Brace_Horizontal_Lower" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(2.9240, 0.1200, 0.0800)
-position = Vector3(0.0000, 0.7480, -0.1600)
+[node name="Brace_Horizontal_Lower" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1532935819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.748, -0.16)
+size = Vector3(2.924, 0.12, 0.08)
 
-[node name="Brace_Horizontal_Upper" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(2.9240, 0.1200, 0.0800)
-position = Vector3(0.0000, 1.4960, -0.1600)
+[node name="Brace_Horizontal_Upper" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1145212141]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.496, -0.16)
+size = Vector3(2.924, 0.12, 0.08)
 
-[node name="Brace_Diagonal" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(2.9059, 0.1200, 0.0800)
-position = Vector3(0.0000, 1.1440, -0.1800)
-rotation = Vector3(0.000000, 0.000000, 0.421159)
+[node name="Brace_Diagonal" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=696707186]
+transform = Transform3D(0.9126157, -0.40881845, 0, 0.40881845, 0.9126157, 0, 0, 0, 1, 0, 1.144, -0.18)
+size = Vector3(2.9059, 0.12, 0.08)
 
-[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.0600, 1.9800, 0.0700)
-position = Vector3(0.0000, 1.1000, -0.1800)
+[node name="CenterSeam" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=347110327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.18)
+size = Vector3(0.06, 1.98, 0.07)
 
-[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.5800, 0.5500, -0.2200)
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=723237321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 0.55, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.5800, 1.1440, -0.2200)
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=556951035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 1.144, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-1.5800, 1.7160, -0.2200)
-
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_Loading_Bay_LowWide_CSG_CSG" unique_id=1052821068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 1.716, -0.22)
+size = Vector3(0.16, 0.13, 0.09)

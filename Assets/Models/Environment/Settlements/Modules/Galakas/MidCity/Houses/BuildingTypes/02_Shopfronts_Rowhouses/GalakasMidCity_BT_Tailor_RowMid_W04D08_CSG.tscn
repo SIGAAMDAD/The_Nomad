@@ -1,18 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://3b32plocwc1s"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W05D16_Stone_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W05D16_TailorDisplayLower_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W05D16_TailorBannerLoft_CSG.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W05D16_DormerArcadeLong_CSG.tscn" id="4"]
 
-[node name="GalakasMidCity_BT_Tailor_RowMid_W04D08_CSG" type="Node3D"]
+[node name="GalakasMidCity_BT_Tailor_RowMid_W04D08_CSG" type="Node3D" unique_id=1166680556]
 
-[node name="Foundation" parent="." instance=ExtResource("1")]
-[node name="LowerModule" parent="." instance=ExtResource("2")]
-position = Vector3(0.0000, 0.6000, 0.0000)
+[node name="Foundation" parent="." unique_id=973925696 instance=ExtResource("1")]
 
-[node name="UpperModule_01" parent="." instance=ExtResource("3")]
-position = Vector3(0.0000, 5.4000, 0.0000)
+[node name="LowerModule" parent="." unique_id=2083802380 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="Roof" parent="." instance=ExtResource("4")]
-position = Vector3(0.0000, 9.6000, 0.0000)
+[node name="UpperModule_01" parent="." unique_id=580585019 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 0)
 
+[node name="Roof" parent="." unique_id=445595352 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.6, 0)

@@ -1,66 +1,58 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://eeg8dwyrjljb"]
 
-[node name="GalakasMidCity_ROOF_W16D16_DormerArcadeLong_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W16D16_DormerArcadeLong_CSG" type="Node3D" unique_id=2136271687]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=717737483]
 use_collision = true
 
-[node name="MainPlane_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(33.2000, 0.3000, 19.0156)
-position = Vector3(0.0000, 4.5583, -8.3000)
-rotation = Vector3(-0.500000, 0.000000, 0.000000)
+[node name="MainPlane_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=1927765282]
+transform = Transform3D(1, 0, 0, 0, 0.87758255, 0.47942555, 0, -0.47942555, 0.87758255, 0, 4.5583, -8.3)
+size = Vector3(33.2, 0.3, 19.0156)
 
-[node name="MainPlane_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(33.2000, 0.3000, 19.0156)
-position = Vector3(0.0000, 4.5583, 8.3000)
-rotation = Vector3(0.500000, 0.000000, 0.000000)
+[node name="MainPlane_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=1122460759]
+transform = Transform3D(1, 0, 0, 0, 0.87758255, -0.47942555, 0, 0.47942555, 0.87758255, 0, 4.5583, 8.3)
+size = Vector3(33.2, 0.3, 19.0156)
 
-[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(33.3000, 0.1800, 0.2600)
-position = Vector3(0.0000, 9.1166, 0.0000)
+[node name="RidgeCap" type="CSGBox3D" parent="Roof_CSG" unique_id=97857481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.1166, 0)
+size = Vector3(33.3, 0.18, 0.26)
 
-[node name="DormerBox_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.7000, 0.9000)
-position = Vector3(-11.9520, 4.7583, -5.9760)
+[node name="DormerBox_00" type="CSGBox3D" parent="Roof_CSG" unique_id=1057765092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.952, 4.7583, -5.976)
+size = Vector3(1.05, 0.7, 0.9)
 
-[node name="DormerCap_00" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.2500, 0.2000, 1.0500)
-position = Vector3(-11.9520, 5.1783, -5.9760)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
+[node name="DormerCap_00" type="CSGBox3D" parent="Roof_CSG" unique_id=1216823583]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, -11.952, 5.1783, -5.976)
+size = Vector3(1.25, 0.2, 1.05)
 
-[node name="DormerBox_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.7000, 0.9000)
-position = Vector3(-5.9760, 4.7583, -5.9760)
+[node name="DormerBox_01" type="CSGBox3D" parent="Roof_CSG" unique_id=477640808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.976, 4.7583, -5.976)
+size = Vector3(1.05, 0.7, 0.9)
 
-[node name="DormerCap_01" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.2500, 0.2000, 1.0500)
-position = Vector3(-5.9760, 5.1783, -5.9760)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
+[node name="DormerCap_01" type="CSGBox3D" parent="Roof_CSG" unique_id=1589065725]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, -5.976, 5.1783, -5.976)
+size = Vector3(1.25, 0.2, 1.05)
 
-[node name="DormerBox_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.7000, 0.9000)
-position = Vector3(0.0000, 4.7583, -5.9760)
+[node name="DormerBox_02" type="CSGBox3D" parent="Roof_CSG" unique_id=2109886956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.7583, -5.976)
+size = Vector3(1.05, 0.7, 0.9)
 
-[node name="DormerCap_02" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.2500, 0.2000, 1.0500)
-position = Vector3(0.0000, 5.1783, -5.9760)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
+[node name="DormerCap_02" type="CSGBox3D" parent="Roof_CSG" unique_id=981202877]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 0, 5.1783, -5.976)
+size = Vector3(1.25, 0.2, 1.05)
 
-[node name="DormerBox_03" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.7000, 0.9000)
-position = Vector3(5.9760, 4.7583, -5.9760)
+[node name="DormerBox_03" type="CSGBox3D" parent="Roof_CSG" unique_id=1660303894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.976, 4.7583, -5.976)
+size = Vector3(1.05, 0.7, 0.9)
 
-[node name="DormerCap_03" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.2500, 0.2000, 1.0500)
-position = Vector3(5.9760, 5.1783, -5.9760)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
+[node name="DormerCap_03" type="CSGBox3D" parent="Roof_CSG" unique_id=1303080960]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 5.976, 5.1783, -5.976)
+size = Vector3(1.25, 0.2, 1.05)
 
-[node name="DormerBox_04" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.0500, 0.7000, 0.9000)
-position = Vector3(11.9520, 4.7583, -5.9760)
+[node name="DormerBox_04" type="CSGBox3D" parent="Roof_CSG" unique_id=155510180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.952, 4.7583, -5.976)
+size = Vector3(1.05, 0.7, 0.9)
 
-[node name="DormerCap_04" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(1.2500, 0.2000, 1.0500)
-position = Vector3(11.9520, 5.1783, -5.9760)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
-
+[node name="DormerCap_04" type="CSGBox3D" parent="Roof_CSG" unique_id=663567984]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 11.952, 5.1783, -5.976)
+size = Vector3(1.25, 0.2, 1.05)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ck7x5oonahx26"]
 
-[ext_resource type="Script" uid="uid://c4g2qfbmha1jg" path="res://Assets/Prefabs/ConfirmationDialogue/ConfirmationDialogue.cs" id="1_td7wb"]
+[ext_resource type="Script" uid="uid://ce737ccdoowir" path="res://Assets/Prefabs/ConfirmationDialogue/ConfirmationDialogue.cs" id="1_td7wb"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="1_ysjad"]
 
 [node name="ConfirmationDialogue" type="MarginContainer" unique_id=1996574600]

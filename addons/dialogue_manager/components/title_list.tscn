@@ -18,7 +18,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="TitleList" type="VBoxContainer" unique_id=392389793]
+[node name="TitleList" type="VBoxContainer" unique_id=102319169]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,13 +28,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_5qqmd")
 
-[node name="FilterEdit" type="LineEdit" parent="." unique_id=1983144368]
+[node name="FilterEdit" type="LineEdit" parent="." unique_id=1692603918]
 layout_mode = 2
 placeholder_text = "Filter titles"
 clear_button_enabled = true
 right_icon = SubResource("DPITexture_w0gko")
 
-[node name="List" type="ItemList" parent="." unique_id=854968622]
+[node name="List" type="ItemList" parent="." unique_id=1386753822]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_d1e6u")

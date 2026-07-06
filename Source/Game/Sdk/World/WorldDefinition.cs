@@ -13,8 +13,10 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
 using Nomad.Core.Util;
+using Nomad.Game.Sdk.Biomes;
 
 namespace Nomad.Game.Sdk.World
 {
@@ -28,7 +30,11 @@ namespace Nomad.Game.Sdk.World
         public WorldTime StartTime { get; init; }
 
         public CalendarDefinition Calendar { get; init; }
-        public IReadOnlyDictionary<SeasonDefinitionId, SeasonDefinition> Seasons { get; init; }
-        public IReadOnlyList<BiomeDefinition> Biomes { get; init; }
+
+        public IReadOnlyList<SeasonDefinition> Seasons { get; init; }
+            = Array.Empty<SeasonDefinition>();
+
+        public IReadOnlyList<Nomad.Game.Sdk.Biomes.BiomeDefinition> Biomes { get; init; }
+            = Array.Empty<Nomad.Game.Sdk.Biomes.BiomeDefinition>();
     }
 }

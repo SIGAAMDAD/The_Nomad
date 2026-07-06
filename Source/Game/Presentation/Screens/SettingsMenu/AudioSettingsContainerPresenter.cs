@@ -40,6 +40,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 			_view = view ?? throw new ArgumentNullException( nameof( view ) );
 			_model = model ?? throw new ArgumentNullException( nameof( model ) );
 
+			_view.MasterVolumeChanged += _model.SetMasterVolume;
 			_view.MusicVolumeChanged += _model.SetMusicVolume;
 			_view.MusicOnChanged += _model.SetMusicOn;
 			_view.EffectsVolumeChanged += _model.SetEffectsVolume;
@@ -56,6 +57,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 				return;
 			}
 
+			_view.MasterVolumeChanged -= _model.SetMasterVolume;
 			_view.MusicVolumeChanged -= _model.SetMusicVolume;
 			_view.MusicOnChanged -= _model.SetMusicOn;
 			_view.EffectsVolumeChanged -= _model.SetEffectsVolume;
@@ -89,6 +91,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		/// </summary>
 		public void SyncView()
 		{
+			_view.SetMasterVolume( _model.MasterVolume );
+			_view.SetMasterVolumeLimits( _model.MasterMinVolume, _model.MasterMaxVolume );
+
 			_view.SetMusicVolume( _model.MusicVolume );
 			_view.SetMusicVolumeLimits( _model.MusicMinVolume, _model.MusicMaxVolume );
 			_view.SetMusicOn( _model.MusicOn );

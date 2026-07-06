@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://mtmbi13ahvs8"]
 
-[ext_resource type="Script" uid="uid://cpxka60uklip2" path="res://Assets/Prefabs/PlayerBanner/PlayerBanner.cs" id="1_t8dea"]
+[ext_resource type="Script" uid="uid://cbxcap3mpj4ma" path="res://Assets/Prefabs/PlayerBanner/PlayerBanner.cs" id="1_t8dea"]
 
 [node name="PlayerBanner" type="HBoxContainer" unique_id=150481472]
 anchors_preset = 15

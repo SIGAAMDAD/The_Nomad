@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="The Nomad"
+run/main_scene="uid://dy3we64uds61v"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="TheNomad"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
@@ -24,9 +25,8 @@ driver/enable_input=true
 
 [autoload]
 
-GodotBootstrapper="*uid://cq3c7yunik8mt"
+GodotBootstrapper="*uid://b76f83gsn362h"
 GlobalWorldEnvironment="*uid://dnich4hvfpcnv"
-DialogueManager="*uid://c3rodes2l3gxb"
 
 [compression]
 
@@ -56,7 +56,7 @@ project/assembly_name="TheNomad"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/csg_scene_baker/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/open-world-database/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg", "res://addons/traversal_baker/plugin.cfg")
+enabled=PackedStringArray("res://addons/csg_scene_baker/plugin.cfg", "res://addons/radial_progress/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [filesystem]
 

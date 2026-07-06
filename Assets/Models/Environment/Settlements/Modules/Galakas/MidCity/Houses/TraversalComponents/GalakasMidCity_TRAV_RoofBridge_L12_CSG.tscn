@@ -1,91 +1,90 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bxbaqafppi05m"]
 
-[node name="GalakasMidCity_TRAV_RoofBridge_L12_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_RoofBridge_L12_CSG" type="Node3D" unique_id=1443608722]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=495238876]
 use_collision = true
 
-[node name="Bridge_WalkPlank" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.3000, 0.1800, 12.0000)
-position = Vector3(0.0000, 0.0900, 0.0000)
+[node name="Bridge_WalkPlank" type="CSGBox3D" parent="Traversal_CSG" unique_id=1642903768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0)
+size = Vector3(1.3, 0.18, 12)
 
-[node name="Bridge_LeftRail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.9000, 12.0000)
-position = Vector3(-0.7000, 0.5500, 0.0000)
+[node name="Bridge_LeftRail" type="CSGBox3D" parent="Traversal_CSG" unique_id=2049945728]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.55, 0)
+size = Vector3(0.16, 0.9, 12)
 
-[node name="Bridge_RightRail" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1600, 0.9000, 12.0000)
-position = Vector3(0.7000, 0.5500, 0.0000)
+[node name="Bridge_RightRail" type="CSGBox3D" parent="Traversal_CSG" unique_id=1169353784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.55, 0)
+size = Vector3(0.16, 0.9, 12)
 
-[node name="Bridge_CrossTie_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, -6.0000)
+[node name="Bridge_CrossTie_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=1610075289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -6)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, -6.0000)
+[node name="Bridge_RailPost_L_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=245472857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, -6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_00" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, -6.0000)
+[node name="Bridge_RailPost_R_00" type="CSGBox3D" parent="Traversal_CSG" unique_id=2138875926]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, -6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_CrossTie_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, -3.6000)
+[node name="Bridge_CrossTie_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=821512181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -3.6)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, -3.6000)
+[node name="Bridge_RailPost_L_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=1430792970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, -3.6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_01" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, -3.6000)
+[node name="Bridge_RailPost_R_01" type="CSGBox3D" parent="Traversal_CSG" unique_id=1516215134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, -3.6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_CrossTie_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, -1.2000)
+[node name="Bridge_CrossTie_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=983145428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, -1.2)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, -1.2000)
+[node name="Bridge_RailPost_L_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=36087296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, -1.2)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_02" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, -1.2000)
+[node name="Bridge_RailPost_R_02" type="CSGBox3D" parent="Traversal_CSG" unique_id=217455165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, -1.2)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_CrossTie_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, 1.2000)
+[node name="Bridge_CrossTie_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=2139398302]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 1.2)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, 1.2000)
+[node name="Bridge_RailPost_L_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=1053570884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, 1.2)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_03" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, 1.2000)
+[node name="Bridge_RailPost_R_03" type="CSGBox3D" parent="Traversal_CSG" unique_id=1111763140]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, 1.2)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_CrossTie_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, 3.6000)
+[node name="Bridge_CrossTie_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=1685330215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 3.6)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, 3.6000)
+[node name="Bridge_RailPost_L_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=800566787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, 3.6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_04" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, 3.6000)
+[node name="Bridge_RailPost_R_04" type="CSGBox3D" parent="Traversal_CSG" unique_id=1691132330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, 3.6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_CrossTie_05" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(1.6500, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.2200, 6.0000)
+[node name="Bridge_CrossTie_05" type="CSGBox3D" parent="Traversal_CSG" unique_id=1799654043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 6)
+size = Vector3(1.65, 0.16, 0.16)
 
-[node name="Bridge_RailPost_L_05" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(-0.7000, 0.5800, 6.0000)
+[node name="Bridge_RailPost_L_05" type="CSGBox3D" parent="Traversal_CSG" unique_id=302976160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.58, 6)
+size = Vector3(0.14, 1, 0.14)
 
-[node name="Bridge_RailPost_R_05" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.1400, 1.0000, 0.1400)
-position = Vector3(0.7000, 0.5800, 6.0000)
-
+[node name="Bridge_RailPost_R_05" type="CSGBox3D" parent="Traversal_CSG" unique_id=611061311]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.58, 6)
+size = Vector3(0.14, 1, 0.14)

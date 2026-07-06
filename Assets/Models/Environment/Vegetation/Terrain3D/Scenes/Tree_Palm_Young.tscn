@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://dh46bq52jqjug"]
 
-[ext_resource type="Material" path="../Materials/BarkMaterial.tres" id="bark"]
-[ext_resource type="Material" path="../Materials/PalmFrondMaterial.tres" id="frond"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/BarkMaterial.tres" id="bark"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/PalmFrondMaterial.tres" id="frond"]
 
 [sub_resource type="CylinderMesh" id="Trunk"]
 top_radius = 0.065
@@ -11,57 +11,55 @@ radial_segments = 7
 rings = 1
 
 [sub_resource type="QuadMesh" id="Quad"]
-size = Vector2(1, 1)
 
-[node name="Tree_Palm_Young" type="Node3D"]
+[node name="Tree_Palm_Young" type="Node3D" unique_id=606199441]
 
-[node name="Trunk" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.75, 0)
+[node name="Trunk" type="MeshInstance3D" parent="." unique_id=1606574297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 mesh = SubResource("Trunk")
 surface_material_override/0 = ExtResource("bark")
 
-[node name="Frond_01" type="MeshInstance3D" parent="."]
+[node name="Frond_01" type="MeshInstance3D" parent="." unique_id=132409328]
 transform = Transform3D(0.32, 0, 0, 0, 0.809898, -0.522687, 0, 0.496553, 0.852525, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_02" type="MeshInstance3D" parent="."]
+[node name="Frond_02" type="MeshInstance3D" parent="." unique_id=726860232]
 transform = Transform3D(0.245134, 0.319178, 0.547992, 0, 0.809898, -0.522687, -0.205692, 0.380382, 0.653072, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_03" type="MeshInstance3D" parent="."]
+[node name="Frond_03" type="MeshInstance3D" parent="." unique_id=1803797808]
 transform = Transform3D(0.0555674, 0.489009, 0.839573, 0, 0.809898, -0.522687, -0.315138, 0.0862255, 0.148039, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_04" type="MeshInstance3D" parent="."]
+[node name="Frond_04" type="MeshInstance3D" parent="." unique_id=1999452562]
 transform = Transform3D(-0.16, 0.430027, 0.738308, 0, 0.809898, -0.522687, -0.277128, -0.248276, -0.426262, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_05" type="MeshInstance3D" parent="."]
+[node name="Frond_05" type="MeshInstance3D" parent="." unique_id=258415754]
 transform = Transform3D(-0.300702, 0.169831, 0.291581, 0, 0.809898, -0.522687, -0.109446, -0.466607, -0.801111, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_06" type="MeshInstance3D" parent="."]
+[node name="Frond_06" type="MeshInstance3D" parent="." unique_id=452090397]
 transform = Transform3D(-0.300702, -0.169831, -0.291581, 0, 0.809898, -0.522687, 0.109446, -0.466607, -0.801111, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_07" type="MeshInstance3D" parent="."]
+[node name="Frond_07" type="MeshInstance3D" parent="." unique_id=842653753]
 transform = Transform3D(-0.16, -0.430027, -0.738308, 0, 0.809898, -0.522687, 0.277128, -0.248276, -0.426262, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_08" type="MeshInstance3D" parent="."]
+[node name="Frond_08" type="MeshInstance3D" parent="." unique_id=1148010998]
 transform = Transform3D(0.0555674, -0.489009, -0.839573, 0, 0.809898, -0.522687, 0.315138, 0.0862255, 0.148039, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
 
-[node name="Frond_09" type="MeshInstance3D" parent="."]
+[node name="Frond_09" type="MeshInstance3D" parent="." unique_id=462082852]
 transform = Transform3D(0.245134, -0.319178, -0.547992, 0, 0.809898, -0.522687, 0.205692, 0.380382, 0.653072, 0, 1.55, 0)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("frond")
-

@@ -20,13 +20,13 @@ namespace Nomad.Game.Sdk.Renown.Faction
 {
     public readonly struct FactionInstanceId
     {
-        public static readonly FactionInstanceId Invalid = new FactionInstanceId(Guid.Empty);
+        public static readonly FactionInstanceId InvalidId = new FactionInstanceId(-1);
 
-        public bool IsValid => Value != Guid.Empty;
+        public bool IsValid => Value != -1;
 
-        public readonly Guid Value;
+        public readonly int Value;
 
-        public FactionInstanceId(Guid value)
+        public FactionInstanceId(int value)
         {
             Value = value;
         }
@@ -51,7 +51,7 @@ namespace Nomad.Game.Sdk.Renown.Faction
             return other.Value == Value;
         }
 
-        public static implicit operator Guid(FactionInstanceId value)
+        public static implicit operator int(FactionInstanceId value)
         {
             return value.Value;
         }

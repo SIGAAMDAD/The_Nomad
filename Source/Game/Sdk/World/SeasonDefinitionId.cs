@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.World
@@ -26,41 +27,49 @@ namespace Nomad.Game.Sdk.World
 
         public readonly InternString Value;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SeasonDefinitionId(InternString value)
         {
             Value = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             return obj is SeasonDefinitionId other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return Value.ToString();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(SeasonDefinitionId other)
         {
             return other.Value == Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator InternString(SeasonDefinitionId value)
         {
             return value.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(SeasonDefinitionId left, SeasonDefinitionId right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(SeasonDefinitionId left, SeasonDefinitionId right)
         {
             return !left.Equals(right);

@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://b1k08x43m5sor"]
+
+[ext_resource type="Script" uid="uid://bqrsj12fh6q4k" path="res://Source/Game/Presentation/UserInterface/HeadsUpDisplay/Components/Crosshair/CrosshairView.cs" id="1_0g4ta"]
+
+[node name="Crosshair" type="Control" unique_id=1084751988]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_0g4ta")
+metadata/_edit_use_anchors_ = true

@@ -17,8 +17,8 @@ namespace Nomad.Game.Sdk.Crafting
 {
     public interface ICraftingMenuView
     {
-        bool TryAddRecipe();
-        bool TryRemoveRecipe();
+        bool TryAddRecipe(ItemRecipe recipe);
+        bool TryRemoveRecipe(ItemRecipe recipe);
 
         bool MarkRecipeInvalid(ItemRecipeDefinitionId recipeId);
         bool MarkRecipeValid(ItemRecipeDefinitionId recipeId);

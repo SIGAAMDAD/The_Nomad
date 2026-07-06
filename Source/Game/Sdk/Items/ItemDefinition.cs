@@ -41,7 +41,7 @@ namespace Nomad.Game.Sdk.Items
         /// <summary>
         ///
         /// </summary>
-        public InternString JournalEntry { get; init; }
+        public InternString JournalEntryId { get; init; }
 
         /// <summary>
         ///

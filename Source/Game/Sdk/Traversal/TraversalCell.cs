@@ -15,6 +15,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Nomad.Game.Sdk.Traversal
 {
@@ -24,33 +25,37 @@ namespace Nomad.Game.Sdk.Traversal
         public readonly int Y;
         public readonly int Z;
 
+        private readonly int _hashCode;
+
         public TraversalCell(int x, int y, int z)
         {
             X = x;
             Y = y;
             Z = z;
+
+            unchecked
+            {
+                // Could we technically do HashCode.Combine? yeah but... nahhh
+                _hashCode = (X * 73856093) ^ (Y * 19349663) ^ (Z * 83492791);
+            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(TraversalCell other)
         {
             return X == other.X && Y == other.Y && Z == other.Z;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             return obj is TraversalCell other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override int GetHashCode()
         {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 31 + X;
-                hash = hash * 31 + Y;
-                hash = hash * 31 + Z;
-                return hash;
-            }
+            return _hashCode;
         }
     }
 }

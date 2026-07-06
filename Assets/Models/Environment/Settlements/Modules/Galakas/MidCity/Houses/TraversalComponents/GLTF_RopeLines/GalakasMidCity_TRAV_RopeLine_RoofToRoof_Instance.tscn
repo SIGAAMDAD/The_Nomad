@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://balvt7c4yoh8h"]
 
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeLine_RoofToRoof.gltf" id="1"]
+[ext_resource type="PackedScene" uid="uid://bk1tciciji6vu" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeLine_RoofToRoof.gltf" id="1"]
 
-[node name="GalakasMidCity_TRAV_RopeLine_RoofToRoof_Instance" type="Node3D"]
+[node name="GalakasMidCity_TRAV_RopeLine_RoofToRoof_Instance" type="Node3D" unique_id=86660037]
 
-[node name="SourceGLTF" parent="." instance=ExtResource("1")]
+[node name="SourceGLTF" parent="." unique_id=1334854467 instance=ExtResource("1")]

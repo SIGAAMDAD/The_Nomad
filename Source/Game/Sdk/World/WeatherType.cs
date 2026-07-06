@@ -24,7 +24,9 @@ namespace Nomad.Game.Sdk.World
         Fog,
         Snow,
         DustStorm,
+        DryHeat,
         HeatHaze,
-        Ashfall
+        Ashfall,
+        Sandstorm,
     }
 }

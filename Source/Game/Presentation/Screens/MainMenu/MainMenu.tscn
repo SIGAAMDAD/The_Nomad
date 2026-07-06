@@ -2,7 +2,7 @@
 
 [ext_resource type="Material" uid="uid://c5rjepxbbn8hu" path="res://Assets/Materials/MenuFader.tres" id="1_ucyp2"]
 [ext_resource type="Texture2D" uid="uid://ca67rg6aced8j" path="res://Assets/Textures/UserInterface/TheNomadLogo.dds" id="2_lpod2"]
-[ext_resource type="Script" uid="uid://ch4owwgdr8i7q" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenuGodotView.cs" id="2_ucyp2"]
+[ext_resource type="Script" uid="uid://cp55nre5xwqa3" path="res://Source/Game/Presentation/Screens/MainMenu/MainMenuGodotView.cs" id="2_ucyp2"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="3_lpod2"]
 
 [node name="MainMenu" type="Control" unique_id=486417476]

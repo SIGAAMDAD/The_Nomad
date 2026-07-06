@@ -1,75 +1,74 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cus8skkaxmi24"]
 
-[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG" type="Node3D"]
+[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG" type="Node3D" unique_id=920898622]
 
-[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=596669879]
 use_collision = true
 
-[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 0.1200, 0.1900)
+[node name="Step_01" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=1178625255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.19)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 0.3600, 0.5700)
+[node name="Step_02" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=921866190]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36, 0.57)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 0.6000, 0.9500)
+[node name="Step_03" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=353021855]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.95)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 0.8400, 1.3300)
+[node name="Step_04" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=952570865]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, 1.33)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 1.0800, 1.7100)
+[node name="Step_05" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=971649824]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, 1.71)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 1.3200, 2.0900)
+[node name="Step_06" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=1294845691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32, 2.09)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 1.5600, 2.4700)
+[node name="Step_07" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=125512478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56, 2.47)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 1.8000, 2.8500)
+[node name="Step_08" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=31480765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 2.85)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_09" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 2.0400, 3.2300)
+[node name="Step_09" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=517044954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.04, 3.23)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_10" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 2.2800, 3.6100)
+[node name="Step_10" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=119477482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28, 3.61)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_11" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 2.5200, 3.9900)
+[node name="Step_11" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=1107495927]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52, 3.99)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_12" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 2.7600, 4.3700)
+[node name="Step_12" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=406122894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.76, 4.37)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_13" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 3.0000, 4.7500)
+[node name="Step_13" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=769813438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 4.75)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="Step_14" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2400, 0.3800)
-position = Vector3(0.0000, 3.2400, 5.1300)
+[node name="Step_14" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=172375833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.24, 5.13)
+size = Vector3(1.35, 0.24, 0.38)
 
-[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(1.3500, 0.2200, 0.9000)
-position = Vector3(0.0000, 3.3800, 5.7700)
+[node name="TopLanding" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=25240074]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.38, 5.77)
+size = Vector3(1.35, 0.22, 0.9)
 
-[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(0.1200, 3.5600, 6.2200)
-position = Vector3(-0.7550, 1.6800, 3.1100)
+[node name="LeftLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=345747256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.755, 1.68, 3.11)
+size = Vector3(0.12, 3.56, 6.22)
 
-[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG"]
-size = Vector3(0.1200, 3.5600, 6.2200)
-position = Vector3(0.7550, 1.6800, 3.1100)
-
+[node name="RightLowCurb" type="CSGBox3D" parent="GalakasMidCity_STAIR_RooftopAccess_14Step_CSG_CSG" unique_id=583392978]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.755, 1.68, 3.11)
+size = Vector3(0.12, 3.56, 6.22)

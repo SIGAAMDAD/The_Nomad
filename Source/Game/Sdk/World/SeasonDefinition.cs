@@ -13,8 +13,8 @@ of merchantability, fitness for a particular purpose and noninfringement.
 ===========================================================================
 */
 
+using System;
 using System.Collections.Generic;
-using Nomad.Core.Util;
 using Godot;
 
 namespace Nomad.Game.Sdk.World
@@ -30,6 +30,7 @@ namespace Nomad.Game.Sdk.World
         public int MaxWeatherDurationHours { get; init; }
 
         public IReadOnlyList<WeatherWeight> WeatherTable { get; init; }
+            = Array.Empty<WeatherWeight>();
 
         public Color NightAmbient { get; init; }
         public Color DawnAmbient { get; init; }

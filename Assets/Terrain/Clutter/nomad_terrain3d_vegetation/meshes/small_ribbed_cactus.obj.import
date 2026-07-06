@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dxx7f1hdmjhie"
+path="res://.godot/imported/small_ribbed_cactus.obj-417d96d2ab90eeab502d128d0fa55b8c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/small_ribbed_cactus.obj-417d96d2ab90eeab502d128d0fa55b8c.mesh"]
+
+source_file="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/small_ribbed_cactus.obj"
+dest_files=["res://.godot/imported/small_ribbed_cactus.obj-417d96d2ab90eeab502d128d0fa55b8c.mesh", "res://.godot/imported/small_ribbed_cactus.obj-417d96d2ab90eeab502d128d0fa55b8c.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

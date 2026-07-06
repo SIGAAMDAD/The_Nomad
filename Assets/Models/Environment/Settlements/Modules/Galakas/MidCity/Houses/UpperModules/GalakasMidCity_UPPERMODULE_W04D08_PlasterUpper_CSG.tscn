@@ -1,157 +1,150 @@
-[gd_scene format=3]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/GalakasMidCity_DETAIL_Window_DeepLeadFrame_CSG.tscn" id="1"]
+[gd_scene format=3 uid="uid://cnrnb7bek7moh"]
 
-[node name="GalakasMidCity_UPPERMODULE_W04D08_PlasterUpper_CSG" type="Node3D"]
+[ext_resource type="PackedScene" uid="uid://dg6i3qtoldx05" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/GalakasMidCity_DETAIL_Window_DeepLeadFrame_CSG.tscn" id="1"]
 
-[node name="UpperModule_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_UPPERMODULE_W04D08_PlasterUpper_CSG" type="Node3D" unique_id=581659870]
+
+[node name="UpperModule_CSG" type="CSGCombiner3D" parent="." unique_id=1974972342]
 use_collision = true
 
-[node name="FrontWall_Closed" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.5000, 4.2000, 0.2600)
-position = Vector3(0.0000, 2.1000, -8.2500)
+[node name="FrontWall_Closed" type="CSGBox3D" parent="UpperModule_CSG" unique_id=551196681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, -8.25)
+size = Vector3(8.5, 4.2, 0.26)
 
-[node name="BackWall_Closed" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.5000, 4.2000, 0.2600)
-position = Vector3(0.0000, 2.1000, 8.2500)
+[node name="BackWall_Closed" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1538529391]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 8.25)
+size = Vector3(8.5, 4.2, 0.26)
 
-[node name="LeftWall_Closed" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2600, 4.2000, 16.5000)
-position = Vector3(-4.2500, 2.1000, 0.0000)
+[node name="LeftWall_Closed" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1912257173]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 2.1, 0)
+size = Vector3(0.26, 4.2, 16.5)
 
-[node name="RightWall_Closed" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2600, 4.2000, 16.5000)
-position = Vector3(4.2500, 2.1000, 0.0000)
+[node name="RightWall_Closed" type="CSGBox3D" parent="UpperModule_CSG" unique_id=122916650]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25, 2.1, 0)
+size = Vector3(0.26, 4.2, 16.5)
 
-[node name="UpperFloor_Slab" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.1500, 0.1800, 16.1500)
-position = Vector3(0.0000, 0.1000, 0.0000)
+[node name="UpperFloor_Slab" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1073123346]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+size = Vector3(8.15, 0.18, 16.15)
 
-[node name="UpperCeiling_Slab" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.2500, 0.2000, 16.2500)
-position = Vector3(0.0000, 4.1000, 0.0000)
+[node name="UpperCeiling_Slab" type="CSGBox3D" parent="UpperModule_CSG" unique_id=446249731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1, 0)
+size = Vector3(8.25, 0.2, 16.25)
 
-[node name="Front_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.8000, 0.2400, 0.2400)
-position = Vector3(0.0000, 0.2800, -8.4100)
+[node name="Front_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=79702946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, -8.41)
+size = Vector3(8.8, 0.24, 0.24)
 
-[node name="Front_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.8500, 0.2400, 0.2400)
-position = Vector3(0.0000, 3.9800, -8.4100)
+[node name="Front_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1036326676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.98, -8.41)
+size = Vector3(8.85, 0.24, 0.24)
 
-[node name="Front_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-4.2500, 2.1000, -8.4100)
+[node name="Front_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1849406166]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 2.1, -8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Front_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-1.4167, 2.1000, -8.4100)
+[node name="Front_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG" unique_id=364515062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4167, 2.1, -8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Front_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(1.4167, 2.1000, -8.4100)
+[node name="Front_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG" unique_id=252665319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4167, 2.1, -8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Front_VerticalPost_03" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(4.2500, 2.1000, -8.4100)
+[node name="Front_VerticalPost_03" type="CSGBox3D" parent="UpperModule_CSG" unique_id=660596727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25, 2.1, -8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Back_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.8000, 0.2400, 0.2400)
-position = Vector3(0.0000, 0.2800, 8.4100)
+[node name="Back_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1437458908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 8.41)
+size = Vector3(8.8, 0.24, 0.24)
 
-[node name="Back_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(8.8500, 0.2400, 0.2400)
-position = Vector3(0.0000, 3.9800, 8.4100)
+[node name="Back_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1661678845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.98, 8.41)
+size = Vector3(8.85, 0.24, 0.24)
 
-[node name="Back_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-4.2500, 2.1000, 8.4100)
+[node name="Back_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1821417877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 2.1, 8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Back_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-1.4167, 2.1000, 8.4100)
+[node name="Back_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1100942042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4167, 2.1, 8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Back_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(1.4167, 2.1000, 8.4100)
+[node name="Back_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG" unique_id=289716877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4167, 2.1, 8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Back_VerticalPost_03" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(4.2500, 2.1000, 8.4100)
+[node name="Back_VerticalPost_03" type="CSGBox3D" parent="UpperModule_CSG" unique_id=709329048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.25, 2.1, 8.41)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Left_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2400, 0.2400, 16.8000)
-position = Vector3(-4.4100, 0.2800, 0.0000)
+[node name="Left_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=2041963928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.41, 0.28, 0)
+size = Vector3(0.24, 0.24, 16.8)
 
-[node name="Left_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2400, 0.2400, 16.8500)
-position = Vector3(-4.4100, 3.9800, 0.0000)
+[node name="Left_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1473519000]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.41, 3.98, 0)
+size = Vector3(0.24, 0.24, 16.85)
 
-[node name="Left_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-4.4100, 2.1000, -8.2500)
+[node name="Left_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1430277108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.41, 2.1, -8.25)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Left_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-4.4100, 2.1000, 0.0000)
+[node name="Left_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG" unique_id=906821036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.41, 2.1, 0)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Left_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(-4.4100, 2.1000, 8.2500)
+[node name="Left_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG" unique_id=980281726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.41, 2.1, 8.25)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Right_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2400, 0.2400, 16.8000)
-position = Vector3(4.4100, 0.2800, 0.0000)
+[node name="Right_BottomOverhangBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=1412355007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41, 0.28, 0)
+size = Vector3(0.24, 0.24, 16.8)
 
-[node name="Right_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.2400, 0.2400, 16.8500)
-position = Vector3(4.4100, 3.9800, 0.0000)
+[node name="Right_TopTieBeam" type="CSGBox3D" parent="UpperModule_CSG" unique_id=347122983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41, 3.98, 0)
+size = Vector3(0.24, 0.24, 16.85)
 
-[node name="Right_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(4.4100, 2.1000, -8.2500)
+[node name="Right_VerticalPost_00" type="CSGBox3D" parent="UpperModule_CSG" unique_id=2082191877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41, 2.1, -8.25)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Right_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(4.4100, 2.1000, 0.0000)
+[node name="Right_VerticalPost_01" type="CSGBox3D" parent="UpperModule_CSG" unique_id=200066469]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41, 2.1, 0)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Right_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG"]
-size = Vector3(0.1800, 4.2000, 0.1800)
-position = Vector3(4.4100, 2.1000, 8.2500)
+[node name="Right_VerticalPost_02" type="CSGBox3D" parent="UpperModule_CSG" unique_id=326553106]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.41, 2.1, 8.25)
+size = Vector3(0.18, 4.2, 0.18)
 
-[node name="Window_Front_00" parent="." instance=ExtResource("1")]
-position = Vector3(-3.2300, 2.1500, -8.6000)
+[node name="Window_Front_00" parent="." unique_id=608351752 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.23, 2.15, -8.6)
 
-[node name="Window_Back_00" parent="." instance=ExtResource("1")]
-position = Vector3(-3.2300, 2.1500, 8.6000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="Window_Back_00" parent="." unique_id=1746385913 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, -3.23, 2.15, 8.6)
 
-[node name="Window_Front_01" parent="." instance=ExtResource("1")]
-position = Vector3(0.0000, 2.1500, -8.6000)
+[node name="Window_Front_01" parent="." unique_id=662044291 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -8.6)
 
-[node name="Window_Back_01" parent="." instance=ExtResource("1")]
-position = Vector3(0.0000, 2.1500, 8.6000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="Window_Back_01" parent="." unique_id=2027690401 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, 0, 2.15, 8.6)
 
-[node name="Window_Front_02" parent="." instance=ExtResource("1")]
-position = Vector3(3.2300, 2.1500, -8.6000)
+[node name="Window_Front_02" parent="." unique_id=2088691546 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.23, 2.15, -8.6)
 
-[node name="Window_Back_02" parent="." instance=ExtResource("1")]
-position = Vector3(3.2300, 2.1500, 8.6000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="Window_Back_02" parent="." unique_id=7115442 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, 3.23, 2.15, 8.6)
 
-[node name="Window_Left_00" parent="." instance=ExtResource("1")]
-position = Vector3(-4.6000, 2.1500, -5.6100)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="Window_Left_00" parent="." unique_id=2013020362 instance=ExtResource("1")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -4.6, 2.15, -5.61)
 
-[node name="Window_Right_00" parent="." instance=ExtResource("1")]
-position = Vector3(4.6000, 2.1500, -5.6100)
-rotation = Vector3(0.000000, -1.570796, 0.000000)
+[node name="Window_Right_00" parent="." unique_id=1895578709 instance=ExtResource("1")]
+transform = Transform3D(3.1391647e-07, 0, -1, 0, 1, 0, 1, 0, 3.1391647e-07, 4.6, 2.15, -5.61)
 
-[node name="Window_Left_01" parent="." instance=ExtResource("1")]
-position = Vector3(-4.6000, 2.1500, 5.6100)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="Window_Left_01" parent="." unique_id=61044870 instance=ExtResource("1")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -4.6, 2.15, 5.61)
 
-[node name="Window_Right_01" parent="." instance=ExtResource("1")]
-position = Vector3(4.6000, 2.1500, 5.6100)
-rotation = Vector3(0.000000, -1.570796, 0.000000)
-
+[node name="Window_Right_01" parent="." unique_id=570225091 instance=ExtResource("1")]
+transform = Transform3D(3.1391647e-07, 0, -1, 0, 1, 0, 1, 0, 3.1391647e-07, 4.6, 2.15, 5.61)

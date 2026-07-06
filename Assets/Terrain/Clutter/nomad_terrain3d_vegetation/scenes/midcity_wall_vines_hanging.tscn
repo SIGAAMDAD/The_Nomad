@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dmccnj743nxhw"]
 
 [ext_resource type="ArrayMesh" uid="uid://kjd67kw8hita" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/midcity_wall_vines_hanging.obj" id="1_mesh"]
 
-[node name="midcity_wall_vines_hanging" type="MeshInstance3D"]
+[node name="midcity_wall_vines_hanging" type="MeshInstance3D" unique_id=1957791617]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

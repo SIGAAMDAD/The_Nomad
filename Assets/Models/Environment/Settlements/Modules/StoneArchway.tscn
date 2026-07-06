@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://coulfam47jklk" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Albedo_1024.webp" id="1_7dnv2"]
 [ext_resource type="Texture2D" uid="uid://bhoswqo1ahvo2" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Displacement_1024.png" id="2_vqadb"]
-[ext_resource type="Texture2D" uid="uid://b8qiclan7i7m6" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Normal_1024.png" id="3_b30xc"]
+[ext_resource type="Texture2D" uid="uid://c41ef4tjoo7w7" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/SandstoneBlocks_Normal_1024.png" id="3_b30xc"]
 [ext_resource type="Texture2D" uid="uid://csppcmfb31820" path="res://Assets/Textures/Environment/Surfaces/SandstoneBlocks/StandstoneBlocks_ORM_1024.png" id="4_1jk5w"]
 [ext_resource type="Material" uid="uid://ch6he25vlwlsh" path="res://Assets/Textures/Environment/Surfaces/DarkWoodenPlank/DarkWoodenPlank_Material.res" id="5_7dnv2"]
 

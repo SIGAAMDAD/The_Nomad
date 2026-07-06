@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://cjqq0md5xhp3d"]
 
-[ext_resource type="Material" path="../Materials/BarkMaterial.tres" id="bark"]
-[ext_resource type="Material" path="../Materials/CanopyLeafMaterial.tres" id="leaf"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/BarkMaterial.tres" id="bark"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/CanopyLeafMaterial.tres" id="leaf"]
 
 [sub_resource type="CylinderMesh" id="Trunk"]
 top_radius = 0.07
@@ -11,35 +11,32 @@ radial_segments = 7
 rings = 1
 
 [sub_resource type="SphereMesh" id="Sphere"]
-radius = 0.5
-height = 1.0
 radial_segments = 8
 rings = 4
 
-[node name="Tree_Olive_Small" type="Node3D"]
+[node name="Tree_Olive_Small" type="Node3D" unique_id=1130380173]
 
-[node name="Trunk" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.65, 0)
+[node name="Trunk" type="MeshInstance3D" parent="." unique_id=637359325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
 mesh = SubResource("Trunk")
 surface_material_override/0 = ExtResource("bark")
 
-[node name="Canopy_01" type="MeshInstance3D" parent="."]
+[node name="Canopy_01" type="MeshInstance3D" parent="." unique_id=169316505]
 transform = Transform3D(-0.803403, 0, 0.405641, 0, 0.7, 0, -0.405641, 0, -0.803403, 0, 1.55, 0)
 mesh = SubResource("Sphere")
 surface_material_override/0 = ExtResource("leaf")
 
-[node name="Canopy_02" type="MeshInstance3D" parent="."]
+[node name="Canopy_02" type="MeshInstance3D" parent="." unique_id=842531892]
 transform = Transform3D(0.601151, 0, -0.247219, 0, 0.55, 0, 0.247219, 0, 0.601151, -0.35, 1.45, 0.12)
 mesh = SubResource("Sphere")
 surface_material_override/0 = ExtResource("leaf")
 
-[node name="Canopy_03" type="MeshInstance3D" parent="."]
+[node name="Canopy_03" type="MeshInstance3D" parent="." unique_id=771806241]
 transform = Transform3D(0.564519, 0, -0.413907, 0, 0.55, 0, 0.413907, 0, 0.564519, 0.35, 1.5, -0.1)
 mesh = SubResource("Sphere")
 surface_material_override/0 = ExtResource("leaf")
 
-[node name="Canopy_04" type="MeshInstance3D" parent="."]
+[node name="Canopy_04" type="MeshInstance3D" parent="." unique_id=1848853914]
 transform = Transform3D(0.250761, 0, 0.599682, 0, 0.5, 0, -0.599682, 0, 0.250761, 0.05, 1.85, 0.05)
 mesh = SubResource("Sphere")
 surface_material_override/0 = ExtResource("leaf")
-

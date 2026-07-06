@@ -17,8 +17,7 @@ using Nomad.Core.Engine.Globals;
 using Nomad.Core.Engine.SceneManagement;
 using Nomad.Core.Engine.Services;
 using Nomad.Events.Globals;
-using Nomad.Game.Application.UI;
-using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Presentation.Menus;
 using Nomad.UI;
 
 namespace Nomad.Game.Presentation.Screens.MenuHub

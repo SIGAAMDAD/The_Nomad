@@ -16,6 +16,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Crafting
 {
@@ -24,13 +25,13 @@ namespace Nomad.Game.Sdk.Crafting
     /// </summary>
     public readonly struct ItemRecipeDefinitionId : IEquatable<ItemRecipeDefinitionId>
     {
-        public static readonly ItemRecipeDefinitionId Invalid = new ItemRecipeDefinitionId(Guid.Empty);
+        public static readonly ItemRecipeDefinitionId Invalid = new ItemRecipeDefinitionId(InternString.Empty);
 
-        public readonly Guid Value;
+        public readonly InternString Value;
 
-        public bool IsValid => Value != Guid.Empty;
+        public bool IsValid => Value != InternString.Empty;
 
-        public ItemRecipeDefinitionId(Guid value)
+        public ItemRecipeDefinitionId(InternString value)
         {
             Value = value;
         }
@@ -60,7 +61,7 @@ namespace Nomad.Game.Sdk.Crafting
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Guid(ItemRecipeDefinitionId value)
+        public static implicit operator InternString(ItemRecipeDefinitionId value)
         {
             return value.Value;
         }

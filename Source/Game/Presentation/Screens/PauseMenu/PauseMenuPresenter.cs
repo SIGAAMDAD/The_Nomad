@@ -18,7 +18,7 @@ using Nomad.Core.Engine.Services;
 using Nomad.Core.Events;
 using Nomad.Core.Input;
 using Nomad.Core.Input.ValueObjects;
-using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Presentation.Menus;
 using Nomad.Game.Sdk.Gameplay;
 using Nomad.Game.Sdk.Events.Gameplay;
 

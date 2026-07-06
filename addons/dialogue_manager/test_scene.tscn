@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://c8e16qdgu40wo" path="res://addons/dialogue_manager/test_scene.gd" id="1_yupoh"]
 
-[node name="TestScene" type="Node2D" unique_id=794336468]
+[node name="TestScene" type="Node2D" unique_id=595965004]
 script = ExtResource("1_yupoh")

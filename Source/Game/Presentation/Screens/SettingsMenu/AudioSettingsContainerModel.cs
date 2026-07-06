@@ -36,6 +36,9 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 	internal sealed class AudioSettingsContainerModel
 	{
+		public float MasterVolume => _service.Config.MasterVolume;
+		public float MasterMinVolume { get; private set; } = 0.0f;
+		public float MasterMaxVolume { get; private set; } = 100.0f;
 		public float MusicVolume => _service.Config.MusicVolume;
 		public float MusicMinVolume { get; private set; } = 0.0f;
 		public float MusicMaxVolume { get; private set; } = 100.0f;
@@ -87,6 +90,8 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 			MusicMinVolume = 0.0f;
 			MusicMaxVolume = 100.0f;
+			MasterMinVolume = 0.0f;
+			MasterMaxVolume = 100.0f;
 			EffectsMinVolume = 0.0f;
 			EffectsMaxVolume = 100.0f;
 		}
@@ -123,6 +128,7 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 
 		public void SetMasterVolume( float volume )
 		{
+			_service.Config.MasterVolume = volume;
 		}
 
 		public void SetSpeakerMode( int value )

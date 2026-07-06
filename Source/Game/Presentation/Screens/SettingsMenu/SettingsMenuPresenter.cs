@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Nomad.Core.CVars;
 using Nomad.Core.Events;
 using Nomad.Core.FileSystem;
-using Nomad.Game.Application.UI.Menus;
+using Nomad.Game.Presentation.Menus;
 using Nomad.Game.Presentation.Screens.SettingsMenu;
 
 namespace Nomad.Game.Presentation.Screens.SettingsMenu

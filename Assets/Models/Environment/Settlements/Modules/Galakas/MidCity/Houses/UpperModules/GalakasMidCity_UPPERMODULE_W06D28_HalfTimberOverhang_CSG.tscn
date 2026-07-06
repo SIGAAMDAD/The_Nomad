@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cfq57bsq8unl7"]
 
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/GalakasMidCity_DETAIL_Window_DeepLeadFrame_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://dg6i3qtoldx05" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/GalakasMidCity_DETAIL_Window_DeepLeadFrame_CSG.tscn" id="1"]
 
 [node name="GalakasMidCity_UPPERMODULE_W06D28_HalfTimberOverhang_CSG" type="Node3D" unique_id=773853740]
 

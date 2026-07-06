@@ -1,16 +1,17 @@
-[gd_scene format=3]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_LongArcadeReceiver_W18D10_CSG.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_TripleShopRow_Long_W18D10_CSG.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_MercerCorner_Tall_W10D16_CSG.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/04_Inns_Taverns_Lodging/GalakasMidCity_BT_Alehouse_Block_Long_W12D24_CSG.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/05_Civic_Guild_Offices/GalakasMidCity_BT_OldGuildhall_Long_W14D22_CSG.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/10_Rooftop_Route_Blocks/GalakasMidCity_BT_WideRooflineRun_W16D16_CSG.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/10_Rooftop_Route_Blocks/GalakasMidCity_BT_RooftopBridgeReceiver_W08D20_CSG.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/09_Backstreet_Alley_SideDoors/GalakasMidCity_BT_SideDoor_ClothHall_W10D30_CSG.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/09_Backstreet_Alley_SideDoors/GalakasMidCity_BT_LongSideShop_Row_LeftEntry_W06D20_CSG.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/06_Workshops_Production/GalakasMidCity_BT_LongSideDoor_Ropewalk_W12D30_CSG.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/11_Bridges_Overpasses_StreetConnectors/GalakasMidCity_BT_BridgeHouse_Linear_W18D10_CSG.tscn" id="11"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/11_Bridges_Overpasses_StreetConnectors/GalakasMidCity_BT_GateStreet_OverpassLike_W10D16_CSG.tscn" id="12"]
+[gd_scene format=3 uid="uid://bbxahd62fidme"]
+
+[ext_resource type="PackedScene" uid="uid://c5uykvd1ckfa3" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_LongArcadeReceiver_W18D10_CSG.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://dk6upwtj4gl26" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_TripleShopRow_Long_W18D10_CSG.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://b7wd2bgo21uhi" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/03_Markets_Commercial_Rows/GalakasMidCity_BT_MercerCorner_Tall_W10D16_CSG.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://cto1ciatjwgw7" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/04_Inns_Taverns_Lodging/GalakasMidCity_BT_Alehouse_Block_Long_W12D24_CSG.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://dkfy7h66alsqj" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/05_Civic_Guild_Offices/GalakasMidCity_BT_OldGuildhall_Long_W14D22_CSG.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://b0qlrjpluyi0o" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/10_Rooftop_Route_Blocks/GalakasMidCity_BT_WideRooflineRun_W16D16_CSG.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cr7kirww52i7m" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/10_Rooftop_Route_Blocks/GalakasMidCity_BT_RooftopBridgeReceiver_W08D20_CSG.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://bw0a4hvlqj35x" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/09_Backstreet_Alley_SideDoors/GalakasMidCity_BT_SideDoor_ClothHall_W10D30_CSG.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://o7fwftivcbo2" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/09_Backstreet_Alley_SideDoors/GalakasMidCity_BT_LongSideShop_Row_LeftEntry_W06D20_CSG.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://ds6blf22mivcc" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/06_Workshops_Production/GalakasMidCity_BT_LongSideDoor_Ropewalk_W12D30_CSG.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://bcej2ml0dodw2" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/11_Bridges_Overpasses_StreetConnectors/GalakasMidCity_BT_BridgeHouse_Linear_W18D10_CSG.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://cbfbpc5i2xi1g" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/BuildingTypes/11_Bridges_Overpasses_StreetConnectors/GalakasMidCity_BT_GateStreet_OverpassLike_W10D16_CSG.tscn" id="12"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/CrossBuilding/GalakasMidCity_TRAV_CrossBuilding_TimberBridge_L18_CSG.tscn" id="13"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/CrossBuilding/GalakasMidCity_TRAV_CrossBuilding_GalleryConnector_L14_CSG.tscn" id="14"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/CrossBuilding/GalakasMidCity_TRAV_CrossBuilding_BrokenPlankGap_L10_CSG.tscn" id="15"]
@@ -18,159 +19,139 @@
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/ScaffoldTraversal/GalakasMidCity_TRAV_Scaffold_Platform_W08L05_CSG.tscn" id="17"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/VerticalTransition/GalakasMidCity_TRAV_Vertical_WallPegs_H09_CSG.tscn" id="18"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/GalakasMidCity_STAIR_Straight_Wide_10Step_CSG.tscn" id="19"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeLine_RoofToRoof.gltf" id="20"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_ClothesLine_RopeSag.gltf" id="21"]
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeAndClothesLine_Combined.gltf" id="22"]
+[ext_resource type="PackedScene" uid="uid://bk1tciciji6vu" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeLine_RoofToRoof.gltf" id="20"]
+[ext_resource type="PackedScene" uid="uid://dukfmyubbym5m" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_ClothesLine_RopeSag.gltf" id="21"]
+[ext_resource type="PackedScene" uid="uid://ccwkvev04e7p4" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_RopeAndClothesLine_Combined.gltf" id="22"]
 
-[node name="GalakasMidCity_EXAMPLE_MarketStreet_RooftopLoop_CSG" type="Node3D"]
+[node name="GalakasMidCity_EXAMPLE_MarketStreet_RooftopLoop_CSG" type="Node3D" unique_id=1398122599]
 
-[node name="Ground_Blockout_CSG" type="CSGCombiner3D" parent="."]
+[node name="Ground_Blockout_CSG" type="CSGCombiner3D" parent="." unique_id=192274862]
 use_collision = true
 
-[node name="North_Market_Row" type="Node3D" parent="."]
+[node name="Main_Cobble_Street_Slab" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=342276612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+size = Vector3(150, 0.16, 18)
 
-[node name="South_Rooftop_Row" type="Node3D" parent="."]
+[node name="North_Walkway_Under_Arcades" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=61072870]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, -10.8)
+size = Vector3(150, 0.14, 5)
 
-[node name="West_End_Cap" type="Node3D" parent="."]
+[node name="South_Walkway_Under_Eaves" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=592964518]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04, 10.8)
+size = Vector3(150, 0.14, 5)
 
-[node name="East_End_Cap" type="Node3D" parent="."]
+[node name="West_Small_Plaza" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=1824439885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, -0.06, 0)
+size = Vector3(24, 0.12, 28)
 
-[node name="Traversal_Overlays" type="Node3D" parent="."]
+[node name="East_Small_Plaza" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=1129022116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74, -0.06, 0)
+size = Vector3(24, 0.12, 28)
 
-[node name="Rope_And_Line_Props" type="Node3D" parent="."]
+[node name="North_Curb_Long" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=410095014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -8.95)
+size = Vector3(150, 0.28, 0.35)
 
-[node name="Blockout_Camera_And_Light" type="Node3D" parent="."]
+[node name="South_Curb_Long" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=1098044129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 8.95)
+size = Vector3(150, 0.28, 0.35)
 
-[node name="Main_Cobble_Street_Slab" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(150.0000, 0.1600, 18.0000)
-position = Vector3(0.0000, -0.0800, 0.0000)
+[node name="Cross_Alley_North" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=1888579798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, -0.05, -25)
+size = Vector3(7, 0.13, 36)
 
-[node name="North_Walkway_Under_Arcades" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(150.0000, 0.1400, 5.0000)
-position = Vector3(0.0000, -0.0400, -10.8000)
+[node name="Cross_Alley_South" type="CSGBox3D" parent="Ground_Blockout_CSG" unique_id=762539354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, -0.05, 25)
+size = Vector3(7, 0.13, 36)
 
-[node name="South_Walkway_Under_Eaves" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(150.0000, 0.1400, 5.0000)
-position = Vector3(0.0000, -0.0400, 10.8000)
+[node name="North_Market_Row" type="Node3D" parent="." unique_id=1758849092]
 
-[node name="West_Small_Plaza" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(24.0000, 0.1200, 28.0000)
-position = Vector3(-74.0000, -0.0600, 0.0000)
+[node name="N01_LongArcadeReceiver_market_front" parent="North_Market_Row" unique_id=20950295 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, -55, 0, -19)
 
-[node name="East_Small_Plaza" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(24.0000, 0.1200, 28.0000)
-position = Vector3(74.0000, -0.0600, 0.0000)
+[node name="N02_TripleShopRow_mid_market" parent="North_Market_Row" unique_id=740138999 instance=ExtResource("2")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, -18, 0, -19)
 
-[node name="North_Curb_Long" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(150.0000, 0.2800, 0.3500)
-position = Vector3(0.0000, 0.0500, -8.9500)
+[node name="N03_MercerCorner_cross_street" parent="North_Market_Row" unique_id=1830953660 instance=ExtResource("3")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, 16, 0, -25)
 
-[node name="South_Curb_Long" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(150.0000, 0.2800, 0.3500)
-position = Vector3(0.0000, 0.0500, 8.9500)
+[node name="N04_Alehouse_long_market_anchor" parent="North_Market_Row" unique_id=1023730047 instance=ExtResource("4")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, 48, 0, -33)
 
-[node name="Cross_Alley_North" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(7.0000, 0.1300, 36.0000)
-position = Vector3(-36.0000, -0.0500, -25.0000)
+[node name="N05_OldGuildhall_background_mass" parent="North_Market_Row" unique_id=503823226 instance=ExtResource("5")]
+transform = Transform3D(-1, 0, -3.2584137e-07, 0, 1, 0, 3.2584137e-07, 0, -1, 78, 0, -31)
 
-[node name="Cross_Alley_South" type="CSGBox3D" parent="Ground_Blockout_CSG"]
-size = Vector3(7.0000, 0.1300, 36.0000)
-position = Vector3(38.0000, -0.0500, 25.0000)
+[node name="South_Rooftop_Row" type="Node3D" parent="." unique_id=1411584761]
 
-[node name="N01_LongArcadeReceiver_market_front" parent="North_Market_Row" instance=ExtResource("1")]
-position = Vector3(-55.0000, 0.0000, -19.0000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="S01_WideRooflineRun_rooftop_route" parent="South_Rooftop_Row" unique_id=1112308814 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 25)
 
-[node name="N02_TripleShopRow_mid_market" parent="North_Market_Row" instance=ExtResource("2")]
-position = Vector3(-18.0000, 0.0000, -19.0000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="S02_RooftopBridgeReceiver_bridge_target" parent="South_Rooftop_Row" unique_id=1286490228 instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 29)
 
-[node name="N03_MercerCorner_cross_street" parent="North_Market_Row" instance=ExtResource("3")]
-position = Vector3(16.0000, 0.0000, -25.0000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="S03_SideDoorClothHall_side_entry_block" parent="South_Rooftop_Row" unique_id=433060047 instance=ExtResource("8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 39)
 
-[node name="N04_Alehouse_long_market_anchor" parent="North_Market_Row" instance=ExtResource("4")]
-position = Vector3(48.0000, 0.0000, -33.0000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="S04_LongSideShop_alley_entry" parent="South_Rooftop_Row" unique_id=189228178 instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, 29)
 
-[node name="N05_OldGuildhall_background_mass" parent="North_Market_Row" instance=ExtResource("5")]
-position = Vector3(78.0000, 0.0000, -31.0000)
-rotation = Vector3(0.000000, 3.141593, 0.000000)
+[node name="S05_Ropewalk_long_service_building" parent="South_Rooftop_Row" unique_id=748322685 instance=ExtResource("10")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 0, 39)
 
-[node name="S01_WideRooflineRun_rooftop_route" parent="South_Rooftop_Row" instance=ExtResource("6")]
-position = Vector3(-56.0000, 0.0000, 25.0000)
+[node name="West_End_Cap" type="Node3D" parent="." unique_id=1450512665]
 
-[node name="S02_RooftopBridgeReceiver_bridge_target" parent="South_Rooftop_Row" instance=ExtResource("7")]
-position = Vector3(-22.0000, 0.0000, 29.0000)
+[node name="W01_BridgeHouse_linear_street_gate" parent="West_End_Cap" unique_id=1542162111 instance=ExtResource("11")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -88, 0, 0)
 
-[node name="S03_SideDoorClothHall_side_entry_block" parent="South_Rooftop_Row" instance=ExtResource("8")]
-position = Vector3(14.0000, 0.0000, 39.0000)
+[node name="East_End_Cap" type="Node3D" parent="." unique_id=958295089]
 
-[node name="S04_LongSideShop_alley_entry" parent="South_Rooftop_Row" instance=ExtResource("9")]
-position = Vector3(45.0000, 0.0000, 29.0000)
+[node name="E01_GateStreet_overpass_like_exit" parent="East_End_Cap" unique_id=72922998 instance=ExtResource("12")]
+transform = Transform3D(3.1391647e-07, 0, -1, 0, 1, 0, 1, 0, 3.1391647e-07, 92, 0, 0)
 
-[node name="S05_Ropewalk_long_service_building" parent="South_Rooftop_Row" instance=ExtResource("10")]
-position = Vector3(76.0000, 0.0000, 39.0000)
+[node name="Traversal_Overlays" type="Node3D" parent="." unique_id=216024869]
 
-[node name="W01_BridgeHouse_linear_street_gate" parent="West_End_Cap" instance=ExtResource("11")]
-position = Vector3(-88.0000, 0.0000, 0.0000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="TRAV_UpperGalleryBridge_cross_street" parent="Traversal_Overlays" unique_id=95564928 instance=ExtResource("13")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 13.2, 0)
 
-[node name="E01_GateStreet_overpass_like_exit" parent="East_End_Cap" instance=ExtResource("12")]
-position = Vector3(92.0000, 0.0000, 0.0000)
-rotation = Vector3(0.000000, -1.570796, 0.000000)
+[node name="TRAV_RoofTimberBridge_cross_street" parent="Traversal_Overlays" unique_id=1778296662 instance=ExtResource("13")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 16.7, 0)
 
-[node name="TRAV_UpperGalleryBridge_cross_street" parent="Traversal_Overlays" instance=ExtResource("13")]
-position = Vector3(-22.0000, 13.2000, 0.0000)
+[node name="TRAV_GalleryConnector_along_north_facade" parent="Traversal_Overlays" unique_id=1529510647 instance=ExtResource("14")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -40, 10.6, -9.8)
 
-[node name="TRAV_RoofTimberBridge_cross_street" parent="Traversal_Overlays" instance=ExtResource("13")]
-position = Vector3(31.0000, 16.7000, 0.0000)
+[node name="TRAV_BrokenPlankGap_roof_shortcut" parent="Traversal_Overlays" unique_id=1152375709 instance=ExtResource("15")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 18.4, 0)
 
-[node name="TRAV_GalleryConnector_along_north_facade" parent="Traversal_Overlays" instance=ExtResource("14")]
-position = Vector3(-40.0000, 10.6000, -9.8000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="TRAV_ParapetStep_north_roof_transition" parent="Traversal_Overlays" unique_id=663605479 instance=ExtResource("16")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 52, 16.9, -8.6)
 
-[node name="TRAV_BrokenPlankGap_roof_shortcut" parent="Traversal_Overlays" instance=ExtResource("15")]
-position = Vector3(5.0000, 18.4000, 0.0000)
+[node name="TRAV_ScaffoldPlatform_alley_access" parent="Traversal_Overlays" unique_id=63233063 instance=ExtResource("17")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -36, 6.4, -10.2)
 
-[node name="TRAV_ParapetStep_north_roof_transition" parent="Traversal_Overlays" instance=ExtResource("16")]
-position = Vector3(52.0000, 16.9000, -8.6000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="TRAV_WallPegs_to_gallery" parent="Traversal_Overlays" unique_id=1233179298 instance=ExtResource("18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 2.6, -8.2)
 
-[node name="TRAV_ScaffoldPlatform_alley_access" parent="Traversal_Overlays" instance=ExtResource("17")]
-position = Vector3(-36.0000, 6.4000, -10.2000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="TRAV_WideStair_service_side" parent="Traversal_Overlays" unique_id=1928409257 instance=ExtResource("19")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 41, 0, 11.2)
 
-[node name="TRAV_WallPegs_to_gallery" parent="Traversal_Overlays" instance=ExtResource("18")]
-position = Vector3(-36.0000, 2.6000, -8.2000)
-rotation = Vector3(0.000000, 0.000000, 0.000000)
+[node name="Rope_And_Line_Props" type="Node3D" parent="." unique_id=1870879867]
 
-[node name="TRAV_WideStair_service_side" parent="Traversal_Overlays" instance=ExtResource("19")]
-position = Vector3(41.0000, 0.0000, 11.2000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
+[node name="GLTF_RopeLine_roof_to_roof_AC_style" parent="Rope_And_Line_Props" unique_id=2018295967 instance=ExtResource("20")]
+transform = Transform3D(4.2378724e-07, 0, 1.35, 0, 1, 0, -1.35, 0, 4.2378724e-07, 4, 19.2, 0)
 
-[node name="GLTF_RopeLine_roof_to_roof_AC_style" parent="Rope_And_Line_Props" instance=ExtResource("20")]
-position = Vector3(4.0000, 19.2000, 0.0000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
-scale = Vector3(1.3500, 1.0000, 1.3500)
+[node name="GLTF_ClothesLine_market_alley" parent="Rope_And_Line_Props" unique_id=227613281 instance=ExtResource("21")]
+transform = Transform3D(3.4530814e-07, 0, 1.1, 0, 1, 0, -1.1, 0, 3.4530814e-07, -37, 7.8, -0.5)
 
-[node name="GLTF_ClothesLine_market_alley" parent="Rope_And_Line_Props" instance=ExtResource("21")]
-position = Vector3(-37.0000, 7.8000, -0.5000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
-scale = Vector3(1.1000, 1.0000, 1.1000)
+[node name="GLTF_RopeAndClothesLine_upper_court" parent="Rope_And_Line_Props" unique_id=996502013 instance=ExtResource("22")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 61, 12.5, 0)
 
-[node name="GLTF_RopeAndClothesLine_upper_court" parent="Rope_And_Line_Props" instance=ExtResource("22")]
-position = Vector3(61.0000, 12.5000, 0.0000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
-scale = Vector3(1.0000, 1.0000, 1.0000)
+[node name="Blockout_Camera_And_Light" type="Node3D" parent="." unique_id=1149293795]
 
-[node name="Sun_DirectionalLight3D" type="DirectionalLight3D" parent="Blockout_Camera_And_Light"]
-rotation = Vector3(-0.800000, -0.550000, 0.000000)
-light_energy = 1.4000
+[node name="Sun_DirectionalLight3D" type="DirectionalLight3D" parent="Blockout_Camera_And_Light" unique_id=1543518248]
+transform = Transform3D(0.8525245, 0.37495288, -0.36415973, 0, 0.6967067, 0.7173561, 0.52268726, -0.6115636, 0.59395957, 0, 0, 0)
+light_energy = 1.4
 
-[node name="Inspection_Camera3D" type="Camera3D" parent="Blockout_Camera_And_Light"]
-position = Vector3(-78.0000, 30.0000, 46.0000)
-rotation = Vector3(-0.460000, -0.900000, 0.000000)
+[node name="Inspection_Camera3D" type="Camera3D" parent="Blockout_Camera_And_Light" unique_id=378363525]
+transform = Transform3D(0.62161, 0.3477565, -0.70190203, 0, 0.8960525, 0.44394812, 0.7833269, -0.2759626, 0.55699515, -78, 30, 46)
 current = true
-fov = 63.0000
-
+fov = 63.0

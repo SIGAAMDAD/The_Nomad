@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cuscd48w0jayk"
+path="res://.godot/imported/reeds_clump_tall.obj-f25fafd8744d3206f506d1ac0fa7b2c9.mesh"
+
+[deps]
+
+files=["res://.godot/imported/reeds_clump_tall.obj-f25fafd8744d3206f506d1ac0fa7b2c9.mesh"]
+
+source_file="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/reeds_clump_tall.obj"
+dest_files=["res://.godot/imported/reeds_clump_tall.obj-f25fafd8744d3206f506d1ac0fa7b2c9.mesh", "res://.godot/imported/reeds_clump_tall.obj-f25fafd8744d3206f506d1ac0fa7b2c9.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

@@ -16,15 +16,15 @@ of merchantability, fitness for a particular purpose and noninfringement.
 namespace Nomad.Game.Sdk.World
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public readonly struct WorldTime
     {
-        public int Year { get; }
-        public int Month { get; }
-        public int Day { get; }
-        public int Hour { get; }
-        public int Minute { get; }
+        public readonly int Year;
+        public readonly int Month;
+        public readonly int Day;
+        public readonly int Hour;
+        public readonly int Minute;
 
         public WorldTime(int year, int month, int day, int hour, int minute)
         {

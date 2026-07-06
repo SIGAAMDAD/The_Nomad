@@ -1,77 +1,70 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://vsa7pfgeoe6r"]
 
-[node name="GalakasMidCity_STALL_ClothRollStall_CSG" type="Node3D"]
+[node name="GalakasMidCity_STALL_ClothRollStall_CSG" type="Node3D" unique_id=1889832526]
 
-[node name="Stall_CSG" type="CSGCombiner3D" parent="."]
+[node name="Stall_CSG" type="CSGCombiner3D" parent="." unique_id=735367029]
 use_collision = true
 
-[node name="StreetContact_PlankBase" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(5.0500, 0.1200, 2.1500)
-position = Vector3(0.0000, 0.0600, 0.0000)
+[node name="StreetContact_PlankBase" type="CSGBox3D" parent="Stall_CSG" unique_id=1211830144]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+size = Vector3(5.05, 0.12, 2.15)
 
-[node name="FrontCounter" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(4.4160, 0.7200, 0.3600)
-position = Vector3(0.0000, 0.5000, -1.0500)
+[node name="FrontCounter" type="CSGBox3D" parent="Stall_CSG" unique_id=1708384726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1.05)
+size = Vector3(4.416, 0.72, 0.36)
 
-[node name="RearShelf" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(3.8400, 0.5200, 0.2800)
-position = Vector3(0.0000, 1.0500, 0.8200)
+[node name="RearShelf" type="CSGBox3D" parent="Stall_CSG" unique_id=1545300263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.82)
+size = Vector3(3.84, 0.52, 0.28)
 
-[node name="CanopyPost_M2_2_M0_9" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.1200, 2.6500, 0.1200)
-position = Vector3(-2.2500, 1.3250, -0.9200)
+[node name="CanopyPost_M2_2_M0_9" type="CSGBox3D" parent="Stall_CSG" unique_id=1088227710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 1.325, -0.92)
+size = Vector3(0.12, 2.65, 0.12)
 
-[node name="CanopyPost_M2_2_0_9" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.1200, 2.6500, 0.1200)
-position = Vector3(-2.2500, 1.3250, 0.9200)
+[node name="CanopyPost_M2_2_0_9" type="CSGBox3D" parent="Stall_CSG" unique_id=1558873514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 1.325, 0.92)
+size = Vector3(0.12, 2.65, 0.12)
 
-[node name="CanopyPost_2_2_M0_9" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.1200, 2.6500, 0.1200)
-position = Vector3(2.2500, 1.3250, -0.9200)
+[node name="CanopyPost_2_2_M0_9" type="CSGBox3D" parent="Stall_CSG" unique_id=711742487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 1.325, -0.92)
+size = Vector3(0.12, 2.65, 0.12)
 
-[node name="CanopyPost_2_2_0_9" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.1200, 2.6500, 0.1200)
-position = Vector3(2.2500, 1.3250, 0.9200)
+[node name="CanopyPost_2_2_0_9" type="CSGBox3D" parent="Stall_CSG" unique_id=1353052444]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 1.325, 0.92)
+size = Vector3(0.12, 2.65, 0.12)
 
-[node name="LeanToCanvas" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(5.2500, 0.1100, 2.5500)
-position = Vector3(0.0000, 2.7300, 0.0000)
-rotation = Vector3(0.100000, 0.000000, 0.000000)
+[node name="LeanToCanvas" type="CSGBox3D" parent="Stall_CSG" unique_id=1917964056]
+transform = Transform3D(1, 0, 0, 0, 0.9950042, -0.09983342, 0, 0.09983342, 0.9950042, 0, 2.73, 0)
+size = Vector3(5.25, 0.11, 2.55)
 
-[node name="HighBackPole" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(5.2500, 0.1200, 0.1200)
-position = Vector3(0.0000, 2.8700, 1.3000)
+[node name="HighBackPole" type="CSGBox3D" parent="Stall_CSG" unique_id=1175561696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.87, 1.3)
+size = Vector3(5.25, 0.12, 0.12)
 
-[node name="DrapedRoll_00" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.2800, 0.2800, 1.4400)
-position = Vector3(-1.4400, 0.9400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.000000)
+[node name="DrapedRoll_00" type="CSGBox3D" parent="Stall_CSG" unique_id=2077153712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44, 0.94, 0)
+size = Vector3(0.28, 0.28, 1.44)
 
-[node name="DrapedRoll_01" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.2800, 0.2800, 1.4400)
-position = Vector3(-0.4800, 0.9400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.020000)
+[node name="DrapedRoll_01" type="CSGBox3D" parent="Stall_CSG" unique_id=979138090]
+transform = Transform3D(0.9998, -0.019998666, 0, 0.019998666, 0.9998, 0, 0, 0, 1, -0.48, 0.94, 0)
+size = Vector3(0.28, 0.28, 1.44)
 
-[node name="DrapedRoll_02" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.2800, 0.2800, 1.4400)
-position = Vector3(0.4800, 0.9400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.040000)
+[node name="DrapedRoll_02" type="CSGBox3D" parent="Stall_CSG" unique_id=1581564389]
+transform = Transform3D(0.9992001, -0.039989334, 0, 0.039989334, 0.9992001, 0, 0, 0, 1, 0.48, 0.94, 0)
+size = Vector3(0.28, 0.28, 1.44)
 
-[node name="DrapedRoll_03" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.2800, 0.2800, 1.4400)
-position = Vector3(1.4400, 0.9400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.060000)
+[node name="DrapedRoll_03" type="CSGBox3D" parent="Stall_CSG" unique_id=408484065]
+transform = Transform3D(0.99820054, -0.059964005, 0, 0.059964005, 0.99820054, 0, 0, 0, 1, 1.44, 0.94, 0)
+size = Vector3(0.28, 0.28, 1.44)
 
-[node name="HangingDisplayRail" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(4.0320, 0.1000, 0.1200)
-position = Vector3(0.0000, 1.7500, 0.6800)
+[node name="HangingDisplayRail" type="CSGBox3D" parent="Stall_CSG" unique_id=1752875185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0.68)
+size = Vector3(4.032, 0.1, 0.12)
 
-[node name="SmallSideSign_Post" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.0800, 1.2500, 0.0800)
-position = Vector3(-2.5600, 1.1200, -1.1000)
+[node name="SmallSideSign_Post" type="CSGBox3D" parent="Stall_CSG" unique_id=653949050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.56, 1.12, -1.1)
+size = Vector3(0.08, 1.25, 0.08)
 
-[node name="SmallSideSign_Board" type="CSGBox3D" parent="Stall_CSG"]
-size = Vector3(0.1200, 0.5200, 0.7200)
-position = Vector3(-2.5800, 1.6500, -1.1000)
-rotation = Vector3(0.000000, 1.570796, 0.000000)
-
+[node name="SmallSideSign_Board" type="CSGBox3D" parent="Stall_CSG" unique_id=1650307096]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, -2.58, 1.65, -1.1)
+size = Vector3(0.12, 0.52, 0.72)

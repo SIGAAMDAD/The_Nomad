@@ -1,50 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!-- Build Configuration -->
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>14.0</LangVersion>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Nomad.Game.Sdk</AssemblyName>
+    <RootNamespace>Nomad.Game.Sdk</RootNamespace>
     <Nullable>annotations</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EnforceCodeStyleInBuilds>true</EnforceCodeStyleInBuilds>
     <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
     <BuildInParallel>true</BuildInParallel>
 
-    <Version>0.1.0-alpha</Version>
-
     <!-- Performance -->
     <TieredCompilation>true</TieredCompilation>
     <Deterministic>true</Deterministic>
     <UseSharedCompilation>true</UseSharedCompilation>
     <Optimize>true</Optimize>
-    <SkipLocalsInit>true</SkipLocalsInit>
     <ImplicitUsings>disable</ImplicitUsings>
-
-    <NoWarn>$(NoWarn);CA2213;CA1501;CA1812;CA1822;CA1506</NoWarn>
+    <Description>Public SDK contracts, authored definitions, IDs, and behavior extension interfaces for The Nomad.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Ensures the source generation works correctly -->
     <ProjectReference Include="../../Modding/Nomad.Modding.csproj" />
 
     <ProjectReference Include="..\..\NomadFramework\Source\Nomad.Core\Nomad.Core.csproj" />
     <ProjectReference Include="..\..\NomadFramework\Source\Nomad.SourceGenerators\Nomad.SourceGenerators.csproj"
-                    OutputItemType="Analyzer"
-                    ReferenceOutputAssembly="false" />
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
-    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(IsWindows)' == 'true'">
-    <DefineConstants>WINDOWS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(IsLinux)' == 'true'">
-    <DefineConstants>LINUX</DefineConstants>
-  </PropertyGroup>
-
 </Project>

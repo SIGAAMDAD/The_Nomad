@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dtg5a8xbckldj"
+
+[deps]
+
+files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.scene.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.path.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.description.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.placement.translation"]
+
+source_file="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.csv"
+dest_files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.scene.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.path.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.description.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/00_GUIDES/TraversalComponent_Manifest_Final.placement.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cv5qgpmikeiej"]
 
-[ext_resource type="Script" uid="uid://022metudd7mt" path="res://Assets/Prefabs/WorldBase/WorldBase.cs" id="1_3opmr"]
+[ext_resource type="Script" uid="uid://rrwyt8110f00" path="res://Source/Game/Prefabs/World/Scenes/WorldBase.cs" id="1_3opmr"]
 
-[node name="WorldBase" type="Node2D" unique_id=441724395]
+[node name="WorldBase" type="Node3D" unique_id=133267622]
 process_mode = 1
 script = ExtResource("1_3opmr")

@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using Godot;
 using Nomad.Core.Events;
 using Nomad.Core.OnlineServices;
-using Nomad.Game.Application.UI.Menus;
-using Nomad.Game.Infrastructure.Multiplayer;
+using Nomad.Game.Presentation.Menus;
+using Nomad.Game.Multiplayer.Caching;
 using Nomad.Networking.Session;
 
 namespace Nomad.Game.Presentation.Screens.LobbyCreationMenu

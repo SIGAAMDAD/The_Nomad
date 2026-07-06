@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://n15g2lid3qh2"]
 
-[ext_resource type="Script" uid="uid://t4jxdqm3mmun" path="res://Source/Game/Presentation/Screens/LobbyWaitingRoom/LobbyWaitingRoomGodotView.cs" id="1_bo7mq"]
+[ext_resource type="Script" uid="uid://ut4svp0uhn30" path="res://Source/Game/Presentation/Screens/LobbyWaitingRoom/LobbyWaitingRoomGodotView.cs" id="1_bo7mq"]
 [ext_resource type="PackedScene" uid="uid://cj8rgeahnjf4w" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.tscn" id="2_vr07t"]
 
 [node name="LobbyWaitingRoom" type="Control" unique_id=696117967]

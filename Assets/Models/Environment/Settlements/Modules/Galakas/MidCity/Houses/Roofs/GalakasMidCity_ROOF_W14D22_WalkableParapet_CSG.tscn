@@ -1,27 +1,26 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://l7alfx2l6fff"]
 
-[node name="GalakasMidCity_ROOF_W14D22_WalkableParapet_CSG" type="Node3D"]
+[node name="GalakasMidCity_ROOF_W14D22_WalkableParapet_CSG" type="Node3D" unique_id=62409124]
 
-[node name="Roof_CSG" type="CSGCombiner3D" parent="."]
+[node name="Roof_CSG" type="CSGCombiner3D" parent="." unique_id=1168750530]
 use_collision = true
 
-[node name="FlatRoofDeck" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(29.1000, 0.3600, 45.1000)
-position = Vector3(0.0000, 0.1800, 0.0000)
+[node name="FlatRoofDeck" type="CSGBox3D" parent="Roof_CSG" unique_id=940267276]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
+size = Vector3(29.1, 0.36, 45.1)
 
-[node name="Parapet_Front" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(29.1400, 0.8800, 0.3000)
-position = Vector3(0.0000, 0.9800, -22.5500)
+[node name="Parapet_Front" type="CSGBox3D" parent="Roof_CSG" unique_id=788722040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98, -22.55)
+size = Vector3(29.14, 0.88, 0.3)
 
-[node name="Parapet_Back" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(29.1400, 0.8800, 0.3000)
-position = Vector3(0.0000, 0.9734, 22.5500)
+[node name="Parapet_Back" type="CSGBox3D" parent="Roof_CSG" unique_id=1223665839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9734, 22.55)
+size = Vector3(29.14, 0.88, 0.3)
 
-[node name="Parapet_Left" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.3000, 0.8800, 45.1400)
-position = Vector3(-14.5500, 0.9800, 0.0000)
+[node name="Parapet_Left" type="CSGBox3D" parent="Roof_CSG" unique_id=2046758434]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.55, 0.98, 0)
+size = Vector3(0.3, 0.88, 45.14)
 
-[node name="Parapet_Right" type="CSGBox3D" parent="Roof_CSG"]
-size = Vector3(0.3000, 0.8800, 45.1400)
-position = Vector3(14.5500, 0.9866, 0.0000)
-
+[node name="Parapet_Right" type="CSGBox3D" parent="Roof_CSG" unique_id=1159500284]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.55, 0.9866, 0)
+size = Vector3(0.3, 0.88, 45.14)

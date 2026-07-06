@@ -28,7 +28,7 @@ namespace Nomad.Game.Sdk.Renown.Contract
         Active,
 
         /// <summary>
-        /// The contract was canceled.
+        /// The contract was canceled. All rewards are null.
         /// </summary>
         Canceled,
 

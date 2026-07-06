@@ -1,42 +1,38 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ckxlhkxq7iyaf"]
 
-[node name="GalakasMidCity_EXT_Cooper_W08D16_CSG" type="Node3D"]
+[node name="GalakasMidCity_EXT_Cooper_W08D16_CSG" type="Node3D" unique_id=122609926]
 
-[node name="Exterior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Exterior_CSG" type="CSGCombiner3D" parent="." unique_id=1583986175]
 use_collision = true
 
-[node name="PrimaryShopSign_Frame" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(7.6800, 0.4200, 0.1200)
-position = Vector3(0.0000, 3.0500, -16.1100)
+[node name="PrimaryShopSign_Frame" type="CSGBox3D" parent="Exterior_CSG" unique_id=1234048886]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, -16.11)
+size = Vector3(7.68, 0.42, 0.12)
 
-[node name="ShopAwning_Main" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(14.0800, 0.1200, 1.1000)
-position = Vector3(0.0000, 2.5500, -16.5200)
-rotation = Vector3(0.180000, 0.000000, 0.000000)
+[node name="ShopAwning_Main" type="CSGBox3D" parent="Exterior_CSG" unique_id=1273637571]
+transform = Transform3D(1, 0, 0, 0, 0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 0, 2.55, -16.52)
+size = Vector3(14.08, 0.12, 1.1)
 
-[node name="AwningFront_Rib" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(14.4000, 0.1200, 0.1200)
-position = Vector3(0.0000, 2.4500, -17.0200)
+[node name="AwningFront_Rib" type="CSGBox3D" parent="Exterior_CSG" unique_id=395851063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.45, -17.02)
+size = Vector3(14.4, 0.12, 0.12)
 
-[node name="AwningBracket_M6_7" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(0.1200, 0.1200, 0.9500)
-position = Vector3(-6.7200, 2.3700, -16.5500)
-rotation = Vector3(0.380000, 0.000000, 0.000000)
+[node name="AwningBracket_M6_7" type="CSGBox3D" parent="Exterior_CSG" unique_id=1765336230]
+transform = Transform3D(1, 0, 0, 0, 0.9286646, -0.37092048, 0, 0.37092048, 0.9286646, -6.72, 2.37, -16.55)
+size = Vector3(0.12, 0.12, 0.95)
 
-[node name="AwningBracket_6_7" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(0.1200, 0.1200, 0.9500)
-position = Vector3(6.7200, 2.3700, -16.5500)
-rotation = Vector3(0.380000, 0.000000, 0.000000)
+[node name="AwningBracket_6_7" type="CSGBox3D" parent="Exterior_CSG" unique_id=1664779081]
+transform = Transform3D(1, 0, 0, 0, 0.9286646, -0.37092048, 0, 0.37092048, 0.9286646, 6.72, 2.37, -16.55)
+size = Vector3(0.12, 0.12, 0.95)
 
-[node name="DisplayCounter_Street" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(10.2400, 0.7000, 0.6200)
-position = Vector3(0.0000, 0.6200, -16.3100)
+[node name="DisplayCounter_Street" type="CSGBox3D" parent="Exterior_CSG" unique_id=1199128033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, -16.31)
+size = Vector3(10.24, 0.7, 0.62)
 
-[node name="StackedGoods_Left" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(0.6500, 1.1000, 0.5000)
-position = Vector3(-5.1200, 0.8000, -16.2700)
+[node name="StackedGoods_Left" type="CSGBox3D" parent="Exterior_CSG" unique_id=1522053871]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.12, 0.8, -16.27)
+size = Vector3(0.65, 1.1, 0.5)
 
-[node name="StackedGoods_Right" type="CSGBox3D" parent="Exterior_CSG"]
-size = Vector3(0.6500, 0.8800, 0.5000)
-position = Vector3(5.1200, 0.6800, -16.2700)
-
+[node name="StackedGoods_Right" type="CSGBox3D" parent="Exterior_CSG" unique_id=2075462575]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.12, 0.68, -16.27)
+size = Vector3(0.65, 0.88, 0.5)

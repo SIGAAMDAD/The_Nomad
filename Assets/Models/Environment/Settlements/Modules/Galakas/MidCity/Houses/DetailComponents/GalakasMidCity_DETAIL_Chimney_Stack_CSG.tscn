@@ -1,19 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bc5ro2oincwd7"]
 
-[node name="GalakasMidCity_DETAIL_Chimney_Stack_CSG" type="Node3D"]
+[node name="GalakasMidCity_DETAIL_Chimney_Stack_CSG" type="Node3D" unique_id=264125444]
 
-[node name="Chimney_CSG" type="CSGCombiner3D" parent="."]
+[node name="Chimney_CSG" type="CSGCombiner3D" parent="." unique_id=739845626]
 use_collision = true
 
-[node name="Chimney_Shaft" type="CSGBox3D" parent="Chimney_CSG"]
-size = Vector3(0.8000, 2.1000, 0.8000)
-position = Vector3(0.0000, 1.0500, 0.0000)
+[node name="Chimney_Shaft" type="CSGBox3D" parent="Chimney_CSG" unique_id=796667856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+size = Vector3(0.8, 2.1, 0.8)
 
-[node name="Chimney_Cap" type="CSGBox3D" parent="Chimney_CSG"]
-size = Vector3(1.0500, 0.2200, 1.0500)
-position = Vector3(0.0000, 2.2000, 0.0000)
+[node name="Chimney_Cap" type="CSGBox3D" parent="Chimney_CSG" unique_id=1212873040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+size = Vector3(1.05, 0.22, 1.05)
 
-[node name="Chimney_Crown" type="CSGBox3D" parent="Chimney_CSG"]
-size = Vector3(0.6500, 0.2800, 0.6500)
-position = Vector3(0.0000, 2.4500, 0.0000)
-
+[node name="Chimney_Crown" type="CSGBox3D" parent="Chimney_CSG" unique_id=2066813774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.45, 0)
+size = Vector3(0.65, 0.28, 0.65)

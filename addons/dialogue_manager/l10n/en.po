@@ -105,8 +105,20 @@ msgstr "Jump to title"
 msgid "insert.end_dialogue"
 msgstr "End dialogue"
 
-msgid "generate_line_ids"
-msgstr "Generate line IDs"
+msgid "generate_line_ids_for_project"
+msgstr "Generate line IDs for project"
+
+msgid "generate_line_ids_for_file"
+msgstr "Generate line IDs for file"
+
+msgid "generate_ids.warning_title"
+msgstr "Generate line IDs?"
+
+msgid "generate_ids.warning_text"
+msgstr "Generate line IDs for all lines in all dialogue files?\n\n**Make sure to commit any changes to source control BEFORE running this because it cannot be undone.**"
+
+msgid "generate_ids.ok_button"
+msgstr "Generate IDs"
 
 msgid "use_uuid_only_for_ids"
 msgstr "Use UUID only for IDs"
@@ -259,7 +271,7 @@ msgid "errors.unexpected_condition"
 msgstr "Unexpected condition."
 
 msgid "errors.duplicate_id"
-msgstr "This ID is already on another line."
+msgstr "This ID is already in use."
 
 msgid "errors.missing_id"
 msgstr "This line is missing an ID."
@@ -449,3 +461,6 @@ msgstr "Multiple top-level states ({states}) share method/property/signal name \
 
 msgid "translation_plugin.character_name"
 msgstr "Character name"
+
+msgid "Static ID can't be on a line with no other content."
+msgstr "Static ID can't be on a line with no other content."

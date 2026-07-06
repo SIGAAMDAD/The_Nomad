@@ -1,0 +1,188 @@
+/*
+===========================================================================
+The Nomad MPLv2 Source Code
+Copyright (C) 2025-2026 Noah Van Til
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v2. If a copy of the MPL was not distributed with this
+file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+This software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties
+of merchantability, fitness for a particular purpose and noninfringement.
+===========================================================================
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using Nomad.Core.FileSystem;
+using Nomad.Core.Logger;
+using Nomad.Core.Util;
+using Nomad.Game.Sdk.Items;
+using Nomad.Game.Content.Catalogs;
+
+namespace Nomad.Game.Content.Catalogs.Items
+{
+	/*
+	===================================================================================
+
+	ItemCatalog
+
+	===================================================================================
+	*/
+	/// <summary>
+	///
+	/// </summary>
+
+	internal sealed class ItemCatalog : DataDefinitionRegistry<ItemDefinitionId, ItemDefinition>, IItemCatalog
+	{
+		protected override Func<string, ItemDefinitionId> KeyFactory => k => new ItemDefinitionId( new InternString( k ) );
+		protected override string LoggerCategoryName => nameof( ItemCatalog );
+
+		private readonly Dictionary<ItemType, Func<JsonElement, ItemDefinition>> _loaders = new();
+
+		/*
+		===============
+		ItemCatalog
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="fileSystem"></param>
+		public ItemCatalog( IFileSystem fileSystem, ILoggerService logger )
+			: base( fileSystem, logger )
+		{
+		}
+
+		public void ScanAndLoad()
+		{
+			ScanDirectory( "Assets/Items", "*.json" );
+		}
+
+		/*
+		===============
+		Get
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <returns></returns>
+		public TItemDefinition? Get<TItemDefinition>( ItemDefinitionId itemId )
+			where TItemDefinition : ItemDefinition
+		{
+			if ( TryGet( itemId, out ItemDefinition? definition ) ) {
+				return (TItemDefinition?)definition;
+			}
+
+			foreach ( ItemDefinition item in dataCache.Values ) {
+				if ( item.Id.Equals( itemId ) ) {
+					return (TItemDefinition?)item;
+				}
+			}
+
+			return null;
+		}
+
+		/*
+		===============
+		TryGet
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <typeparam name="TItemDefinition"></typeparam>
+		/// <param name="itemId"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public bool TryGet<TItemDefinition>( ItemDefinitionId itemId, out TItemDefinition? item )
+			where TItemDefinition : ItemDefinition
+		{
+			if ( TryGet( itemId, out var data ) ) {
+				item = (TItemDefinition?)data;
+				return true;
+			}
+
+			foreach ( ItemDefinition definition in dataCache.Values ) {
+				if ( definition.Id.Equals( itemId ) ) {
+					item = (TItemDefinition?)definition;
+					return true;
+				}
+			}
+
+			item = null;
+			return false;
+		}
+
+		/*
+		===============
+		AddLoader
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="callback"></param>
+		public void AddLoader( ItemType type, Func<JsonElement, ItemDefinition> callback )
+		{
+			_loaders[type] = callback;
+		}
+
+		/*
+		===============
+		TryLoadDefinition
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="json"></param>
+		/// <param name="definition"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		protected override bool TryLoadDefinition( JsonElement json, out ItemDefinition definition )
+		{
+			definition = null;
+			if ( !JsonLoader.TryGet<ItemType>( json, nameof( definition.BaseType ), out var baseType ) ) {
+				return false;
+			}
+			if ( !_loaders.TryGetValue( baseType, out var callback ) ) {
+				throw new InvalidOperationException();
+			}
+			definition = callback.Invoke( json );
+			definition = LoadItemBase( json, definition );
+			return true;
+		}
+
+		/*
+		===============
+		LoadItemBase
+		===============
+		*/
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="json"></param>
+		/// <param name="definition"></param>
+		private static ItemDefinition LoadItemBase( JsonElement json, ItemDefinition definition )
+		{
+			return definition with {
+				Id = new ItemDefinitionId( new InternString( json.GetRequired<string>( nameof( definition.Id ) ) ) ),
+				Weight = json.GetRequired<float>( nameof( definition.Weight ) ),
+				BaseCost = json.GetRequired<float>( nameof( definition.BaseCost ) ),
+				IsStackable = json.GetRequired<bool>( nameof( definition.IsStackable ) ),
+				Name = new InternString( json.GetRequired<string>( nameof( definition.Name ) ) ),
+				JournalEntryId = new InternString( json.GetRequired<string>( nameof( definition.JournalEntryId ) ) ),
+				BehaviorId = json.TryGet<string>( nameof( definition.BehaviorId ), out string behaviorId )
+					? new InternString( behaviorId )
+					: null
+			};
+		}
+	};
+};

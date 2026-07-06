@@ -1,6 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://btdyqiyrv0111"]
+[gd_scene format=3 uid="uid://btdyqiyrv0111"]
 
-[ext_resource type="Script" uid="uid://ge58oddwqmkt" path="res://Assets/Prefabs/SplitScreen/SplitScreen2World.cs" id="1_7eg4w"]
+[ext_resource type="Script" uid="uid://wu8fk64gffik" path="res://Assets/Prefabs/SplitScreen/SplitScreen2World.cs" id="1_7eg4w"]
 [ext_resource type="PackedScene" uid="uid://cg1t4dmstlusg" path="res://Assets/Prefabs/Regions/SaltWastes.tscn" id="2_k5wsd"]
 [ext_resource type="PackedScene" uid="uid://p648ymu4llbw" path="res://Assets/Prefabs/PlayerSpawner/PlayerSpawner.tscn" id="3_jyeg7"]
 [ext_resource type="PackedScene" uid="uid://bktaccmkkt34m" path="res://Assets/Prefabs/Meliora/MelioraRoot.tscn" id="4_msd2u"]
@@ -17,7 +17,7 @@ position = Vector2(-2039, 1241)
 
 [node name="PlayerSpawner" parent="SaltWastes" unique_id=654047548 instance=ExtResource("3_jyeg7")]
 process_priority = 2
-position = Vector2(820, 249)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 820, 249, 0)
 LocalPlayerCount = 2
 
 [node name="MelioraRoot" parent="SaltWastes" unique_id=1146163250 instance=ExtResource("4_msd2u")]

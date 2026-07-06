@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dtnh2sjwuqb8g"
+
+[deps]
+
+files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.width.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.height.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.style.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.intended.translation"]
+
+source_file="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.csv"
+dest_files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.width.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.height.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.style.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/Doors/DoorComponent_Manifest.intended.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,7 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d2g3wvulksone"]
 
 [ext_resource type="ArrayMesh" uid="uid://b004p6inetm83" path="res://Assets/Terrain/Clutter/nomad_terrain3d_vegetation/meshes/dead_tree_snag.obj" id="1_mesh"]
 
-[node name="dead_tree_snag" type="MeshInstance3D"]
+[node name="dead_tree_snag" type="MeshInstance3D" unique_id=1646299445]
 mesh = ExtResource("1_mesh")
-cast_shadow = 1

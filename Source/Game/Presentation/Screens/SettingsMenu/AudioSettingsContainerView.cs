@@ -53,6 +53,18 @@ namespace Nomad.Game.Presentation.Screens.SettingsMenu
 		private OptionList _outputDevice;
 		private OptionList _speakerMode;
 
+		public void SetMasterVolumeLimits( float min, float max )
+		{
+			_masterVolume.Min = min;
+			_masterVolume.Max = max;
+		}
+
+		public void SetMasterVolume( float value )
+		{
+			_masterVolume.Value = value;
+			MasterVolumeChanged?.Invoke( value );
+		}
+
 		public void SetMusicVolumeLimits( float min, float max )
 		{
 			_musicVolume.Min = min;

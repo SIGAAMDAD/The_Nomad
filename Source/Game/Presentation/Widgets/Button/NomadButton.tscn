@@ -2,7 +2,7 @@
 
 [ext_resource type="StyleBox" uid="uid://beo6lqqiq1n8a" path="res://Source/Game/Presentation/Widgets/Button/Normal.tres" id="1_lo75g"]
 [ext_resource type="StyleBox" uid="uid://bssnnfr2nuwnw" path="res://Source/Game/Presentation/Widgets/Button/Focused.tres" id="2_lo75g"]
-[ext_resource type="Script" uid="uid://cin8yuq0jaw4r" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.cs" id="3_lo75g"]
+[ext_resource type="Script" uid="uid://dt8xma7aw61hy" path="res://Source/Game/Presentation/Widgets/Button/NomadButton.cs" id="3_lo75g"]
 
 [node name="NomadButton" type="Button" unique_id=1938011170]
 use_parent_material = true

@@ -1,79 +1,78 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dau4j3dablovo"]
 
-[node name="GalakasMidCity_DOOR_StoneArch_Narrow_CSG" type="Node3D"]
+[node name="GalakasMidCity_DOOR_StoneArch_Narrow_CSG" type="Node3D" unique_id=469585842]
 
-[node name="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=648385784]
 use_collision = true
 
-[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(1.3500, 2.6000, 0.1800)
-position = Vector3(0.0000, 1.3000, -0.0300)
+[node name="DoorLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1124471881]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -0.03)
+size = Vector3(1.35, 2.6, 0.18)
 
-[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.1800, 2.8000, 0.2800)
-position = Vector3(-0.7650, 1.4000, 0.0000)
+[node name="Frame_LeftPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=697831928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.765, 1.4, 0)
+size = Vector3(0.18, 2.8, 0.28)
 
-[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.1800, 2.8000, 0.2800)
-position = Vector3(0.7650, 1.4000, 0.0000)
+[node name="Frame_RightPost" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1734365399]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.765, 1.4, 0)
+size = Vector3(0.18, 2.8, 0.28)
 
-[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(1.7820, 0.1800, 0.3000)
-position = Vector3(0.0000, 2.6900, 0.0000)
+[node name="Frame_Lintel" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=199459830]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.69, 0)
+size = Vector3(1.782, 0.18, 0.3)
 
-[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(1.6380, 0.1200, 0.3400)
-position = Vector3(0.0000, 0.0600, 0.0200)
+[node name="Frame_Threshold" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=118549854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.02)
+size = Vector3(1.638, 0.12, 0.34)
 
-[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.0550, 2.2880, 0.0550)
-position = Vector3(-0.5670, 1.3000, -0.1450)
+[node name="VerticalPlank_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=377554023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.567, 1.3, -0.145)
+size = Vector3(0.055, 2.288, 0.055)
 
-[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.0550, 2.2880, 0.0550)
-position = Vector3(-0.1890, 1.3000, -0.1450)
+[node name="VerticalPlank_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=520447016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.189, 1.3, -0.145)
+size = Vector3(0.055, 2.288, 0.055)
 
-[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.0550, 2.2880, 0.0550)
-position = Vector3(0.1890, 1.3000, -0.1450)
+[node name="VerticalPlank_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=336079401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.189, 1.3, -0.145)
+size = Vector3(0.055, 2.288, 0.055)
 
-[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.0550, 2.2880, 0.0550)
-position = Vector3(0.5670, 1.3000, -0.1450)
+[node name="VerticalPlank_04" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1300799920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.567, 1.3, -0.145)
+size = Vector3(0.055, 2.288, 0.055)
 
-[node name="Arch_Block_LeftShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.4320, 0.1800, 0.3200)
-position = Vector3(-0.4050, 2.8200, 0.0200)
+[node name="Arch_Block_LeftShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=52624634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.405, 2.82, 0.02)
+size = Vector3(0.432, 0.18, 0.32)
 
-[node name="Arch_Block_RightShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.4320, 0.1800, 0.3200)
-position = Vector3(0.4050, 2.8200, 0.0200)
+[node name="Arch_Block_RightShoulder" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=205721483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 2.82, 0.02)
+size = Vector3(0.432, 0.18, 0.32)
 
-[node name="Arch_Block_Crown" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.5940, 0.2000, 0.3400)
-position = Vector3(0.0000, 3.0000, 0.0200)
+[node name="Arch_Block_Crown" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1176561480]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0.02)
+size = Vector3(0.594, 0.2, 0.34)
 
-[node name="StoneLintel_Heavy" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(2.1500, 0.3200, 0.4200)
-position = Vector3(0.0000, 2.8500, 0.0400)
+[node name="StoneLintel_Heavy" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=527530292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0.04)
+size = Vector3(2.15, 0.32, 0.42)
 
-[node name="StoneBlock_LeftBase" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.2600, 0.3800, 0.4000)
-position = Vector3(-1.0250, 0.2600, 0.0400)
+[node name="StoneBlock_LeftBase" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1906263683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.025, 0.26, 0.04)
+size = Vector3(0.26, 0.38, 0.4)
 
-[node name="StoneBlock_RightBase" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.2600, 0.3800, 0.4000)
-position = Vector3(1.0250, 0.2600, 0.0400)
+[node name="StoneBlock_RightBase" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=666183476]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.025, 0.26, 0.04)
+size = Vector3(0.26, 0.38, 0.4)
 
-[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-0.5550, 0.6500, -0.2200)
+[node name="Hinge_Block_01" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1148247371]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.555, 0.65, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-0.5550, 1.3520, -0.2200)
+[node name="Hinge_Block_02" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=1480626626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.555, 1.352, -0.22)
+size = Vector3(0.16, 0.13, 0.09)
 
-[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG"]
-size = Vector3(0.1600, 0.1300, 0.0900)
-position = Vector3(-0.5550, 2.0280, -0.2200)
-
+[node name="Hinge_Block_03" type="CSGBox3D" parent="GalakasMidCity_DOOR_StoneArch_Narrow_CSG_CSG" unique_id=775948611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.555, 2.028, -0.22)
+size = Vector3(0.16, 0.13, 0.09)

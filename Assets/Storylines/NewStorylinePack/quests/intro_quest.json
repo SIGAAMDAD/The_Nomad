@@ -1,0 +1,130 @@
+{
+	"conditions": [],
+	"description": "",
+	"edges": [
+		{
+			"flags": [],
+			"from": "ENTRY_1",
+			"kind": "Sequence",
+			"to": "OBJECTIVE_2"
+		},
+		{
+			"flags": [],
+			"from": "OBJECTIVE_2",
+			"kind": "Sequence",
+			"to": "OBJECTIVE_3"
+		}
+	],
+	"entryNodes": [],
+	"id": "INTRO_QUEST",
+	"name": "Intro Quest",
+	"nodes": [
+		{
+			"id": "ENTRY_1",
+			"name": "Entry 1",
+			"objectiveId": "ENTRY_1",
+			"position": {
+				"x": 160.0,
+				"y": 140.0
+			},
+			"questId": "ENTRY_1",
+			"type": "Entry"
+		},
+		{
+			"id": "OBJECTIVE_2",
+			"name": "Objective 2",
+			"objectiveId": "OBJECTIVE_2",
+			"position": {
+				"x": 440.0,
+				"y": 140.0
+			},
+			"questId": "OBJECTIVE_2",
+			"type": "Objective"
+		},
+		{
+			"id": "OBJECTIVE_3",
+			"name": "Objective 3",
+			"objectiveId": "OBJECTIVE_3",
+			"position": {
+				"x": 880.0,
+				"y": 140.0
+			},
+			"questId": "OBJECTIVE_3",
+			"type": "Objective"
+		}
+	],
+	"questTree": {
+		"_editor": {
+			"positions": {
+				"ENTRY_1": {
+					"x": 160.0,
+					"y": 140.0
+				},
+				"OBJECTIVE_2": {
+					"x": 440.0,
+					"y": 140.0
+				},
+				"OBJECTIVE_3": {
+					"x": 880.0,
+					"y": 140.0
+				}
+			},
+			"version": 4
+		},
+		"conditions": [],
+		"edges": [
+			{
+				"flags": [],
+				"from": "ENTRY_1",
+				"kind": "Sequence",
+				"to": "OBJECTIVE_2"
+			},
+			{
+				"flags": [],
+				"from": "OBJECTIVE_2",
+				"kind": "Sequence",
+				"to": "OBJECTIVE_3"
+			}
+		],
+		"entryNodes": [],
+		"entryQuests": [],
+		"nodes": [
+			{
+				"id": "ENTRY_1",
+				"name": "Entry 1",
+				"objectiveId": "ENTRY_1",
+				"position": {
+					"x": 160.0,
+					"y": 140.0
+				},
+				"questId": "ENTRY_1",
+				"type": "Entry"
+			},
+			{
+				"id": "OBJECTIVE_2",
+				"name": "Objective 2",
+				"objectiveId": "OBJECTIVE_2",
+				"position": {
+					"x": 440.0,
+					"y": 140.0
+				},
+				"questId": "OBJECTIVE_2",
+				"type": "Objective"
+			},
+			{
+				"id": "OBJECTIVE_3",
+				"name": "Objective 3",
+				"objectiveId": "OBJECTIVE_3",
+				"position": {
+					"x": 880.0,
+					"y": 140.0
+				},
+				"questId": "OBJECTIVE_3",
+				"type": "Objective"
+			}
+		],
+		"questId": "INTRO_QUEST",
+		"storylineId": "NEW_STORYLINE"
+	},
+	"storylineId": "NEW_STORYLINE"
+}

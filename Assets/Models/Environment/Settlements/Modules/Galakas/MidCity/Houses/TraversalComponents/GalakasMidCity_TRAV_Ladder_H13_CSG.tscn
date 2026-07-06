@@ -1,207 +1,156 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cna3ipi7w27p7"]
 
-[node name="GalakasMidCity_TRAV_Ladder_H13_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_Ladder_H13_CSG" type="Node3D" unique_id=850840780]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=257089178]
 use_collision = true
 
-[node name="LeftRail" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0600
-height = 13.0000
-sides = 8
+[node name="LeftRail" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1831688496]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 6.5, 0)
+radius = 0.06
+height = 13.0
 smooth_faces = false
-position = Vector3(-0.3500, 6.5000, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.000000)
 
-[node name="RightRail" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0600
-height = 13.0000
-sides = 8
+[node name="RightRail" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1879342663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 6.5, 0)
+radius = 0.06
+height = 13.0
 smooth_faces = false
-position = Vector3(0.3500, 6.5000, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.000000)
 
-[node name="Rung_00" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_00" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=737285439]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 0.35, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 0.3500, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_01" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_01" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=279729946]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 0.9091, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 0.9091, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_02" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_02" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=302562831]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 1.4682, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 1.4682, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_03" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_03" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=287495677]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 2.0273, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 2.0273, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_04" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_04" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=124324394]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 2.5864, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 2.5864, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_05" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_05" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=932587190]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 3.1455, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 3.1455, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_06" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_06" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=522927478]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 3.7045, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 3.7045, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_07" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_07" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1248033845]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 4.2636, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 4.2636, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_08" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_08" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=191794855]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 4.8227, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 4.8227, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_09" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_09" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=854083660]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 5.3818, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 5.3818, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_10" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_10" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1140998770]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 5.9409, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 5.9409, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_11" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_11" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=346159458]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 6.5, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 6.5000, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_12" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_12" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=155378178]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 7.0591, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 7.0591, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_13" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_13" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1873587926]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 7.6182, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 7.6182, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_14" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_14" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1375626210]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 8.1773, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 8.1773, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_15" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_15" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=965447925]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 8.7364, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 8.7364, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_16" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_16" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=253853068]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 9.2955, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 9.2955, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_17" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_17" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1183154908]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 9.8545, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 9.8545, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_18" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_18" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=84644449]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 10.4136, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 10.4136, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_19" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_19" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=447467512]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 10.9727, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 10.9727, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_20" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_20" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=561868431]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 11.5318, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 11.5318, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_21" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_21" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1817347925]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 12.0909, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 12.0909, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
 
-[node name="Rung_22" type="CSGCylinder3D" parent="Traversal_CSG"]
-radius = 0.0450
-height = 0.8500
-sides = 8
+[node name="Rung_22" type="CSGCylinder3D" parent="Traversal_CSG" unique_id=1310453986]
+transform = Transform3D(3.1391647e-07, -1, 0, 1, 3.1391647e-07, 0, 0, 0, 1, 0, 12.65, 0)
+radius = 0.045
+height = 0.85
 smooth_faces = false
-position = Vector3(0.0000, 12.6500, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 1.570796)
-

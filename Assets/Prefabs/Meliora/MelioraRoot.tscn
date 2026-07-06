@@ -1,43 +1,22 @@
 [gd_scene format=3 uid="uid://bktaccmkkt34m"]
 
-[ext_resource type="Script" uid="uid://8j24p4qsw3n2" path="res://Assets/Prefabs/Meliora/CheckpointPrefab.cs" id="1_p4dx3"]
-[ext_resource type="SpriteFrames" uid="uid://fx2lnx6ui0rs" path="res://Assets/Animations/Environment/Meliora.tres" id="1_u81d1"]
-[ext_resource type="Script" uid="uid://dfdavcqmmtwbt" path="res://Assets/Prefabs/Meliora/visual.gd" id="3_1mo2o"]
+[ext_resource type="Script" uid="uid://dv1pv8rdoq4md" path="res://Source/Game/Prefabs/World/Interactables/CheckpointPrefab.cs" id="1_p4dx3"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ip35x"]
-radius = 89.560036
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_u81d1"]
-size = Vector2(81, 44)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_p4dx3"]
-polygon = PackedVector2Array(36, 44, -4, 56, -43, 44, -43, 44, -3, 28)
-
-[node name="MelioraRoot" type="Node2D" unique_id=1146163250]
+[node name="MelioraRoot" type="Node3D" unique_id=1510357179]
 script = ExtResource("1_p4dx3")
 
-[node name="Zone" type="Area2D" parent="." unique_id=312689260]
+[node name="Zone" type="Area3D" parent="." unique_id=929842006]
 collision_layer = 512
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Zone" unique_id=1316175464]
-position = Vector2(0, 29)
-shape = SubResource("CircleShape2D_ip35x")
+[node name="CollisionShape2D" type="CollisionShape3D" parent="Zone" unique_id=1407802885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 29, 0)
 
-[node name="Blocker" type="StaticBody2D" parent="." unique_id=1432106006]
+[node name="Blocker" type="StaticBody3D" parent="." unique_id=1234627934]
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocker" unique_id=956666712]
-position = Vector2(-3.5, 33)
-shape = SubResource("RectangleShape2D_u81d1")
+[node name="CollisionShape2D" type="CollisionShape3D" parent="Blocker" unique_id=678616688]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 33, 0)
 
-[node name="Visual" type="AnimatedSprite2D" parent="." unique_id=1471559592 groups=["height_shadow_caster"]]
-position = Vector2(0, -51)
-sprite_frames = ExtResource("1_u81d1")
-animation = &"active"
-autoplay = "inactive"
-frame_progress = 0.7493553
-script = ExtResource("3_1mo2o")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=52452840]
-occluder = SubResource("OccluderPolygon2D_p4dx3")
+[node name="Visual" type="MeshInstance3D" parent="." unique_id=685971251]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -51, 0)

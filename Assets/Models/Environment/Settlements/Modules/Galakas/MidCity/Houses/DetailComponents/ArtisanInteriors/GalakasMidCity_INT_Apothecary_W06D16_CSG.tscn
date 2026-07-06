@@ -1,39 +1,38 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dpm4j4fl8aiq"]
 
-[node name="GalakasMidCity_INT_Apothecary_W06D16_CSG" type="Node3D"]
+[node name="GalakasMidCity_INT_Apothecary_W06D16_CSG" type="Node3D" unique_id=1994772845]
 
-[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Interior_CSG" type="CSGCombiner3D" parent="." unique_id=77975340]
 use_collision = true
 
-[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(6.9600, 0.8600, 0.5000)
-position = Vector3(0.0000, 0.6600, 2.8800)
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG" unique_id=1620851223]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 2.88)
+size = Vector3(6.96, 0.86, 0.5)
 
-[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(8.4000, 1.4500, 0.1800)
-position = Vector3(0.0000, 1.3000, 9.9200)
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG" unique_id=2108099867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 9.92)
+size = Vector3(8.4, 1.45, 0.18)
 
-[node name="BottleStack_00" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.1800, 0.5500, 0.1800)
-position = Vector3(-3.6000, 1.3500, 8.0000)
+[node name="BottleStack_00" type="CSGBox3D" parent="Interior_CSG" unique_id=1011486277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 1.35, 8)
+size = Vector3(0.18, 0.55, 0.18)
 
-[node name="BottleStack_01" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.1800, 0.5500, 0.1800)
-position = Vector3(-1.8000, 1.3500, 8.0000)
+[node name="BottleStack_01" type="CSGBox3D" parent="Interior_CSG" unique_id=1988241497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.35, 8)
+size = Vector3(0.18, 0.55, 0.18)
 
-[node name="BottleStack_02" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.1800, 0.5500, 0.1800)
-position = Vector3(0.0000, 1.3500, 8.0000)
+[node name="BottleStack_02" type="CSGBox3D" parent="Interior_CSG" unique_id=1436756206]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 8)
+size = Vector3(0.18, 0.55, 0.18)
 
-[node name="BottleStack_03" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.1800, 0.5500, 0.1800)
-position = Vector3(1.8000, 1.3500, 8.0000)
+[node name="BottleStack_03" type="CSGBox3D" parent="Interior_CSG" unique_id=1170886167]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1.35, 8)
+size = Vector3(0.18, 0.55, 0.18)
 
-[node name="BottleStack_04" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.1800, 0.5500, 0.1800)
-position = Vector3(3.6000, 1.3500, 8.0000)
+[node name="BottleStack_04" type="CSGBox3D" parent="Interior_CSG" unique_id=1850198862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 1.35, 8)
+size = Vector3(0.18, 0.55, 0.18)
 
-[node name="MortarTable" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(3.6000, 0.6500, 0.6200)
-position = Vector3(2.8800, 0.5500, -1.2800)
-
+[node name="MortarTable" type="CSGBox3D" parent="Interior_CSG" unique_id=1927393347]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88, 0.55, -1.28)
+size = Vector3(3.6, 0.65, 0.62)

@@ -1,129 +1,127 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://55mqx7nu7sr2"]
 
-[ext_resource type="Material" path="../Materials/GrassBladeMaterial.tres" id="grass"]
+[ext_resource type="Material" path="res://Assets/Models/Environment/Vegetation/Terrain3D/Materials/GrassBladeMaterial.tres" id="grass"]
 
 [sub_resource type="QuadMesh" id="Quad"]
-size = Vector2(1, 1)
 
-[node name="GrassPatch_Dense" type="Node3D"]
+[node name="GrassPatch_Dense" type="Node3D" unique_id=460287106]
 
-[node name="Blade_01" type="MeshInstance3D" parent="."]
+[node name="Blade_01" type="MeshInstance3D" parent="." unique_id=1260629365]
 transform = Transform3D(0.0407938, 0, -0.881873, 0, 0.813611, 0, 0.0763012, 0, 0.471486, 0.0204525, 0.406806, -0.0672661)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_02" type="MeshInstance3D" parent="."]
+[node name="Blade_02" type="MeshInstance3D" parent="." unique_id=452274433]
 transform = Transform3D(-0.016284, 0, 0.971188, 0, 0.719964, 0, -0.0663606, 0, -0.238316, -0.0308041, 0.359982, 0.0210888)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_03" type="MeshInstance3D" parent="."]
+[node name="Blade_03" type="MeshInstance3D" parent="." unique_id=1755147175]
 transform = Transform3D(-0.0131807, 0, -0.990575, 0, 0.655845, 0, 0.0953231, 0, -0.136971, 0.0430057, 0.327923, -0.222947)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_04" type="MeshInstance3D" parent="."]
+[node name="Blade_04" type="MeshInstance3D" parent="." unique_id=1809090553]
 transform = Transform3D(-0.0915087, 0, 0.449591, 0, 0.569284, 0, -0.046059, 0, -0.893235, 0.200908, 0.284642, 0.158485)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_05" type="MeshInstance3D" parent="."]
+[node name="Blade_05" type="MeshInstance3D" parent="." unique_id=1006203866]
 transform = Transform3D(0.055974, 0, -0.329894, 0, 0.834027, 0, 0.0195605, 0, 0.944018, -0.285564, 0.417013, 0.129384)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_06" type="MeshInstance3D" parent="."]
+[node name="Blade_06" type="MeshInstance3D" parent="." unique_id=954971171]
 transform = Transform3D(-0.0600976, 0, 0.310349, 0, 0.391219, 0, -0.01962, 0, -0.950623, -0.141102, 0.19561, 0.0777975)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_07" type="MeshInstance3D" parent="."]
+[node name="Blade_07" type="MeshInstance3D" parent="." unique_id=1157869300]
 transform = Transform3D(0.0891445, 0, 0.13824, 0, 0.616793, 0, -0.0124428, 0, 0.990399, 0.330546, 0.308396, -0.00886652)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_08" type="MeshInstance3D" parent="."]
+[node name="Blade_08" type="MeshInstance3D" parent="." unique_id=774044098]
 transform = Transform3D(-0.0884636, 0, 0.108539, 0, 0.373682, 0, -0.00965885, 0, -0.994092, -0.136923, 0.186841, -0.30528)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_09" type="MeshInstance3D" parent="."]
+[node name="Blade_09" type="MeshInstance3D" parent="." unique_id=423538327]
 transform = Transform3D(0.0588709, 0, -0.0797098, 0, 0.393118, 0, 0.00470757, 0, 0.996818, -0.00702872, 0.196559, 0.198134)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_10" type="MeshInstance3D" parent="."]
+[node name="Blade_10" type="MeshInstance3D" parent="." unique_id=1613118110]
 transform = Transform3D(-0.0643358, 0, 0.798902, 0, 0.630002, 0, -0.0854551, 0, -0.601462, 0.0474884, 0.315001, -0.075962)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_11" type="MeshInstance3D" parent="."]
+[node name="Blade_11" type="MeshInstance3D" parent="." unique_id=1893663069]
 transform = Transform3D(-0.0479292, 0, -0.585166, 0, 0.704972, 0, 0.0345863, 0, -0.810914, 0.0218571, 0.352486, 0.0931001)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_12" type="MeshInstance3D" parent="."]
+[node name="Blade_12" type="MeshInstance3D" parent="." unique_id=1652424300]
 transform = Transform3D(0.0712821, 0, 0.628893, 0, 0.459581, 0, -0.0576582, 0, 0.777492, 0.00117735, 0.229791, 0.0128055)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_13" type="MeshInstance3D" parent="."]
+[node name="Blade_13" type="MeshInstance3D" parent="." unique_id=151778118]
 transform = Transform3D(0.0357029, 0, 0.884756, 0, 0.779665, 0, -0.0677782, 0, 0.466054, -0.190236, 0.389832, -0.0715808)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_14" type="MeshInstance3D" parent="."]
+[node name="Blade_14" type="MeshInstance3D" parent="." unique_id=1110384838]
 transform = Transform3D(0.0305211, 0, -0.842924, 0, 0.465229, 0, 0.0478166, 0, 0.538033, -0.208883, 0.232614, 0.110696)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_15" type="MeshInstance3D" parent="."]
+[node name="Blade_15" type="MeshInstance3D" parent="." unique_id=1614953322]
 transform = Transform3D(-0.0336084, 0, 0.951626, 0, 0.723263, 0, -0.10409, 0, -0.307259, 0.273685, 0.361631, 0.00409214)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_16" type="MeshInstance3D" parent="."]
+[node name="Blade_16" type="MeshInstance3D" parent="." unique_id=1227578134]
 transform = Transform3D(-0.024858, 0, 0.910516, 0, 0.705879, 0, -0.0547401, 0, -0.413474, 0.0511655, 0.352939, 0.0599937)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_17" type="MeshInstance3D" parent="."]
+[node name="Blade_17" type="MeshInstance3D" parent="." unique_id=1459644906]
 transform = Transform3D(-0.0603548, 0, 0.610024, 0, 0.766572, 0, -0.0464648, 0, -0.792383, -0.0607032, 0.383286, -0.363942)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_18" type="MeshInstance3D" parent="."]
+[node name="Blade_18" type="MeshInstance3D" parent="." unique_id=1849299261]
 transform = Transform3D(0.0745437, 0, -0.720048, 0, 0.421867, 0, 0.07735, 0, 0.693924, -0.145079, 0.210933, -0.0591431)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_19" type="MeshInstance3D" parent="."]
+[node name="Blade_19" type="MeshInstance3D" parent="." unique_id=428175028]
 transform = Transform3D(0.0632572, 0, -0.615327, 0, 0.525775, 0, 0.0493788, 0, 0.788272, 0.189882, 0.262887, 0.182688)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_20" type="MeshInstance3D" parent="."]
+[node name="Blade_20" type="MeshInstance3D" parent="." unique_id=178084223]
 transform = Transform3D(-0.0319129, 0, -0.80793, 0, 0.792748, 0, 0.0437541, 0, -0.589279, -0.159243, 0.396374, 0.157516)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_21" type="MeshInstance3D" parent="."]
+[node name="Blade_21" type="MeshInstance3D" parent="." unique_id=1208955932]
 transform = Transform3D(0.0583082, 0, -0.705739, 0, 0.448399, 0, 0.0580833, 0, 0.708472, 0.112475, 0.2242, -0.127433)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_22" type="MeshInstance3D" parent="."]
+[node name="Blade_22" type="MeshInstance3D" parent="." unique_id=1643211207]
 transform = Transform3D(0.0608808, 0, -0.828139, 0, 0.741258, 0, 0.0899477, 0, 0.560523, 0.160402, 0.370629, -0.189063)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_23" type="MeshInstance3D" parent="."]
+[node name="Blade_23" type="MeshInstance3D" parent="." unique_id=777339872]
 transform = Transform3D(0.0482343, 0, 0.204351, 0, 0.493551, 0, -0.0100692, 0, 0.978898, -0.134046, 0.246775, 0.126491)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
 
-[node name="Blade_24" type="MeshInstance3D" parent="."]
+[node name="Blade_24" type="MeshInstance3D" parent="." unique_id=2120532819]
 transform = Transform3D(-0.0671296, 0, -0.379657, 0, 0.358315, 0, 0.0275489, 0, -0.925127, -0.0199687, 0.179158, -0.0403921)
 mesh = SubResource("Quad")
 surface_material_override/0 = ExtResource("grass")
-

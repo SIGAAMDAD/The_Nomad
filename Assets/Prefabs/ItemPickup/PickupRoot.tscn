@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://bfemcejvjvwts"]
 
-[ext_resource type="Script" uid="uid://diloug0wjgqcl" path="res://Assets/Prefabs/ItemPickup/PickupRoot.cs" id="1_n87k2"]
+[ext_resource type="Script" uid="uid://csacw5miol6h8" path="res://Source/Game/Prefabs/World/Interactables/PickupRoot.cs" id="1_n87k2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1hn40"]
 radius = 19.026299
 
-[node name="PickupRoot" type="Node2D" unique_id=1146163250]
+[node name="PickupRoot" type="Node3D" unique_id=2058529635]
 script = ExtResource("1_n87k2")
 
 [node name="Zone" type="Area2D" parent="." unique_id=312689260]

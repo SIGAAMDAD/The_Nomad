@@ -21,14 +21,16 @@ using Nomad.Game.Sdk.Events.World;
 
 namespace Nomad.Game.Sdk.World
 {
-    public interface IWeatherService : IDisposable
+    public interface IWeatherService
     {
         [Event(nameSpace: "Nomad.Game.Sdk.Events.World")]
         [EventPayload("Time", typeof(WorldTime), Order = 1)]
-        [EventPayload("Previous", typeof(InternString), Order = 2)]
-        [EventPayload("Current", typeof(InternString), Order = 3)]
+        [EventPayload("Previous", typeof(WeatherType), Order = 2)]
+        [EventPayload("Current", typeof(WeatherType), Order = 3)]
         IGameEvent<WeatherChangedEventArgs> WeatherChanged { get; }
 
-        InternString CurrentWeatherId { get; }
+        WeatherType CurrentWeather { get; }
+
+        bool TrySetWeather(WeatherType type);
     }
 }

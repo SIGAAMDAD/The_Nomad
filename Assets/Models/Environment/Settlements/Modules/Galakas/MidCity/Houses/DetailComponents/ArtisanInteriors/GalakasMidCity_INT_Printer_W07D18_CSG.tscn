@@ -1,27 +1,26 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d4c7aid8vr17y"]
 
-[node name="GalakasMidCity_INT_Printer_W07D18_CSG" type="Node3D"]
+[node name="GalakasMidCity_INT_Printer_W07D18_CSG" type="Node3D" unique_id=1242713168]
 
-[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Interior_CSG" type="CSGCombiner3D" parent="." unique_id=1257032409]
 use_collision = true
 
-[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(8.1200, 0.8600, 0.5000)
-position = Vector3(0.0000, 0.6600, 3.2400)
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG" unique_id=1780640948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 3.24)
+size = Vector3(8.12, 0.86, 0.5)
 
-[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(9.8000, 1.4500, 0.1800)
-position = Vector3(0.0000, 1.3000, 11.1600)
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG" unique_id=1679696013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 11.16)
+size = Vector3(9.8, 1.45, 0.18)
 
-[node name="WorkBench_Main" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(7.8400, 0.7500, 0.8000)
-position = Vector3(0.0000, 0.5500, -1.8000)
+[node name="WorkBench_Main" type="CSGBox3D" parent="Interior_CSG" unique_id=45795149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -1.8)
+size = Vector3(7.84, 0.75, 0.8)
 
-[node name="StorageCrate_Left" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.6500, 0.5500, 0.6500)
-position = Vector3(-4.7600, 0.4000, 4.5000)
+[node name="StorageCrate_Left" type="CSGBox3D" parent="Interior_CSG" unique_id=1019801923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.76, 0.4, 4.5)
+size = Vector3(0.65, 0.55, 0.65)
 
-[node name="StorageCrate_Right" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.6500, 0.5500, 0.6500)
-position = Vector3(4.7600, 0.4000, 4.5000)
-
+[node name="StorageCrate_Right" type="CSGBox3D" parent="Interior_CSG" unique_id=1829022878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.76, 0.4, 4.5)
+size = Vector3(0.65, 0.55, 0.65)

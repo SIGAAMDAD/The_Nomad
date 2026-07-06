@@ -1,32 +1,30 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cbctegxxg53qq"]
 
-[node name="GalakasMidCity_INT_SmithRow_W10D16_CSG" type="Node3D"]
+[node name="GalakasMidCity_INT_SmithRow_W10D16_CSG" type="Node3D" unique_id=1444439316]
 
-[node name="Interior_CSG" type="CSGCombiner3D" parent="."]
+[node name="Interior_CSG" type="CSGCombiner3D" parent="." unique_id=562240015]
 use_collision = true
 
-[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(11.6000, 0.8600, 0.5000)
-position = Vector3(0.0000, 0.6600, 2.8800)
+[node name="InteriorCounter_Back" type="CSGBox3D" parent="Interior_CSG" unique_id=1809502002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 2.88)
+size = Vector3(11.6, 0.86, 0.5)
 
-[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(14.0000, 1.4500, 0.1800)
-position = Vector3(0.0000, 1.3000, 9.9200)
+[node name="RearStorageShelf" type="CSGBox3D" parent="Interior_CSG" unique_id=2033546683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 9.92)
+size = Vector3(14, 1.45, 0.18)
 
-[node name="ForgeHearth_Block" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(6.8000, 1.1500, 1.0500)
-position = Vector3(-4.4000, 0.7800, -1.9200)
+[node name="ForgeHearth_Block" type="CSGBox3D" parent="Interior_CSG" unique_id=237661585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 0.78, -1.92)
+size = Vector3(6.8, 1.15, 1.05)
 
-[node name="Anvil_Blockout" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.6500, 0.5500, 0.4200)
-position = Vector3(3.6000, 0.5200, -2.8800)
+[node name="Anvil_Blockout" type="CSGBox3D" parent="Interior_CSG" unique_id=541781122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6, 0.52, -2.88)
+size = Vector3(0.65, 0.55, 0.42)
 
-[node name="Bellows_Blockout" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(0.9500, 0.4200, 0.3500)
-position = Vector3(6.0000, 0.7200, 0.2000)
-rotation = Vector3(0.000000, 0.180000, 0.000000)
+[node name="Bellows_Blockout" type="CSGBox3D" parent="Interior_CSG" unique_id=1413707276]
+transform = Transform3D(0.9838437, 0, 0.17902958, 0, 1, 0, -0.17902958, 0, 0.9838437, 6, 0.72, 0.2)
+size = Vector3(0.95, 0.42, 0.35)
 
-[node name="OverheadSmokeHood" type="CSGBox3D" parent="Interior_CSG"]
-size = Vector3(7.6000, 0.3800, 1.1000)
-position = Vector3(-4.4000, 2.1500, -1.9200)
-
+[node name="OverheadSmokeHood" type="CSGBox3D" parent="Interior_CSG" unique_id=1317142023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 2.15, -1.92)
+size = Vector3(7.6, 0.38, 1.1)

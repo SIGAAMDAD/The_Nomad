@@ -29,5 +29,9 @@ namespace Nomad.Game.Sdk.World
         [EventPayload("Previous", typeof(SeasonDefinitionId), Order = 2)]
         [EventPayload("Current", typeof(SeasonDefinitionId), Order = 3)]
         IGameEvent<SeasonChangedEventArgs> SeasonChanged { get; }
+
+        SeasonDefinitionId CurrentSeasonId { get; }
+
+        bool TrySetSeason(SeasonDefinitionId seasonId);
     }
 }

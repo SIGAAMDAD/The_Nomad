@@ -1,4 +1,5 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://de03eekkw0n4c"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_FruitBasketStall_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_GrainSackStall_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_BreadTableStall_CSG.tscn" id="3"]
@@ -7,26 +8,24 @@
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_WaterCaskStall_CSG.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/DetailComponents/MarketplaceVendorStalls/GalakasMidCity_STALL_AleKegStall_CSG.tscn" id="7"]
 
-[node name="GalakasMidCity_MARKETCLUSTER_GateMarket_FoodAndWater_Row_CSG" type="Node3D"]
+[node name="GalakasMidCity_MARKETCLUSTER_GateMarket_FoodAndWater_Row_CSG" type="Node3D" unique_id=1377877187]
 
-[node name="Stall_01_FruitBasketStall" parent="." instance=ExtResource("1")]
-position = Vector3(-13.2000, 0.0000, 0.0000)
+[node name="Stall_01_FruitBasketStall" parent="." unique_id=554934252 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2, 0, 0)
 
-[node name="Stall_02_GrainSackStall" parent="." instance=ExtResource("2")]
-position = Vector3(-8.8000, 0.0000, 0.0000)
+[node name="Stall_02_GrainSackStall" parent="." unique_id=12493002 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.8, 0, 0)
 
-[node name="Stall_03_BreadTableStall" parent="." instance=ExtResource("3")]
-position = Vector3(-4.4000, 0.0000, 0.0000)
+[node name="Stall_03_BreadTableStall" parent="." unique_id=520532044 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 0, 0)
 
-[node name="Stall_04_MeatButcherStall" parent="." instance=ExtResource("4")]
-position = Vector3(0.0000, 0.0000, 0.0000)
+[node name="Stall_04_MeatButcherStall" parent="." unique_id=629362039 instance=ExtResource("4")]
 
-[node name="Stall_05_SaltFishStall" parent="." instance=ExtResource("5")]
-position = Vector3(4.4000, 0.0000, 0.0000)
+[node name="Stall_05_SaltFishStall" parent="." unique_id=863924894 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 0, 0)
 
-[node name="Stall_06_WaterCaskStall" parent="." instance=ExtResource("6")]
-position = Vector3(8.8000, 0.0000, 0.0000)
+[node name="Stall_06_WaterCaskStall" parent="." unique_id=2002081022 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.8, 0, 0)
 
-[node name="Stall_07_AleKegStall" parent="." instance=ExtResource("7")]
-position = Vector3(13.2000, 0.0000, 0.0000)
-
+[node name="Stall_07_AleKegStall" parent="." unique_id=414158377 instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2, 0, 0)

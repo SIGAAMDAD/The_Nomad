@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dliv8ia67ej66"
+
+[deps]
+
+files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.kind.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.width.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.steps.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.rise.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.run.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.landing.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.side.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.intended.translation"]
+
+source_file="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.csv"
+dest_files=["res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.kind.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.width.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.steps.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.rise.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.run.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.landing.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.side.translation", "res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/Stairs/StairComponent_Manifest.intended.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

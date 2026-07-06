@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://cjl3ur7kyny45"]
 
-[ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_ClothesLine_RopeSag.gltf" id="1"]
+[ext_resource type="PackedScene" uid="uid://dukfmyubbym5m" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/TraversalComponents/GLTF_RopeLines/GalakasMidCity_TRAV_ClothesLine_RopeSag.gltf" id="1"]
 
-[node name="GalakasMidCity_TRAV_ClothesLine_RopeSag_Instance" type="Node3D"]
+[node name="GalakasMidCity_TRAV_ClothesLine_RopeSag_Instance" type="Node3D" unique_id=72821723]
 
-[node name="SourceGLTF" parent="." instance=ExtResource("1")]
+[node name="SourceGLTF" parent="." unique_id=1824445309 instance=ExtResource("1")]

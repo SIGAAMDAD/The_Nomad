@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dx3r1u1smxltl"]
 
-[ext_resource type="Script" uid="uid://c6qcbdw4kjy8n" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuHub.cs" id="1_8p30q"]
+[ext_resource type="Script" uid="uid://bddyldyn77q4k" path="res://Source/Game/Presentation/Screens/PauseMenu/PauseMenuHub.cs" id="1_8p30q"]
 [ext_resource type="PackedScene" uid="uid://cjlaujtogos17" path="res://Assets/Prefabs/MenuBackground/MenuBackground.tscn" id="2_kcrx8"]
 
 [node name="PauseMenuHub" type="Control" unique_id=1400059784]

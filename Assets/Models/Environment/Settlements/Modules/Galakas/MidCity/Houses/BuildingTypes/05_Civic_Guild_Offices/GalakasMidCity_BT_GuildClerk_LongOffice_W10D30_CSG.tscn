@@ -1,22 +1,23 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bitfrub4wjo1e"]
+
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Foundations/GalakasMidCity_FOUNDATION_W10D30_Stone_CSG.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/LowerModules/GalakasMidCity_LOWERMODULE_W10D30_StoneBase_CSG.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W10D30_GalleryOverhang_CSG.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/UpperModules/GalakasMidCity_UPPERMODULE_W10D30_StoneUpper_CSG.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://Assets/Models/Environment/Settlements/Modules/Galakas/MidCity/Houses/Roofs/GalakasMidCity_ROOF_W10D30_HippedTile_CSG.tscn" id="5"]
 
-[node name="GalakasMidCity_BT_GuildClerk_LongOffice_W10D30_CSG" type="Node3D"]
+[node name="GalakasMidCity_BT_GuildClerk_LongOffice_W10D30_CSG" type="Node3D" unique_id=1671250812]
 
-[node name="Foundation" parent="." instance=ExtResource("1")]
-[node name="LowerModule" parent="." instance=ExtResource("2")]
-position = Vector3(0.0000, 0.6000, 0.0000)
+[node name="Foundation" parent="." unique_id=1094195661 instance=ExtResource("1")]
 
-[node name="UpperModule_01" parent="." instance=ExtResource("3")]
-position = Vector3(0.0000, 5.4000, 0.0000)
+[node name="LowerModule" parent="." unique_id=1383282775 instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="UpperModule_02" parent="." instance=ExtResource("4")]
-position = Vector3(0.0000, 9.6000, 0.0000)
+[node name="UpperModule_01" parent="." unique_id=2047734084 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 0)
 
-[node name="Roof" parent="." instance=ExtResource("5")]
-position = Vector3(0.0000, 13.8000, 0.0000)
+[node name="UpperModule_02" parent="." unique_id=1180852256 instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.6, 0)
 
+[node name="Roof" parent="." unique_id=1624196425 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.8, 0)

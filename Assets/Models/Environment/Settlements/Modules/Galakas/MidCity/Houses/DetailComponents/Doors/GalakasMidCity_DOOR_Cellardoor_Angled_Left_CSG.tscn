@@ -1,27 +1,22 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://r3pqot5ghspk"]
 
-[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG" type="Node3D"]
+[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG" type="Node3D" unique_id=247453309]
 
-[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" type="CSGCombiner3D" parent="."]
+[node name="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" type="CSGCombiner3D" parent="." unique_id=270162617]
 use_collision = true
 
-[node name="AngledCellarLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG"]
-size = Vector3(1.5500, 0.1800, 1.6000)
-position = Vector3(0.0000, 0.5500, -0.2000)
-rotation = Vector3(0.560000, 0.000000, 0.000000)
+[node name="AngledCellarLeaf" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" unique_id=1348657869]
+transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, 0, 0.55, -0.2)
+size = Vector3(1.55, 0.18, 1.6)
 
-[node name="CellarFrame_Left" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG"]
-size = Vector3(0.1600, 0.2000, 1.8000)
-position = Vector3(-0.8750, 0.5500, -0.2000)
-rotation = Vector3(0.560000, 0.000000, 0.000000)
+[node name="CellarFrame_Left" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" unique_id=776066700]
+transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, -0.875, 0.55, -0.2)
+size = Vector3(0.16, 0.2, 1.8)
 
-[node name="CellarFrame_Right" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG"]
-size = Vector3(0.1600, 0.2000, 1.8000)
-position = Vector3(0.8750, 0.5500, -0.2000)
-rotation = Vector3(0.560000, 0.000000, 0.000000)
+[node name="CellarFrame_Right" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" unique_id=1446365830]
+transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, 0.875, 0.55, -0.2)
+size = Vector3(0.16, 0.2, 1.8)
 
-[node name="CellarTopRail" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG"]
-size = Vector3(1.9000, 0.1800, 0.1600)
-position = Vector3(0.0000, 0.9200, -0.9200)
-rotation = Vector3(0.560000, 0.000000, 0.000000)
-
+[node name="CellarTopRail" type="CSGBox3D" parent="GalakasMidCity_DOOR_Cellardoor_Angled_Left_CSG_CSG" unique_id=1236608909]
+transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, 0, 0.92, -0.92)
+size = Vector3(1.9, 0.18, 0.16)

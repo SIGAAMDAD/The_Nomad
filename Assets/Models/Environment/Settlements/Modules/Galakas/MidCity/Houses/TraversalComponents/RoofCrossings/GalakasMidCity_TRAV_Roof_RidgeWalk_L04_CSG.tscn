@@ -1,21 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://sq1j0hlkk1ik"]
 
-[node name="GalakasMidCity_TRAV_Roof_RidgeWalk_L04_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_Roof_RidgeWalk_L04_CSG" type="Node3D" unique_id=147955149]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=788432653]
 use_collision = true
 
-[node name="Flattened_Ridge_Path" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.9000, 0.2200, 4.0000)
-position = Vector3(0.0000, 0.1000, 0.0000)
+[node name="Flattened_Ridge_Path" type="CSGBox3D" parent="Traversal_CSG" unique_id=542239360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+size = Vector3(0.9, 0.22, 4)
 
-[node name="Left_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4200, 0.1200, 4.0000)
-position = Vector3(-0.5400, 0.0400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, 0.220000)
+[node name="Left_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG" unique_id=1993747590]
+transform = Transform3D(0.97589743, -0.21822962, 0, 0.21822962, 0.97589743, 0, 0, 0, 1, -0.54, 0.04, 0)
+size = Vector3(0.42, 0.12, 4)
 
-[node name="Right_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(0.4200, 0.1200, 4.0000)
-position = Vector3(0.5400, 0.0400, 0.0000)
-rotation = Vector3(0.000000, 0.000000, -0.220000)
-
+[node name="Right_Slope_Helper" type="CSGBox3D" parent="Traversal_CSG" unique_id=731026974]
+transform = Transform3D(0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0, 0, 0, 1, 0.54, 0.04, 0)
+size = Vector3(0.42, 0.12, 4)

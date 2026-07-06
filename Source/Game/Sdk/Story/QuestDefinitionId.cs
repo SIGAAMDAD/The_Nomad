@@ -14,6 +14,7 @@ of merchantability, fitness for a particular purpose and noninfringement.
 */
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Nomad.Core.Util;
 
 namespace Nomad.Game.Sdk.Story
@@ -26,41 +27,49 @@ namespace Nomad.Game.Sdk.Story
 
         public readonly InternString Value;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QuestDefinitionId(InternString value)
         {
             Value = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals([NotNullWhen(true)] object? obj)
         {
             return obj is QuestDefinitionId other && Equals(other);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return Value.ToString();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(QuestDefinitionId other)
         {
             return other.Value == Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator InternString(QuestDefinitionId value)
         {
             return value.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(QuestDefinitionId left, QuestDefinitionId right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(QuestDefinitionId left, QuestDefinitionId right)
         {
             return !left.Equals(right);

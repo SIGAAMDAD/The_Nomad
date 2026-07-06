@@ -1,19 +1,18 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cxd14xa826wm6"]
 
-[node name="GalakasMidCity_TRAV_Roof_ParapetGapStep_W10_CSG" type="Node3D"]
+[node name="GalakasMidCity_TRAV_Roof_ParapetGapStep_W10_CSG" type="Node3D" unique_id=361088565]
 
-[node name="Traversal_CSG" type="CSGCombiner3D" parent="."]
+[node name="Traversal_CSG" type="CSGCombiner3D" parent="." unique_id=767598416]
 use_collision = true
 
-[node name="Step_Block" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(10.0000, 0.3400, 0.9000)
-position = Vector3(0.0000, 0.1700, 0.0000)
+[node name="Step_Block" type="CSGBox3D" parent="Traversal_CSG" unique_id=1063288289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0)
+size = Vector3(10, 0.34, 0.9)
 
-[node name="Front_Lip" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(10.1000, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.4200, -0.4300)
+[node name="Front_Lip" type="CSGBox3D" parent="Traversal_CSG" unique_id=274202426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -0.43)
+size = Vector3(10.1, 0.16, 0.16)
 
-[node name="Back_Lip" type="CSGBox3D" parent="Traversal_CSG"]
-size = Vector3(10.1000, 0.1600, 0.1600)
-position = Vector3(0.0000, 0.4200, 0.4300)
-
+[node name="Back_Lip" type="CSGBox3D" parent="Traversal_CSG" unique_id=401298024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.43)
+size = Vector3(10.1, 0.16, 0.16)

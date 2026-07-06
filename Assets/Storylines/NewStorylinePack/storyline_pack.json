@@ -1,0 +1,13 @@
+{
+	"format": "NomadStorylinePack",
+	"id": "NEW_STORYLINE",
+	"name": "New Storyline",
+	"quests": [
+		{
+			"file": "quests/intro_quest.json",
+			"id": "INTRO_QUEST",
+			"name": "Intro Quest"
+		}
+	],
+	"version": 1
+}
