@@ -242,14 +242,27 @@ def reconcile(api, issues, config, secret, dry_run, now=None):
         lease = lease_id(issue, rec)
         event = worker_event(comments, rec["STUDIO_TASK_ID"], lease, allowed)
         if event:
+            last_event_time = parse_time(event[0]["created_at"])
+            expired = (now - last_event_time).total_seconds() >= lease_minutes * 60
+            if expired and event[1]["type"] not in ("SUBMITTED", "BLOCKED"):
+                actions.append((issue["number"], "ai:needs-attention"))
+                if not dry_run:
+                    api.transition(issue, "ai:needs-attention")
+                    api.comment(issue["number"], "Worker heartbeat expired. Resume "
+                                "requires checking the last checkpoint, source "
+                                "branch and lease. No automatic duplicate dispatch.")
+                continue
             state = EVENT_LABELS[event[1]["type"]]
             if state not in labels(issue):
                 actions.append((issue["number"], state))
                 if not dry_run:
                     api.transition(issue, state)
             continue
-        oldest = min(parse_time(x[1]["created_at"]) for x in receipts
-                     if "created_at" in x[1])
+        timestamps = [parse_time(x[1]["created_at"]) for x in receipts
+                      if "created_at" in x[1]]
+        if not timestamps:
+            continue
+        oldest = min(timestamps)
         if (now - oldest).total_seconds() >= lease_minutes * 60:
             actions.append((issue["number"], "ai:needs-attention"))
             if not dry_run:

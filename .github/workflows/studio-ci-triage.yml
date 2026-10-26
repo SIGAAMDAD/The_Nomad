@@ -1,0 +1,35 @@
+name: Studio / CI Regression Triage
+
+on:
+  workflow_run:
+    workflows:
+      - "Studio V5 / Contracts and Config"
+      - "Studio / Dependabot Review"
+      - "Studio v4 / Contract Tests"
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: studio-ci-triage
+  cancel-in-progress: false
+
+jobs:
+  triage:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout trusted controller, not failed PR code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: Nomad3D
+      - name: Record review-only failure
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STUDIO_TRIAGE_ENABLED: ${{ vars.STUDIO_TRIAGE_ENABLED }}
+        run: python3 studio/ci_triage.py
