@@ -87,12 +87,15 @@ repository secrets is a trusted administrator. Protect those changes.
    approved Google Drive brief. For source-writing roles provide owned paths
    such as `Source/Game/Items/**`; use `-` for no dependencies or
    protected paths. Dependencies are comma-separated task IDs.
-7. Approve that exact row by running
-   `studioV5Approve("ITEM-0042", "<your PIN>")` in an authorized
-   Apps Script invocation. The signature binds all relevant task fields.
-8. To activate the five-minute bridge, first verify the existing controller
-   and set the two independent switches, then run
-   `studioV5InstallTrigger("<your PIN>")`.
+7. Install the interactive menu by running `studioV5InstallMenuTrigger()`
+   in the Apps Script editor and reopening the spreadsheet. Select a DRAFT
+   task row, then choose **Nomad Studio V5 > Approve selected DRAFT task**.
+   The menu asks for the owner PIN interactively; do not embed it in code.
+   The signature binds all relevant task fields.
+8. After the pilot and when ready to activate, set the independent
+   controller switches and choose **Nomad Studio V5 > Install V5 5-minute
+   triggers**. The menu installs both intake dispatch and readback triggers,
+   but does not itself switch on AI execution.
 9. If a record is edited after approval, **discard approval and resubmit**
    it as a new DRAFT. Do not copy the signature to another record.
 
@@ -143,9 +146,20 @@ A worker may acknowledge by posting a GitHub comment in the exact form:
 
 Supported types: `CLAIMED`, `RUNNING`, `CHECKPOINT`, `SUBMITTED`,
 `BLOCKED`. Only Issue comments authored by configured
-`worker_logins` are accepted. Progress should be accompanied by a linked
-commit, artifact or PR. Source-writing workers never modify protected files.
-QA passes cannot authorize source merge or lore/canon promotion.
+`worker_logins` are accepted. `CHECKPOINT` requires a verified
+`checkpoint_url`. `SUBMITTED` for programming departments requires a
+`pr_url` pointing to the approved source repository and a 40-hex
+`commit_sha`; non-code submissions require `submission_url`.
+`BLOCKED` requires a concrete `reason` (at least eight characters).
+These fields are evidence pointers, not proof that compilation passed.
+Source-writing workers never modify protected files. QA passes cannot
+authorize source merge or lore/canon promotion.
+
+Sample programming handoff:
+
+```text
+<!-- STUDIO_EVENT {"task_id":"ITEM-0042","lease_id":"<lease>","type":"SUBMITTED","pr_url":"https://github.com/SIGAAMDAD/The_Nomad/pull/123","commit_sha":"<40-hex-sha>"} -->
+```
 
 If the notification may have been sent but no acknowledgment is recorded,
 V5 places the issue into `ai:needs-attention`. **It does not automatically
@@ -218,7 +232,8 @@ architectural baselines.
 ## 9. Reconciliation and production reporting
 
 After installing `StudioV5Bridge.gs`, also install
-`studio/apps-script/StudioV5Reconcile.gs`. Run
+`studio/apps-script/StudioV5Reconcile.gs` and
+`studio/apps-script/StudioV5Menu.gs`. Run
 `studioV5InstallReconcileTrigger("<owner PIN>")` once.
 The reconciliation job mirrors GitHub Issue state into the dedicated
 `STUDIO_INTAKE_V5` rows every five minutes, without granting QA acceptance,
