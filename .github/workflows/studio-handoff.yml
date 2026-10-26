@@ -1,0 +1,40 @@
+name: Studio handoff validation (manual only)
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'Approved production job ID'
+        required: true
+        type: string
+      source_branch:
+        description: 'Source branch containing proposed deliverable'
+        required: true
+        default: Nomad3D
+        type: string
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+concurrency:
+  group: studio-handoff-${{ inputs.job_id }}
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show provenance (no autonomous code execution)
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+        run: |
+          echo "Job: $JOB_ID"
+          echo "Source: $SOURCE_BRANCH"
+          echo "Workflow is manual and read-only."
+          echo "Coding, automatic branch writes, AI dispatch and merging are DISABLED."
+      - name: Checkout current candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_branch }}
+          persist-credentials: false
+      - name: Record checkout commit
+        run: git rev-parse HEAD

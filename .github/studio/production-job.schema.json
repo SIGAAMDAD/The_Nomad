@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "The Nomad Studio Production Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "status",
+    "role_id",
+    "baseline_repository",
+    "baseline_ref",
+    "owned_paths",
+    "acceptance"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "QUEUED",
+        "READY",
+        "ACTIVE",
+        "BLOCKED",
+        "REVIEW",
+        "DONE"
+      ]
+    },
+    "role_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "brief_url": {
+      "type": "string"
+    },
+    "baseline_repository": {
+      "type": "string",
+      "const": "SIGAAMDAD/The_Nomad"
+    },
+    "baseline_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseline_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "owned_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "protected_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "deliverable_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_url": {
+      "type": "string"
+    },
+    "credit_budget": {
+      "type": "number",
+      "minimum": 0
+    },
+    "actual_credits": {
+      "type": "number",
+      "minimum": 0
+    },
+    "attempt_count": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
