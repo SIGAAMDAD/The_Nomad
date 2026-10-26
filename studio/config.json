@@ -1,0 +1,53 @@
+{
+  "schema_version": 4,
+  "mode": "staging",
+  "dispatcher_repo": "SIGAAMDAD/The_Nomad",
+  "targets": {
+    "game": {
+      "repo": "SIGAAMDAD/The_Nomad",
+      "branch": "Nomad3D"
+    },
+    "framework": {
+      "repo": "SIGAAMDAD/NomadFramework",
+      "branch": "develop"
+    }
+  },
+  "departments": {
+    "design": {
+      "skill": "rpg-systems-designer"
+    },
+    "narrative": {
+      "skill": "rpg-game-writer"
+    },
+    "gameplay": {
+      "skill": "rpg-gameplay-programmer"
+    },
+    "ai": {
+      "skill": "rpg-ai-programmer"
+    },
+    "engine": {
+      "skill": "rpg-engine-programmer"
+    },
+    "rendering": {
+      "skill": "rpg-rendering-programmer"
+    },
+    "world": {
+      "skill": "rpg-world-streaming-programmer"
+    },
+    "qa": {
+      "skill": "rpg-technical-qa-analyst"
+    },
+    "integration": {
+      "skill": "rpg-integration-engineer"
+    }
+  },
+  "max_per_run": 10,
+  "ledger_id": "1avYu8wwu8KZMPcb36_9Pz0-6cJgkZCOWber4NNxx8NA",
+  "studio_intake_tab": "STUDIO_INTAKE",
+  "protection": {
+    "owner_approval_required": true,
+    "allow_automatic_merge": false,
+    "allow_paid_api_execution": false
+  },
+  "notes": "Staging is inert. To activate, set mode=active by PR and STUDIO_ENABLED=true as repo variable. The Work tasks and Slack webhook require user setup."
+}
