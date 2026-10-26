@@ -214,3 +214,35 @@ All parameters—branches, role capacities, lease timeout, priority, and role
 definitions—are versioned in `studio/config.json`. Change them through a PR
 with corresponding contract tests. Never silently modify owner-approved
 architectural baselines.
+
+## 9. Reconciliation and production reporting
+
+After installing `StudioV5Bridge.gs`, also install
+`studio/apps-script/StudioV5Reconcile.gs`. Run
+`studioV5InstallReconcileTrigger("<owner PIN>")` once.
+The reconciliation job mirrors GitHub Issue state into the dedicated
+`STUDIO_INTAKE_V5` rows every five minutes, without granting QA acceptance,
+starting agents, or modifying historical `TASKS` and `WAVES` tabs.
+It processes at most 60 assigned rows per execution.
+
+`.github/workflows/studio-status.yml` produces a read-only JSON snapshot
+and human-readable GitHub job summary showing queued, dispatched, active,
+review, blocked, and accepted counts. Counts are observational; they cannot
+prove source compiles.
+
+## 10. Trusted Windows test workflow
+
+`.github/workflows/studio-native-build.yml` contains a manually dispatched
+Windows x64 `self-hosted` job behind repository variable
+`STUDIO_WINDOWS_RUNNER_ENABLED=true`. It accepts an exact reviewed commit SHA
+and verifies that the commit is descended from the current `Nomad3D` branch
+**before initializing its submodules**.
+
+When the runner is configured, it performs toolchain preflight, `.NET`
+restore/build, and an optional custom Godot headless editor smoke test if
+`NOMAD_GODOT_BIN` is available on the Windows runner. It does **not** claim to
+compile the C++ GDExtension, perform a Vulkan/D3D12 benchmark, or validate
+memory/performance until separately implemented against the real toolchain.
+
+Use `workflow_dispatch` from an authorized account, provide the exact commit
+SHA, and never enable self-hosted code execution for arbitrary fork PRs.

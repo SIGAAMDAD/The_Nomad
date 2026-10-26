@@ -1,3 +1,5 @@
+> **Studio V5:** This README documents the historical V4 deployment. For the active signed orchestration, QA handoffs, Dependabot, rollback and Windows runner procedures, see [Studio V5 Deployment](V5_DEPLOYMENT.md). V5 remains staging-only until explicitly enabled.
+
 # The Nomad Studio V4 — Event-Driven Control Plane
 
 **Status: STAGING. No unattended dispatch or AI execution enabled.**

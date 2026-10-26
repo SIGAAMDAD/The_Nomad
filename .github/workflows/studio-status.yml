@@ -1,0 +1,30 @@
+name: Studio / Production Pulse
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 12 * * *"
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: Nomad3D
+          persist-credentials: false
+      - name: Build factual queue report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 studio/report.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload machine-readable queue snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-production-pulse
+          path: studio-status.json
+          retention-days: 14
