@@ -169,10 +169,53 @@ class RuntimeTests(unittest.TestCase):
 
     def test_outbox_deduplication_marker(self):
         comment = {
+            "user": {"login": "github-actions[bot]"},
             "body": '<!-- STUDIO_OUTBOX {"task_id":"ITEM-0042","lease_id":"abc","status":"RESERVED"} -->'
         }
         self.assertEqual(len(orchestrator.outbox([comment], "ITEM-0042")), 1)
         self.assertEqual(len(orchestrator.outbox([comment], "OTHER")), 0)
+
+
+    def test_outbox_ignores_untrusted_comment(self):
+        comment = {
+            "user": {"login": "untrusted-user"},
+            "body": '<!-- STUDIO_OUTBOX {"task_id":"ITEM-0042","status":"RESERVED"} -->'
+        }
+        self.assertFalse(orchestrator.outbox([comment], "ITEM-0042"))
+
+    def test_submitted_requires_source_evidence(self):
+        item = ticket()
+        rec = control.validated(item, CONFIG, SECRET)
+        lease = orchestrator.lease_id(item, rec)
+        payload = {"type": "SUBMITTED", "task_id": rec["STUDIO_TASK_ID"],
+                   "lease_id": lease}
+        comments = [{"user": {"login": "SIGAAMDAD"}, "id": 2,
+                     "created_at": "2026-10-26T16:00:00Z",
+                     "body": "<!-- STUDIO_EVENT " + json.dumps(payload) + " -->"}]
+        self.assertIsNone(orchestrator.worker_event(
+            comments, rec["STUDIO_TASK_ID"], lease, {"SIGAAMDAD"}, rec))
+        payload["pr_url"] = "https://github.com/SIGAAMDAD/The_Nomad/pull/5"
+        payload["commit_sha"] = "b" * 40
+        comments[0]["body"] = "<!-- STUDIO_EVENT " + json.dumps(payload) + " -->"
+        self.assertEqual(orchestrator.worker_event(
+            comments, rec["STUDIO_TASK_ID"], lease, {"SIGAAMDAD"}, rec)[1]["type"],
+                         "SUBMITTED")
+
+    def test_checkpoint_requires_reference(self):
+        item = ticket()
+        rec = control.validated(item, CONFIG, SECRET)
+        lease = orchestrator.lease_id(item, rec)
+        payload = {"type": "CHECKPOINT", "task_id": rec["STUDIO_TASK_ID"],
+                   "lease_id": lease}
+        comments = [{"user": {"login": "SIGAAMDAD"}, "id": 4,
+                     "created_at": "2026-10-26T16:00:00Z",
+                     "body": "<!-- STUDIO_EVENT " + json.dumps(payload) + " -->"}]
+        self.assertIsNone(orchestrator.worker_event(
+            comments, rec["STUDIO_TASK_ID"], lease, {"SIGAAMDAD"}, rec))
+        payload["checkpoint_url"] = "https://github.com/SIGAAMDAD/The_Nomad/commit/" + "b" * 40
+        comments[0]["body"] = "<!-- STUDIO_EVENT " + json.dumps(payload) + " -->"
+        self.assertIsNotNone(orchestrator.worker_event(
+            comments, rec["STUDIO_TASK_ID"], lease, {"SIGAAMDAD"}, rec))
 
 
 if __name__ == "__main__":
