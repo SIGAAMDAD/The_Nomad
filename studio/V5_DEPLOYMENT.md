@@ -143,9 +143,20 @@ A worker may acknowledge by posting a GitHub comment in the exact form:
 
 Supported types: `CLAIMED`, `RUNNING`, `CHECKPOINT`, `SUBMITTED`,
 `BLOCKED`. Only Issue comments authored by configured
-`worker_logins` are accepted. Progress should be accompanied by a linked
-commit, artifact or PR. Source-writing workers never modify protected files.
-QA passes cannot authorize source merge or lore/canon promotion.
+`worker_logins` are accepted. `CHECKPOINT` requires a verified
+`checkpoint_url`. `SUBMITTED` for programming departments requires a
+`pr_url` pointing to the approved source repository and a 40-hex
+`commit_sha`; non-code submissions require `submission_url`.
+`BLOCKED` requires a concrete `reason` (at least eight characters).
+These fields are evidence pointers, not proof that compilation passed.
+Source-writing workers never modify protected files. QA passes cannot
+authorize source merge or lore/canon promotion.
+
+Sample programming handoff:
+
+```text
+<!-- STUDIO_EVENT {"task_id":"ITEM-0042","lease_id":"<lease>","type":"SUBMITTED","pr_url":"https://github.com/SIGAAMDAD/The_Nomad/pull/123","commit_sha":"<40-hex-sha>"} -->
+```
 
 If the notification may have been sent but no acknowledgment is recorded,
 V5 places the issue into `ai:needs-attention`. **It does not automatically

@@ -123,6 +123,8 @@ class Github:
 def outbox(comments, task_id):
     events = []
     for comment in comments:
+        if (comment.get("user") or {}).get("login") not in ("github-actions[bot]", "SIGAAMDAD"):
+            continue
         match = OUTBOX_RE.search(comment.get("body") or "")
         if not match:
             continue
@@ -201,7 +203,7 @@ def dispatch(api, issue, rec, webhook, dry_run):
     api.remove_label(number, "ai:reserved")
 
 
-def worker_event(comments, task_id, lease, allowed_logins):
+def worker_event(comments, task_id, lease, allowed_logins, record=None):
     valid = []
     for comment in comments:
         sender = (comment.get("user") or {}).get("login", "")
@@ -218,6 +220,26 @@ def worker_event(comments, task_id, lease, allowed_logins):
                 event.get("lease_id") != lease or
                 event.get("type") not in EVENT_LABELS):
             continue
+        if event["type"] == "BLOCKED" and len(str(event.get("reason", ""))) < 8:
+            continue
+        if event["type"] == "CHECKPOINT":
+            uri = str(event.get("checkpoint_url", ""))
+            if not uri.startswith(("https://github.com/", "https://drive.google.com/",
+                                   "https://docs.google.com/")):
+                continue
+        if event["type"] == "SUBMITTED":
+            if record and record["DEPARTMENT"] in ("gameplay", "ai", "engine",
+                                                    "rendering", "world"):
+                expected = "https://github.com/" + record["TARGET_REPO"] + "/pull/"
+                if not str(event.get("pr_url", "")).startswith(expected):
+                    continue
+                if not re.fullmatch(r"[0-9a-fA-F]{40}",
+                                    str(event.get("commit_sha", ""))):
+                    continue
+            elif not str(event.get("submission_url", "")).startswith(
+                    ("https://docs.google.com/", "https://drive.google.com/",
+                     "https://github.com/")):
+                continue
         valid.append((comment, event))
     valid.sort(key=lambda pair: (pair[0].get("created_at", ""), pair[0].get("id", 0)))
     return valid[-1] if valid else None
@@ -240,7 +262,7 @@ def reconcile(api, issues, config, secret, dry_run, now=None):
         if not receipts:
             continue
         lease = lease_id(issue, rec)
-        event = worker_event(comments, rec["STUDIO_TASK_ID"], lease, allowed)
+        event = worker_event(comments, rec["STUDIO_TASK_ID"], lease, allowed, rec)
         if event:
             last_event_time = parse_time(event[0]["created_at"])
             expired = (now - last_event_time).total_seconds() >= lease_minutes * 60
