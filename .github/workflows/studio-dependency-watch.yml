@@ -1,0 +1,43 @@
+name: Studio / Framework Develop Dependency Watch
+
+on:
+  workflow_dispatch:
+    inputs:
+      report_only:
+        description: "Read-only preview (no issue creation)"
+        type: boolean
+        required: false
+        default: true
+  schedule:
+    - cron: "17 9,21 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: studio-framework-dependency-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: Nomad3D
+      - name: Compare frozen gitlink with framework develop
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STUDIO_DEPENDENCY_ISSUES: ${{ vars.STUDIO_DEPENDENCY_ISSUES }}
+          REPORT_ONLY: ${{ inputs.report_only }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$REPORT_ONLY" == "true" ]]; then
+            args+=(--report-only)
+          fi
+          python3 studio/dependency_watch.py "${args[@]}"
