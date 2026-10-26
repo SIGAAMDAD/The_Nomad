@@ -22,6 +22,13 @@ jobs:
           persist-credentials: false
       - name: Python syntax
         run: python3 -m compileall -q studio
+      - name: Validate Apps Script JavaScript syntax
+        run: |
+          set -euo pipefail
+          for script in studio/apps-script/*.gs; do
+            cp "$script" /tmp/nomad-appsscript-validation.js
+            node --check /tmp/nomad-appsscript-validation.js
+          done
       - name: Dependency-free controller tests
         run: python3 -m unittest discover -s studio/tests -p 'test_*.py' -v
       - name: Validate V5 policy is disabled by default
