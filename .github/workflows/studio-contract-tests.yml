@@ -1,0 +1,22 @@
+name: Studio v4 / Contract Tests
+
+on:
+  pull_request:
+    paths:
+      - "studio/**"
+      - ".github/workflows/studio-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python unit tests
+        run: python3 -m unittest discover -s studio/tests -p "test_*.py" -v
+      - name: Compile Python controller
+        run: python3 -m py_compile studio/dispatcher.py
