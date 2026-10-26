@@ -1,0 +1,40 @@
+name: Studio / Dependabot Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [Nomad3D]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Classify dependency update for owner review
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo "## Dependabot review"
+            echo "PR: #${PR_NUMBER:-manual}"
+            echo "Target branch: ${PR_BASE:-Nomad3D}"
+            echo "Change title: ${PR_TITLE:-manual}"
+            echo "No automatic merges or protected source changes are authorized."
+            echo "Review build, editor, ABI and license compatibility before owner approval."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Run safe studio checks
+        run: |
+          python3 -m compileall -q studio
+          python3 -m unittest discover -s studio/tests -p 'test_*.py' -v

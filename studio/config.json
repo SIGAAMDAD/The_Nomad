@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "mode": "staging",
   "dispatcher_repo": "SIGAAMDAD/The_Nomad",
   "targets": {
@@ -41,7 +41,7 @@
       "skill": "rpg-integration-engineer"
     }
   },
-  "max_per_run": 10,
+  "max_per_run": 6,
   "ledger_id": "1avYu8wwu8KZMPcb36_9Pz0-6cJgkZCOWber4NNxx8NA",
   "studio_intake_tab": "STUDIO_INTAKE",
   "protection": {
@@ -49,5 +49,27 @@
     "allow_automatic_merge": false,
     "allow_paid_api_execution": false
   },
-  "notes": "Staging is inert. To activate, set mode=active by PR and STUDIO_ENABLED=true as repo variable. The Work tasks and Slack webhook require user setup."
+  "notes": "STAGING: v5 signed contracts require secrets.STUDIO_APPROVAL_KEY, secrets.STUDIO_SLACK_WEBHOOK and vars.STUDIO_ENABLED=true; no paid agents and no automerge. Game Nomad3D, Framework develop.",
+  "worker_capacity": {
+    "design": 1,
+    "narrative": 1,
+    "gameplay": 1,
+    "ai": 1,
+    "engine": 1,
+    "rendering": 1,
+    "world": 1,
+    "qa": 1,
+    "integration": 1
+  },
+  "worker_logins": [
+    "SIGAAMDAD"
+  ],
+  "lease_minutes": 120,
+  "security": {
+    "signed_approvals": true,
+    "source_head_must_match": true,
+    "acknowledgment_required": true,
+    "manual_merge_only": true,
+    "manual_reconcile_for_ambiguous_delivery": true
+  }
 }

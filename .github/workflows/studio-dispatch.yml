@@ -1,21 +1,28 @@
-name: Studio v4 / Issue Dispatcher
+name: Studio V5 / Signed Dispatch and Recovery
 
 on:
   issues:
-    types: [labeled, reopened]
+    types: [labeled, reopened, closed]
+  issue_comment:
+    types: [created]
   repository_dispatch:
-    types: [studio_enqueue]
+    types: [studio_v5_enqueue]
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "Issue number; leave empty to scan the approved queue"
-        type: string
+        description: "Optional issue number (blank scans all eligible tasks)"
         required: false
+        type: string
       dry_run:
-        description: "Preview dispatch with no Slack message or issue mutation"
-        type: boolean
+        description: "Validate and preview only"
         required: false
         default: true
+        type: boolean
+      reconcile_only:
+        description: "Reconcile acknowledgments without dispatch"
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: "*/15 * * * *"
 
@@ -24,46 +31,44 @@ permissions:
   issues: write
 
 concurrency:
-  group: nomad-studio-issue-dispatch
+  group: studio-v5-dispatch-queue
   cancel-in-progress: false
 
 jobs:
-  dispatch:
+  orchestrate:
     if: >-
-      github.event_name != 'issues' ||
-      github.event.action == 'reopened' ||
-      github.event.label.name == 'ai:ready'
+      github.event_name != 'issue_comment' ||
+      contains(github.event.comment.body, 'STUDIO_EVENT')
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
-      - name: Checkout dispatcher code on the default branch
+      - name: Checkout reviewed control plane
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Validate and dispatch approved issues
+          ref: Nomad3D
+      - name: Reconcile and dispatch signed assignments
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           STUDIO_ENABLED: ${{ vars.STUDIO_ENABLED }}
+          STUDIO_APPROVAL_KEY: ${{ secrets.STUDIO_APPROVAL_KEY }}
           STUDIO_SLACK_WEBHOOK: ${{ secrets.STUDIO_SLACK_WEBHOOK }}
+          TASK_NUMBER: ${{ inputs.issue_number }}
+          TASK_DRY_RUN: ${{ inputs.dry_run }}
+          TASK_RECONCILE_ONLY: ${{ inputs.reconcile_only }}
           EVENT_NAME: ${{ github.event_name }}
-          EVENT_ISSUE: ${{ github.event.issue.number }}
-          INPUT_ISSUE: ${{ inputs.issue_number }}
-          PAYLOAD_ISSUE: ${{ github.event.client_payload.issue_number }}
-          INPUT_DRY_RUN: ${{ inputs.dry_run }}
-        shell: bash
         run: |
           set -euo pipefail
           args=()
-          if [[ "$EVENT_NAME" == "issues" && -n "$EVENT_ISSUE" ]]; then
-            args=(--issue "$EVENT_ISSUE")
-          elif [[ -n "$INPUT_ISSUE" ]]; then
-            args=(--issue "$INPUT_ISSUE")
-          elif [[ -n "$PAYLOAD_ISSUE" ]]; then
-            args=(--issue "$PAYLOAD_ISSUE")
-          else
-            args=(--scan)
-          fi
-          if [[ "$INPUT_DRY_RUN" == "true" ]]; then
+          if [[ "$TASK_DRY_RUN" == "true" ]]; then
             args+=(--dry-run)
           fi
-          python3 studio/dispatcher.py "${args[@]}"
+          python3 studio/orchestrator.py --mode reconcile "${args[@]}"
+          if [[ "$TASK_RECONCILE_ONLY" != "true" ]]; then
+            if [[ -n "$TASK_NUMBER" ]]; then
+              args+=(--issue "$TASK_NUMBER")
+            fi
+            python3 studio/orchestrator.py --mode dispatch "${args[@]}"
+          fi

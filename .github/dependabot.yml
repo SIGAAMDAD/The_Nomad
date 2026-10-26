@@ -1,0 +1,39 @@
+# Dependabot reads this file ONLY from the repository default branch.
+# Once deployed there, all VERSION-update PRs below target Nomad3D.
+# Security updates are a separate GitHub setting and normally target default branch.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "Nomad3D"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Chicago"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    groups:
+      ci-actions:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "nuget"
+    directories:
+      - "/"
+      - "/Source/Game/Sdk"
+      - "/Source/Modding"
+    target-branch: "Nomad3D"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "America/Chicago"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    groups:
+      dotnet-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]

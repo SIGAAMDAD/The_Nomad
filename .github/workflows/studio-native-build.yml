@@ -1,0 +1,84 @@
+name: Studio / Trusted Windows Godot Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "Reviewed game candidate SHA (40 hex), descended from Nomad3D"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: studio-native-build-machine
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: vars.STUDIO_WINDOWS_RUNNER_ENABLED == 'true'
+    runs-on: [self-hosted, windows, x64, nomad-windows-build]
+    timeout-minutes: 90
+    steps:
+      - name: Checkout reviewed candidate without submodules
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          submodules: false
+          ref: ${{ inputs.commit_sha }}
+      - name: Require candidate lineage from Nomad3D
+        shell: pwsh
+        env:
+          CANDIDATE_SHA: ${{ inputs.commit_sha }}
+        run: |
+          if ($env:CANDIDATE_SHA -notmatch '^[a-fA-F0-9]{40}$') {
+            throw 'Invalid candidate SHA'
+          }
+          git fetch origin Nomad3D
+          git merge-base --is-ancestor origin/Nomad3D HEAD
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Candidate is not descended from current Nomad3D'
+          }
+          if ((git rev-parse HEAD).Trim() -ne $env:CANDIDATE_SHA) {
+            throw 'Checkout does not match the reviewed candidate SHA'
+          }
+      - name: Fetch pinned submodules after commit validation
+        shell: pwsh
+        run: |
+          git submodule update --init --recursive
+          if ($LASTEXITCODE -ne 0) { throw 'Submodule checkout failed' }
+      - name: Verify native toolchain presence
+        shell: pwsh
+        run: |
+          dotnet --version
+          python --version
+          scons --version
+          if ($LASTEXITCODE -ne 0) { throw 'SCons is required' }
+      - name: Restore .NET packages
+        shell: pwsh
+        run: |
+          dotnet restore TheNomad.csproj
+          if ($LASTEXITCODE -ne 0) { throw 'dotnet restore failed' }
+      - name: Build game managed assemblies
+        shell: pwsh
+        run: |
+          dotnet build TheNomad.csproj -c Release --no-restore
+          if ($LASTEXITCODE -ne 0) { throw 'Managed game compilation failed' }
+      - name: Optional headless editor smoke test
+        shell: pwsh
+        run: |
+          if (!$env:NOMAD_GODOT_BIN -or !(Test-Path $env:NOMAD_GODOT_BIN)) {
+            Write-Output 'NOT_RUN: NOMAD_GODOT_BIN is not configured; no editor validation claimed'
+          } else {
+            & $env:NOMAD_GODOT_BIN --headless --editor --path . --quit
+            if ($LASTEXITCODE -ne 0) { throw 'Godot editor smoke test failed' }
+          }
+      - name: Record actual candidate commit
+        if: always()
+        shell: pwsh
+        run: |
+          "## Trusted Windows CI" >> $env:GITHUB_STEP_SUMMARY
+          "Candidate SHA: $(git rev-parse HEAD)" >> $env:GITHUB_STEP_SUMMARY
+          "GDExtension C++/GPU compile is NOT_RUN unless separately configured." >> $env:GITHUB_STEP_SUMMARY

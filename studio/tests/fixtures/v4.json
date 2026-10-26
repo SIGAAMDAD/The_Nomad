@@ -1,0 +1,17 @@
+{
+  "schema_version": 4,
+  "mode": "staging",
+  "targets": {
+    "game": {
+      "repo": "SIGAAMDAD/The_Nomad",
+      "branch": "Nomad3D"
+    },
+    "framework": {
+      "repo": "SIGAAMDAD/NomadFramework",
+      "branch": "develop"
+    }
+  },
+  "departments": {
+    "gameplay": {}
+  }
+}

@@ -1,0 +1,40 @@
+name: Studio V5 / Contracts and Config
+
+on:
+  pull_request:
+    branches: [Nomad3D]
+    paths:
+      - "studio/**"
+      - ".github/dependabot.yml"
+      - ".github/workflows/studio-*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  studio-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python syntax
+        run: python3 -m compileall -q studio
+      - name: Dependency-free controller tests
+        run: python3 -m unittest discover -s studio/tests -p 'test_*.py' -v
+      - name: Validate V5 policy is disabled by default
+        run: |
+          python3 - <<'PY'
+          import json
+          with open('studio/config.json',encoding='utf-8') as f:
+              config=json.load(f)
+          assert config['schema_version']==5
+          assert config['mode']=='staging'
+          assert config['targets']['game']['branch']=='Nomad3D'
+          assert config['targets']['framework']['branch']=='develop'
+          assert config['security']['signed_approvals']
+          assert config['security']['manual_merge_only']
+          print('Studio V5 staged policy verified')
+          PY
