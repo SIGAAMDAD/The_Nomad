@@ -1,0 +1,223 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++17
+
+# =============================================================================
+# Indentation
+#
+# Real tabs.
+# One tab = 4 columns.
+# =============================================================================
+
+UseTab: ForIndentation
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 4
+
+NamespaceIndentation: All
+
+IndentCaseLabels: true
+IndentCaseBlocks: true
+
+IndentGotoLabels: true
+IndentPPDirectives: BeforeHash
+
+# =============================================================================
+# Access modifiers
+#
+# class Foo
+# {
+# public:
+#     void Bar();
+#
+# private:
+#     int value;
+# };
+# =============================================================================
+
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+
+EmptyLineBeforeAccessModifier: Leave
+EmptyLineAfterAccessModifier: Leave
+
+# =============================================================================
+# Brace placement
+#
+# Type declarations:
+#
+# class Foo
+# {
+# };
+#
+# struct Foo
+# {
+# };
+#
+# enum class Foo
+# {
+# };
+#
+# Function definitions:
+#
+# void Foo()
+# {
+# }
+#
+# Control flow:
+#
+# if ( condition ) {
+# } else {
+# }
+#
+# for ( ... ) {
+# }
+#
+# while ( ... ) {
+# }
+# =============================================================================
+
+BreakBeforeBraces: Custom
+
+BraceWrapping:
+  AfterCaseLabel: false
+
+  AfterClass: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterEnum: true
+
+  AfterFunction: true
+
+  AfterNamespace: false
+  AfterExternBlock: false
+
+  AfterControlStatement: Never
+
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: true
+  BeforeWhile: false
+
+  IndentBraces: false
+
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: false
+
+# Never collapse function bodies back onto the declaration line.
+AllowShortFunctionsOnASingleLine: None
+AllowShortLambdasOnASingleLine: None
+
+# Control-flow blocks may remain compact only in terms of brace placement.
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Keep short enums expanded as real type bodies.
+AllowShortEnumsOnASingleLine: false
+
+# =============================================================================
+# Parentheses
+#
+# Function( value );
+#
+# if ( condition ) {
+# }
+#
+# x = ( y * 0.5f );
+#
+# C-style cast:
+#
+# (type)value
+# =============================================================================
+
+SpaceBeforeParens: ControlStatements
+
+SpacesInParens: Custom
+
+SpacesInParensOptions:
+  ExceptDoubleParentheses: false
+  InConditionalStatements: true
+  InCStyleCasts: false
+  InEmptyParentheses: false
+  Other: true
+
+SpaceAfterCStyleCast: false
+
+# =============================================================================
+# Square brackets
+#
+# values[ i ]
+#
+# Lambda captures stay:
+#
+# [this]
+# =============================================================================
+
+SpaceBeforeSquareBrackets: false
+SpacesInSquareBrackets: true
+
+# =============================================================================
+# Initializer lists
+#
+# Type value { argument };
+# values = { 1, 2, 3 };
+# =============================================================================
+
+SpaceBeforeCpp11BracedList: true
+Cpp11BracedListStyle: Block
+
+# =============================================================================
+# Operators / punctuation
+# =============================================================================
+
+SpaceBeforeAssignmentOperators: true
+
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
+
+SpaceAfterLogicalNot: false
+
+# =============================================================================
+# Pointer / reference / qualifier style
+#
+# const char *name;
+# Entity *entity;
+# const Dictionary &dict;
+# =============================================================================
+
+DerivePointerAlignment: false
+
+PointerAlignment: Right
+ReferenceAlignment: Left
+
+QualifierAlignment: Left
+
+# =============================================================================
+# Line wrapping
+# =============================================================================
+
+ColumnLimit: 0
+
+# =============================================================================
+# Includes
+# =============================================================================
+
+SortIncludes: Never
+IncludeBlocks: Preserve
+SortUsingDeclarations: Never
+
+# =============================================================================
+# Comments
+# =============================================================================
+
+ReflowComments: Never
+
+# =============================================================================
+# Empty lines
+# =============================================================================
+
+MaxEmptyLinesToKeep: 1

@@ -1,0 +1,16 @@
+/build/
+/Build/
+/.vs/
+/CMakeFiles/
+/CMakeUserPresets.json
+/CMakeCache.txt
+/cmake_install.cmake
+/*.vcxproj*
+/*.sln
+/*.slnx
+*.user
+*.suo
+
+# Keep the maintained MSVC entry points.
+!/NomadGDExtension.vcxproj
+!/NomadGDExtension.sln

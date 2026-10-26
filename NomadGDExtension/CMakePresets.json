@@ -1,0 +1,118 @@
+{
+  "version": 5,
+  "configurePresets": [
+    {
+      "name": "msvc",
+      "hidden": true,
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/vs2026/${presetName}",
+      "cacheVariables": {
+        "BUILD_TESTING": "OFF"
+      }
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": "msvc",
+      "cacheVariables": {
+        "GODOTCPP_TARGET": "template_debug"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "inherits": "msvc",
+      "cacheVariables": {
+        "GODOTCPP_TARGET": "template_release"
+      }
+    },
+    {
+      "name": "msvc2022-debug",
+      "inherits": "msvc-debug",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/vs2022/${presetName}"
+    },
+    {
+      "name": "msvc2022-release",
+      "inherits": "msvc-release",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/vs2022/${presetName}"
+    },
+    {
+      "name": "linux",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++",
+        "BUILD_TESTING": "OFF"
+      }
+    },
+    {
+      "name": "linux-debug",
+      "inherits": "linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "GODOTCPP_TARGET": "template_debug"
+      }
+    },
+    {
+      "name": "linux-release",
+      "inherits": "linux",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "GODOTCPP_TARGET": "template_release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "configuration": "Debug",
+      "targets": [
+        "nomad_gdextension",
+        "nomad_game_gdextension"
+      ]
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "configuration": "Release",
+      "targets": [
+        "nomad_gdextension",
+        "nomad_game_gdextension"
+      ]
+    },
+    {
+      "name": "msvc2022-debug",
+      "inherits": "msvc-debug",
+      "configurePreset": "msvc2022-debug"
+    },
+    {
+      "name": "msvc2022-release",
+      "inherits": "msvc-release",
+      "configurePreset": "msvc2022-release"
+    },
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "targets": [
+        "nomad_gdextension",
+        "nomad_game_gdextension"
+      ]
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
+      "targets": [
+        "nomad_gdextension",
+        "nomad_game_gdextension"
+      ]
+    }
+  ],
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  }
+}

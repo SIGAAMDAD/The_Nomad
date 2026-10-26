@@ -1,0 +1,8 @@
+#ifndef __NMD_HUD_VISUAL_PRESET_H__
+#define __NMD_HUD_VISUAL_PRESET_H__
+
+#ifdef NOMAD_PRAGMA_ONCE_SUPPORTED
+
+#endif
+
+#endif // __NMD_HUD_VISUAL_PRESET_H__

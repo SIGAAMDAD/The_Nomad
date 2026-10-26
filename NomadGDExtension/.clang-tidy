@@ -1,0 +1,34 @@
+---
+Checks: >
+  -*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  misc-const-correctness,
+  readability-make-member-function-const,
+  cppcoreguidelines-avoid-non-const-global-variables
+
+WarningsAsErrors: >
+  misc-const-correctness,
+  readability-make-member-function-const,
+  cppcoreguidelines-avoid-non-const-global-variables
+
+HeaderFilterRegex: '.*'
+
+FormatStyle: file
+
+CheckOptions:
+  misc-const-correctness.AnalyzeValues: true
+  misc-const-correctness.AnalyzeReferences: true
+  misc-const-correctness.AnalyzePointers: true
+  misc-const-correctness.AnalyzeAutoVariables: true
+  misc-const-correctness.AnalyzeLambdas: true
+  misc-const-correctness.AnalyzeParameters: true
+
+  misc-const-correctness.WarnPointersAsValues: true
+  misc-const-correctness.WarnPointersAsPointers: true
+
+  misc-const-correctness.TransformValues: true
+  misc-const-correctness.TransformReferences: true
+  misc-const-correctness.TransformPointersAsValues: true
+  misc-const-correctness.TransformPointersAsPointers: true
